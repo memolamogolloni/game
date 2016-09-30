@@ -1,0 +1,23 @@
+<LOGOS>
+    <VIDEO>HD_logos.mov</VIDEO>
+</LOGOS>
+<XOGADORES>
+    <VIDEO>HD_seleccion_jugadores.mov</VIDEO>
+</XOGADORES>
+<BACKGROUND>
+    <VIDEO>HD_completo.mov</VIDEO>
+    <VIDEO>HD_fondo_derecha.mov</VIDEO>
+    <VIDEO>HD_fondo_izquierda.mov</VIDEO>
+</BACKGROUND>
+<WINDOWA>
+    <VIDEO>blue.mov</VIDEO>
+    <VIDEO>brown.mov</VIDEO>
+    <VIDEO>eye.mov</VIDEO>
+    <VIDEO>mind.mov</VIDEO>
+</WINDOWA>
+<WINDOWB>
+    <VIDEO>Buffalo.mov</VIDEO>
+    <VIDEO>danza.mov</VIDEO>
+    <VIDEO>john.mov</VIDEO>
+    <VIDEO>James.mov</VIDEO>
+</WINDOWB>
