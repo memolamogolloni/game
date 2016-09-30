@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
-#include "vhpVid.h"
+//#include "vhpGame.h"
+#include "ofEvents.h"
 
 #define LOOP            0
 #define PAUSE           1
@@ -30,16 +31,19 @@ class vhpThread: public ofThread {
 		void draw();
         //int getCount();
     
-        ofVideoPlayer *     target;
-        //int               state;
-        float               video_start;
-        float               video_end;
-        float               stored_start;
-        float               stored_end;
+        ofVideoPlayer *         target;
+        //vhpGame *             game;
+        float                   video_start;
+        float                   video_end;
+        float                   stored_start;
+        float                   stored_end;
+        static ofEvent<int>     timeOut;
+        int                     goTo;
+    
 		
 		// Variables ou propiedades
     private:
         void                threadedFunction();
-        //int                 count;
+        int                 count;
     
 };

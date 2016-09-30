@@ -41,10 +41,11 @@ void vhpGame::setup(){
         cout << "unable to load videoList.xml check data/ folder" << endl;
     }
     
-    logos.addVideos(videoList, "LOGOS");
-    logos.setId(SCREENSAVER, PLAYERMENU);
+    logos.setup(videoList, "LOGOS", SCREENSAVER, PLAYERMENU);
     
-    xogadores.addVideos(videoList, "XOGADORES");
+    //xogadores.addVideos(videoList, "XOGADORES");
+    xogadores.setup(&controlXogadores, videoList, "XOGADORES");
+    
     xogadores.setId(PLAYERMENU, STANDBY);
     
     state = SCREENSAVER;
@@ -128,7 +129,12 @@ void vhpGame::set(int &_state){
     switch (_state) {
             
         case SCREENSAVER:
-            setScreensaver();
+            cout << "SCREENSAVER" << endl;
+            if (state == PLAYERMENU) {
+                backToScreensaver();
+            } else {
+                setScreensaver();
+            }
             break;
             
         case PLAYERMENU:
@@ -179,10 +185,21 @@ void vhpGame::toggleScale(){
 void vhpGame::setScreensaver(){
     cout << "setScreensaver()" << endl;
     state = SCREENSAVER;
-    logos.init();
+    logos.start();
+    logos.play();
     ofAddListener(vhpScreenSaver::onClick, this, &vhpGame::set);
     currentUpdate = &vhpGame::updateScreenSaver;
     currentDraw = &vhpGame::drawScreenSaver;
+}
+
+// -------------------------------------------------------------
+void vhpGame::backToScreensaver(){
+    cout << "backToScreensaver()" << endl;
+    state = SCREENSAVER;
+    logos.start();
+    logos.play();
+    currentUpdate = &vhpGame::updatePlayerMenuFadeIn;
+    currentDraw = &vhpGame::drawPlayerMenuFadeOut;
 }
 
 //--------------------------------------------------------------
@@ -214,7 +231,7 @@ void vhpGame::drawScreenSaver(){
     ofPopStyle();
     
     ofPushStyle();
-    ofSetColor(0, 0, 0);
+    ofSetColor(255, 255, 255);
     TTF.drawString("Framerate: "+ ofToString(ofGetFrameRate()), 20, 20);
     ofPopStyle();
     
@@ -245,6 +262,9 @@ void vhpGame::setPlayerMenu(){
     stopScreenSaver();
     state = PLAYERMENU;
     xogadores.init();
+    
+    ofAddListener(vhpThread::timeOut, this, &vhpGame::set);
+    
     currentUpdate = &vhpGame::updatePlayerMenuFadeIn;
     currentDraw = &vhpGame::drawPlayerMenuFadeIn;
 }
@@ -278,12 +298,41 @@ void vhpGame::drawPlayerMenuFadeIn(){
     ofPopStyle();
     alpha += alpha_increment;
     if (alpha>=255) {
+        cout << "alpha: 255" << endl;
         alpha = 255;
         currentUpdate = &vhpGame::updatePlayerMenu;
         currentDraw = &vhpGame::drawPlayerMenu;
         logos.stop();
     }
 }
+
+//--------------------------------------------------------------
+void vhpGame::drawPlayerMenuFadeOut(){
+    bufferTex.loadData(logos.video.getPixels(), width, height, GL_RGB);
+    ofPushStyle();
+    ofSetColor(255, 255, 255);
+    fullScreen.begin();
+    shaderMixture.begin();
+    shaderMixture.setUniformTexture("tex1", bufferTex, 1);
+    shaderMixture.setUniform1f("mixture", alpha/255.0);
+    xogadores.draw(0, 0);
+    shaderMixture.end();
+    fullScreen.end();
+    fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofSetColor(0, 0, 0);
+    TTF.drawString("Framerate: "+ ofToString(ofGetFrameRate()), 20, 20);
+    ofPopStyle();
+    alpha -= alpha_increment;
+    if (alpha<=0) {
+        cout << "alpha: 0" << endl;
+        alpha = 0;
+        currentUpdate = &vhpGame::updateScreenSaver;
+        currentDraw = &vhpGame::drawScreenSaver;
+        ofAddListener(vhpScreenSaver::onClick, this, &vhpGame::set);
+        xogadores.stop();
+    }
+}
+
 
 //--------------------------------------------------------------
 void vhpGame::drawPlayerMenu(){

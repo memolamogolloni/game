@@ -11,13 +11,27 @@ vhpPlayerMenu::~vhpPlayerMenu(){
         ofUnregisterMouseEvents(this); // disable litening to mous events.
         registerEvents = false;
     }
-    videoController.stop();
+    videoController->stop();
 }
 
 //--------------------------------------------------------------
-void vhpPlayerMenu::setup(string _file){
-    videoController.setup(&video, 0.0, 9.0/57.0);
-    video.load(_file);
+void vhpPlayerMenu::setup(vhpThread* _controller, ofxXmlSettings& _videoList, string _videoTag){
+    
+    // setup controller thread
+    videoController = _controller;
+    videoController->setup(&video, 0.0, 9.0/57.0);
+    
+    //load video from settings
+    int n = _videoList.getNumTags(_videoTag +":VIDEO");
+    if(n > 0){
+        _videoList.pushTag(_videoTag, n-1);
+        int num = _videoList.getNumTags("VIDEO");
+        cout << num << " videos in " << _videoTag << " " << _videoList.getValue("VIDEO", "", 0) << endl;
+        if(num > 0) video.load(_videoList.getValue("VIDEO", "", 0));
+        _videoList.popTag();
+    }
+    
+    //setup
     width = video.getWidth();
     height = video.getHeight();
     fbo.allocate(width, height, GL_RGBA);
@@ -39,20 +53,23 @@ void vhpPlayerMenu::init(){
         registerEvents = true;
     }
     setPlay();
-    videoController.start();
+    videoController->start();
 }
 
 //--------------------------------------------------------------
-void vhpPlayerMenu::addVideos(ofxXmlSettings& _videoList, string _videoTag){
-    int n = _videoList.getNumTags(_videoTag +":VIDEO");
-    if(n > 0){
-        _videoList.pushTag(_videoTag, n-1);
-        int num = _videoList.getNumTags("VIDEO");
-        cout << num << " videos in " << _videoTag << " " << _videoList.getValue("VIDEO", "", 0) << endl;
-        if(num > 0) setup(_videoList.getValue("VIDEO", "", 0));
-        _videoList.popTag();
+void vhpPlayerMenu::stop(){
+    if(registerEvents) {
+        ofUnregisterMouseEvents(this); // disable litening to mous events.
+        registerEvents = false;
     }
+    setPause();
+    videoController->stop();
 }
+
+//--------------------------------------------------------------
+/*void vhpPlayerMenu::addVideos(ofxXmlSettings& _videoList, string _videoTag){
+    
+}*/
 
 //--------------------------------------------------------------
 void vhpPlayerMenu::update(){
@@ -62,6 +79,11 @@ void vhpPlayerMenu::update(){
 //--------------------------------------------------------------
 void vhpPlayerMenu::draw(int _x, int _y){
     fbo.draw(_x, _y, width, height);
+}
+
+//--------------------------------------------------------------
+void vhpPlayerMenu::alert(int _e){
+    cout << " Event detected " << _e << endl;
 }
 
 //--------------------------------------------------------------
@@ -120,15 +142,15 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
                 switch (state) {
                     case MENU:
                         video.setPosition(10.0/57.0);
-                        videoController.reset(12.0/57.0, 16.0/57.0);
+                        videoController->reset(12.0/57.0, 16.0/57.0);
                         break;
                     case TWOPLAYERS:
                         video.setPosition(29.0/57.0);
-                        videoController.fadeReset(10.0/57.0, 30.0/57.0, 12.0/57.0, 16.0/57.0);
+                        videoController->fadeReset(10.0/57.0, 30.0/57.0, 12.0/57.0, 16.0/57.0);
                         break;
                     case FOURPLAYERS:
                         video.setPosition(41.0/57.0);
-                        videoController.fadeReset(10.0/57.0, 42.0/57.0, 12.0/57.0, 16.0/57.0);
+                        videoController->fadeReset(10.0/57.0, 42.0/57.0, 12.0/57.0, 16.0/57.0);
                         break;
                 }
                 state = ONEPLAYER;
@@ -137,15 +159,15 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
                 switch (state) {
                     case MENU:
                         video.setPosition(22.0/57.0);
-                        videoController.reset(24.0/57.0, 28.0/57.0);
+                        videoController->reset(24.0/57.0, 28.0/57.0);
                         break;
                     case ONEPLAYER:
                         video.setPosition(17.0/57.0);
-                        videoController.fadeReset(22.0/57.0, 18.0/57.0, 24.0/57.0, 28.0/57.0);
+                        videoController->fadeReset(22.0/57.0, 18.0/57.0, 24.0/57.0, 28.0/57.0);
                         break;
                     case FOURPLAYERS:
                         video.setPosition(41.0/57.0);
-                        videoController.fadeReset(22.0/57.0, 42.0/57.0, 24.0/57.0, 28.0/57.0);
+                        videoController->fadeReset(22.0/57.0, 42.0/57.0, 24.0/57.0, 28.0/57.0);
                         break;
                 }
                 state = TWOPLAYERS;
@@ -154,15 +176,15 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
                 switch (state) {
                     case MENU:
                         video.setPosition(34.0/57.0);
-                        videoController.reset(36.0/57.0, 40.0/57.0);
+                        videoController->reset(36.0/57.0, 40.0/57.0);
                         break;
                     case ONEPLAYER:
                         video.setPosition(17.0/57.0);
-                        videoController.fadeReset(34.0/57.0, 18.0/57.0, 36.0/57.0, 40.0/57.0);
+                        videoController->fadeReset(34.0/57.0, 18.0/57.0, 36.0/57.0, 40.0/57.0);
                         break;
                     case TWOPLAYERS:
                         video.setPosition(29.0/57.0);
-                        videoController.fadeReset(34.0/57.0, 30.0/57.0, 36.0/57.0, 40.0/57.0);
+                        videoController->fadeReset(34.0/57.0, 30.0/57.0, 36.0/57.0, 40.0/57.0);
                         break;
                 }
                 state = FOURPLAYERS;
@@ -172,15 +194,15 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
             switch (state) {
                 case ONEPLAYER:
                     video.setPosition(17.0/57.0);
-                    videoController.fadeReset(0.0, 18.0/57.0, 0.0, 9.0/57.0);
+                    videoController->fadeReset(0.0, 18.0/57.0, 0.0, 9.0/57.0);
                     break;
                 case TWOPLAYERS:
                     video.setPosition(29.0/57.0);
-                    videoController.fadeReset(0.0, 30.0/57.0, 0.0, 9.0/57.0);
+                    videoController->fadeReset(0.0, 30.0/57.0, 0.0, 9.0/57.0);
                     break;
                 case FOURPLAYERS:
                     video.setPosition(41.0/57.0);
-                    videoController.fadeReset(0.0, 42.0/57.0, 0.0, 9.0/57.0);
+                    videoController->fadeReset(0.0, 42.0/57.0, 0.0, 9.0/57.0);
                     break;
             }
             state = MENU;
@@ -191,15 +213,15 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
             switch (state) {
                 case ONEPLAYER:
                     video.setPosition(17.0/57.0);
-                    videoController.fadeReset(0.0, 18.0/57.0, 0.0, 9.0/57.0);
+                    videoController->fadeReset(0.0, 18.0/57.0, 0.0, 9.0/57.0);
                     break;
                 case TWOPLAYERS:
                     video.setPosition(29.0/57.0);
-                    videoController.fadeReset(0.0, 30.0/57.0, 0.0, 9.0/57.0);
+                    videoController->fadeReset(0.0, 30.0/57.0, 0.0, 9.0/57.0);
                     break;
                 case FOURPLAYERS:
                     video.setPosition(41.0/57.0);
-                    videoController.fadeReset(0.0, 42.0/57.0, 0.0, 9.0/57.0);
+                    videoController->fadeReset(0.0, 42.0/57.0, 0.0, 9.0/57.0);
                     break;
             }
             state = MENU;

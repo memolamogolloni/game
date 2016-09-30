@@ -4,7 +4,7 @@
 #include "ofEvents.h"
 
 #include "ofxXmlSettings.h"
-//#include "vhpVid.h"
+#include "vhpThread.h"
 //#include "VHPbutton.h"
 #include "vhpScreenSaver.h"
 #include "vhpPlayerMenu.h"
@@ -35,6 +35,7 @@ class vhpGame {
     
         // ScreenSaver
         void setScreensaver();
+        void backToScreensaver();
         void updateScreenSaver();
         void drawScreenSaver();
         void stopScreenSaver();
@@ -44,6 +45,7 @@ class vhpGame {
         void updatePlayerMenuFadeIn();
         void updatePlayerMenu();
         void drawPlayerMenuFadeIn();
+        void drawPlayerMenuFadeOut();
         void drawPlayerMenu();
     
         // Standby
@@ -82,6 +84,7 @@ class vhpGame {
     
         vhpScreenSaver              logos;
         vhpPlayerMenu               xogadores;
+        vhpThread                   controlXogadores;
     
         /*
          vector<vhpVid>            background;

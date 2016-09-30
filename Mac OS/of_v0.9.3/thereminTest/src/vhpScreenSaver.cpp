@@ -1,77 +1,84 @@
 #include "vhpScreenSaver.h"
 
-//--------------------------------------------------------------
+// Constructor -------------------------------------------------
+
 vhpScreenSaver::vhpScreenSaver(){
 
 }
 
-//--------------------------------------------------------------
 vhpScreenSaver::~vhpScreenSaver(){
-    if(registerEvents) {
-        ofUnregisterMouseEvents(this); // disable litening to mous events.
-        registerEvents = false;
-    }
+    stop();
 }
 
-//--------------------------------------------------------------
-void vhpScreenSaver::setup(string _file){
-    video.load(_file);
-    width = video.getWidth();
-    height = video.getHeight();
-    fbo.allocate(width, height, GL_RGBA);
-    fbo.begin();
-    ofClear(255,255,255, 0);
-    fbo.end();
-}
-
-//--------------------------------------------------------------
-void vhpScreenSaver::setId(int _id, int _target){
-    gameId = _id;
-    gameTarget = _target;
-}
-
-//--------------------------------------------------------------
-void vhpScreenSaver::init(){
-    if(!registerEvents) {
-        ofRegisterMouseEvents(this); // this will enable our circle class to listen to the mouse events.
-        registerEvents = true;
-    }
-    setPlay();
-}
-
-//--------------------------------------------------------------
-void vhpScreenSaver::stop(){
-    if(registerEvents) {
-        ofUnregisterMouseEvents(this); // disable litening to mous events.
-        registerEvents = false;
-    }
-    setPause();
-}
-
-//--------------------------------------------------------------
-void vhpScreenSaver::addVideos(ofxXmlSettings& _videoList, string _videoTag){
+// Inicializar variables y cargar los archivos -----------------
+void vhpScreenSaver::setup(ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene){
+    
+    // Añadir los vídeos desde el documento xml de settings
     int n = _videoList.getNumTags(_videoTag +":VIDEO");
     if(n > 0){
         _videoList.pushTag(_videoTag, n-1);
         int num = _videoList.getNumTags("VIDEO");
         cout << num << " videos in " << _videoTag << " " << _videoList.getValue("VIDEO", "", 0) << endl;
-        if(num > 0) setup(_videoList.getValue("VIDEO", "", 0));
+        if(num > 0) video.load(_videoList.getValue("VIDEO", "", 0));
         _videoList.popTag();
+    }
+    
+    // Inicializar las variables
+    currentScene = _currentScene;   // SCREENSAVER
+    targetScene = _targetScene;     // PLAYERMENU
+    width = video.getWidth();
+    height = video.getHeight();
+    fbo.allocate(width, height, GL_RGBA);
+    
+    // clean FBO
+    fbo.begin();
+    ofClear(255,255,255, 0);
+    fbo.end();
+    
+}
+
+// Comenzar e interrumpir los hilos y listeners de la escena ---
+
+void vhpScreenSaver::start(){
+    if(!registerEvents) {
+        // Esto permite registrar los eventos del ratón sin necesidad de crear eventos propios
+        ofRegisterMouseEvents(this);
+        registerEvents = true;
     }
 }
 
-//--------------------------------------------------------------
+void vhpScreenSaver::stop(){
+    if(registerEvents) {
+        // si el objeto no funciona desactivamos el registro de los eventos del ratón
+        ofUnregisterMouseEvents(this);
+        registerEvents = false;
+    }
+}
+
+// Dibujado y actualización variables --------------------------
 void vhpScreenSaver::update(){
     (*this.*currentUpdate)();
 }
 
-//--------------------------------------------------------------
 void vhpScreenSaver::draw(int _x, int _y){
     fbo.draw(_x, _y, width, height);
 }
 
-//--------------------------------------------------------------
+// Reproducir o detener la escena modificando currentUpdate ----
 void vhpScreenSaver::play(){
+    currentUpdate = &vhpScreenSaver::playScreenSaver;
+    video.play();
+}
+
+void vhpScreenSaver::pause(){
+    currentUpdate = &vhpScreenSaver::pause;
+    video.stop();
+}
+
+// Procesado y actualización -----------------------------------
+
+void vhpScreenSaver::playScreenSaver(){
+    // Reproduce el video y lo dibuja en el FBO
     video.update();
     ofPushStyle();
     ofSetColor(255, 255, 255);
@@ -81,41 +88,26 @@ void vhpScreenSaver::play(){
     ofPopStyle();
 }
 
-//--------------------------------------------------------------
-void vhpScreenSaver::pause(){
-    
+void vhpScreenSaver::pauseScreenSaver(){
+    // Al no hacer nada mantiene el FBO con el último fotograma reproducido
 }
 
-//--------------------------------------------------------------
-void vhpScreenSaver::loop(float _pos){
+void vhpScreenSaver::loopScreenSaver(float _pos){
+    // Envia la cabeza lectora del video a un punto determinado
     video.setPosition(_pos);
 }
 
-//--------------------------------------------------------------
-void vhpScreenSaver::setPlay(){
-    video.play();
-    currentUpdate = &vhpScreenSaver::play;
-}
+// Eventos ------------------------------------------------------
 
-//--------------------------------------------------------------
-void vhpScreenSaver::setPause(){
-    video.stop();
-    currentUpdate = &vhpScreenSaver::pause;
-}
-
-//--------------------------------------------------------------
-float vhpScreenSaver::getPosition(){
-    return video.getPosition();
-}
-
-// EVENTS ------------------------------------------------------
 void vhpScreenSaver::mouseMoved(ofMouseEventArgs & _args){}
 void vhpScreenSaver::mouseDragged(ofMouseEventArgs & _args){}
 void vhpScreenSaver::mousePressed(ofMouseEventArgs & _args){}
+
 void vhpScreenSaver::mouseReleased(ofMouseEventArgs & _args){
     cout << "Button active!" << endl;
-    ofNotifyEvent(onClick, gameTarget);
+    ofNotifyEvent(onClick, targetScene);
 }
+
 void vhpScreenSaver::mouseScrolled(ofMouseEventArgs & _args){}
 void vhpScreenSaver::mouseEntered(ofMouseEventArgs & _args){}
 void vhpScreenSaver::mouseExited(ofMouseEventArgs & _args){}

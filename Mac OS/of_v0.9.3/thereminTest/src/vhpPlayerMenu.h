@@ -19,10 +19,11 @@ class vhpPlayerMenu {
         ~vhpPlayerMenu();
 		
 		// funcións ou métodos
-        void setup(string _file);
+        void setup(vhpThread* _controller, ofxXmlSettings& _videoList, string _videoTag);
         void setId(int _id, int _target);
-        void addVideos(ofxXmlSettings& _videoList, string _videoTag);
+        //void addVideos(vhpThread* _controller, ofxXmlSettings& _videoList, string _videoTag);
         void init();
+        void stop();
         void update();
         void (vhpPlayerMenu::*currentUpdate)();
         void play();
@@ -31,6 +32,7 @@ class vhpPlayerMenu {
         void setPlay();
         void setPause();
         void draw(int _x, int _y);
+        void alert(int _e);
     
         float getPosition();
     
@@ -45,17 +47,17 @@ class vhpPlayerMenu {
         void mouseExited(ofMouseEventArgs & _args);
     
         // Variables ou propiedades
-        ofVideoPlayer   video;
-        vhpThread       videoController;
+        ofVideoPlayer       video;
+        vhpThread *         videoController;
     
-        vector<string>  videoList;
-        ofFbo           fbo;
-        int             width;
-        int             height;
-        int             gameId;
-        int             gameTarget;
-        float           scale;
-        int             state;
+        vector<string>      videoList;
+        ofFbo               fbo;
+        int                 width;
+        int                 height;
+        int                 gameId;
+        int                 gameTarget;
+        float               scale;
+        int                 state;
 
         //static ofEvent<int> onClick;
     

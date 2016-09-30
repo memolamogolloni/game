@@ -8,29 +8,34 @@ class vhpScreenSaver {
 
 	public:
 	
-		// constructor
+		// Constructor
         vhpScreenSaver();
         ~vhpScreenSaver();
 		
-		// funcións ou métodos
-        void setup(string _file);
-        void setId(int _id, int _target);
-        void addVideos(ofxXmlSettings& _videoList, string _videoTag);
-        void init();
+		/* funciones o métodos */
+    
+        // Inicializar variables y cargar los archivos
+        void setup(ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
+    
+        // Comenzar e interrumpir los hilos y listeners de la escena
+        void start();
         void stop();
+    
+        // Dibujado y actualización variables
         void update();
         void (vhpScreenSaver::*currentUpdate)();
-        void play();
-        void loop(float _pos);
-        void pause();
-        void setPlay();
-        void setPause();
         void draw(int _x, int _y);
     
-        float getPosition();
+        // reproducir o detener la escena modificando currentUpdate
+        void play();
+        void pause();
     
-        //We need to declare all this mouse events methods to be able to listen to mouse events.
-        //All this must be declared even if we are just going to use only one of this methods.
+        // Procesado y actualización
+        void playScreenSaver();
+        void pauseScreenSaver();
+        void loopScreenSaver(float _pos);
+    
+        // Para recoger la pulsación del ratón en la pantalla
         void mouseMoved(ofMouseEventArgs & _args);
         void mouseDragged(ofMouseEventArgs & _args);
         void mousePressed(ofMouseEventArgs & _args);
@@ -39,15 +44,19 @@ class vhpScreenSaver {
         void mouseEntered(ofMouseEventArgs & _args);
         void mouseExited(ofMouseEventArgs & _args);
     
-        // Variables ou propiedades
+        /* Variables o propiedades */
+    
+        // Video de fondo
         ofVideoPlayer   video;
-        vector<string>  videoList;
         ofFbo           fbo;
         int             width;
         int             height;
-        int             gameId;
-        int             gameTarget;
-
+    
+        // Estado del juego
+        int             currentScene;
+        int             targetScene;
+    
+        // notificación de eventos
         static ofEvent<int> onClick;
     
     protected:
