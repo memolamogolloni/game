@@ -14,30 +14,38 @@ class vhpPlayerMenu {
 
 	public:
 	
-		// constructor
+		// Constructor
         vhpPlayerMenu();
         ~vhpPlayerMenu();
 		
-		// funcións ou métodos
-        void setup(vhpThread* _controller, ofxXmlSettings& _videoList, string _videoTag);
-        void setId(int _id, int _target);
-        //void addVideos(vhpThread* _controller, ofxXmlSettings& _videoList, string _videoTag);
-        void init();
+		/* funciones o métodos */
+    
+        // Inicializar variables y cargar los archivos
+        void setup(vhpThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
+    
+        // Comenzar e interrumpir los hilos y listeners de la escena
+        void start();
         void stop();
+    
+        // Dibujado y actualización variables
         void update();
         void (vhpPlayerMenu::*currentUpdate)();
-        void play();
-        void loop(float _pos);
-        void pause();
-        void setPlay();
-        void setPause();
         void draw(int _x, int _y);
-        void alert(int _e);
     
+        // reproducir o detener la escena modificando currentUpdate
+        void play();
+        void pause();
+    
+        // Procesado y actualización
+        void playPlayerMenu();
+        void pausePlayerMenu();
+        void loopPlayerMenu(float _pos);
+    
+        // Utilidades
+        void alert(int _e);
         float getPosition();
     
-        //We need to declare all this mouse events methods to be able to listen to mouse events.
-        //All this must be declared even if we are just going to use only one of this methods.
+        // Para recoger la pulsación del ratón en la pantalla
         void mouseMoved(ofMouseEventArgs & _args);
         void mouseDragged(ofMouseEventArgs & _args);
         void mousePressed(ofMouseEventArgs & _args);
@@ -46,21 +54,23 @@ class vhpPlayerMenu {
         void mouseEntered(ofMouseEventArgs & _args);
         void mouseExited(ofMouseEventArgs & _args);
     
-        // Variables ou propiedades
-        ofVideoPlayer       video;
-        vhpThread *         videoController;
+        /* Variables o propiedades */
     
-        vector<string>      videoList;
+        // Video de fondo
+        ofVideoPlayer       video;
         ofFbo               fbo;
         int                 width;
         int                 height;
-        int                 gameId;
-        int                 gameTarget;
+    
+        // Hilo de control
+        vhpThread *         controller;
+    
+        // Estado del juego
+        int                 currentScene;
+        int                 targetScene;
         float               scale;
         int                 state;
 
-        //static ofEvent<int> onClick;
-    
     protected:
         bool registerEvents;
     

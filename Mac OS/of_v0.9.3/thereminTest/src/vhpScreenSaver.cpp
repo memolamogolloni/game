@@ -56,6 +56,7 @@ void vhpScreenSaver::stop(){
 }
 
 // Dibujado y actualización variables --------------------------
+
 void vhpScreenSaver::update(){
     (*this.*currentUpdate)();
 }
@@ -65,6 +66,7 @@ void vhpScreenSaver::draw(int _x, int _y){
 }
 
 // Reproducir o detener la escena modificando currentUpdate ----
+
 void vhpScreenSaver::play(){
     currentUpdate = &vhpScreenSaver::playScreenSaver;
     video.play();

@@ -42,11 +42,7 @@ void vhpGame::setup(){
     }
     
     logos.setup(videoList, "LOGOS", SCREENSAVER, PLAYERMENU);
-    
-    //xogadores.addVideos(videoList, "XOGADORES");
-    xogadores.setup(&controlXogadores, videoList, "XOGADORES");
-    
-    xogadores.setId(PLAYERMENU, STANDBY);
+    xogadores.setup(&controlXogadores, videoList, "XOGADORES",PLAYERMENU, STANDBY);
     
     state = SCREENSAVER;
     set(state);
@@ -261,10 +257,9 @@ void vhpGame::setPlayerMenu(){
     cout << "setPlayerMenu()" << endl;
     stopScreenSaver();
     state = PLAYERMENU;
-    xogadores.init();
-    
+    xogadores.start();
+    xogadores.play();
     ofAddListener(vhpThread::timeOut, this, &vhpGame::set);
-    
     currentUpdate = &vhpGame::updatePlayerMenuFadeIn;
     currentDraw = &vhpGame::drawPlayerMenuFadeIn;
 }
@@ -303,6 +298,7 @@ void vhpGame::drawPlayerMenuFadeIn(){
         currentUpdate = &vhpGame::updatePlayerMenu;
         currentDraw = &vhpGame::drawPlayerMenu;
         logos.stop();
+        logos.pause();
     }
 }
 
@@ -329,7 +325,9 @@ void vhpGame::drawPlayerMenuFadeOut(){
         currentUpdate = &vhpGame::updateScreenSaver;
         currentDraw = &vhpGame::drawScreenSaver;
         ofAddListener(vhpScreenSaver::onClick, this, &vhpGame::set);
+        ofRemoveListener(vhpThread::timeOut, this, &vhpGame::set);
         xogadores.stop();
+        xogadores.pause();
     }
 }
 
