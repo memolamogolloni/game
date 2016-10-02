@@ -17,6 +17,7 @@
 		C48AB8CA1D92ACC700F35896 /* vhpButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C48AB8C81D92ACC700F35896 /* vhpButton.cpp */; };
 		C48CC08F1D98454C00B915D7 /* vhpScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C48CC08D1D98454C00B915D7 /* vhpScreenSaver.cpp */; };
 		C48CC0921D99106900B915D7 /* vhpPlayerMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C48CC0901D99106900B915D7 /* vhpPlayerMenu.cpp */; };
+		C4956EEF1DA033A200FDF5B0 /* vhpStandby.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4956EED1DA033A200FDF5B0 /* vhpStandby.cpp */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1D0A3A1BDC003C02F2 /* main.cpp */; };
 		E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */; };
@@ -69,6 +70,8 @@
 		C48CC08E1D98454C00B915D7 /* vhpScreenSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpScreenSaver.h; sourceTree = "<group>"; };
 		C48CC0901D99106900B915D7 /* vhpPlayerMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpPlayerMenu.cpp; sourceTree = "<group>"; };
 		C48CC0911D99106900B915D7 /* vhpPlayerMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpPlayerMenu.h; sourceTree = "<group>"; };
+		C4956EED1DA033A200FDF5B0 /* vhpStandby.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpStandby.cpp; sourceTree = "<group>"; };
+		C4956EEE1DA033A200FDF5B0 /* vhpStandby.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpStandby.h; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E4B69B5B0A3A1756003C02F2 /* thereminTestDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = thereminTestDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B69E1D0A3A1BDC003C02F2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
@@ -171,6 +174,8 @@
 				C48CC0901D99106900B915D7 /* vhpPlayerMenu.cpp */,
 				C44221DA1D84081C00432C04 /* vhpThread.h */,
 				C44221D91D84081C00432C04 /* vhpThread.cpp */,
+				C4956EEE1DA033A200FDF5B0 /* vhpStandby.h */,
+				C4956EED1DA033A200FDF5B0 /* vhpStandby.cpp */,
 				C44221DC1D84081C00432C04 /* vhpVid.h */,
 				C44221DB1D84081C00432C04 /* vhpVid.cpp */,
 				C48AB8C91D92ACC700F35896 /* vhpButton.h */,
@@ -285,6 +290,7 @@
 				C44221DD1D84081C00432C04 /* vhpThread.cpp in Sources */,
 				C44221DE1D84081C00432C04 /* vhpVid.cpp in Sources */,
 				933A2227713C720CEFF80FD9 /* tinyxml.cpp in Sources */,
+				C4956EEF1DA033A200FDF5B0 /* vhpStandby.cpp in Sources */,
 				9D44DC88EF9E7991B4A09951 /* tinyxmlerror.cpp in Sources */,
 				5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */,
 			);

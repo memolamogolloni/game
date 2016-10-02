@@ -8,6 +8,7 @@
 //#include "VHPbutton.h"
 #include "vhpScreenSaver.h"
 #include "vhpPlayerMenu.h"
+#include "vhpStandby.h"
 
 #define SCREENSAVER         0
 #define PLAYERMENU          1
@@ -30,27 +31,40 @@ class vhpGame {
         void (vhpGame::*currentUpdate)();
         void draw();
         void (vhpGame::*currentDraw)();
+        void drawFrameRate();
         void set(int &_state);
         void toggleScale();
     
         // ScreenSaver
-        void setScreensaver();
-        void backToScreensaver();
+        void initScreenSaver();
+        void stopScreenSaver();
+        void goToScreenSaver();
         void updateScreenSaver();
         void drawScreenSaver();
-        void stopScreenSaver();
     
         // PlayerMenu
-        void setPlayerMenu();
-        void updatePlayerMenuFadeIn();
+        void initPlayerMenu();
+        void stopPlayerMenu();
+        void goToPlayerMenu();
+        void fadeInPlayerMenu();
+        void fadeOutPlayerMenu();
         void updatePlayerMenu();
-        void drawPlayerMenuFadeIn();
-        void drawPlayerMenuFadeOut();
+        void updatePlayerMenuInOut();
         void drawPlayerMenu();
+        void drawPlayerMenuIn();
+        void drawPlayerMenuOut();
     
         // Standby
+        void initStandby();
+        void stopStandby();
+        void goToStandby();
+        void fadeInStandby();
+        void fadeOutStandby();
         void updateStandby();
+        void updateStandbyInOut();
         void drawStandby();
+        void drawStandbyIn();
+        void drawStandbyOut();
     
         // FirstLevel
         void updateFirstLevel();
@@ -85,6 +99,7 @@ class vhpGame {
         vhpScreenSaver              logos;
         vhpPlayerMenu               xogadores;
         vhpThread                   controlXogadores;
+        vhpStandby                  espera;
     
         /*
          vector<vhpVid>            background;
