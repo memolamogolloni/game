@@ -70,7 +70,11 @@ class vhpPlayerMenu {
         int                 targetScene;
         float               scale;
         int                 state;
-
+        int                 selected;
+    
+        // notificación de eventos
+        static ofEvent<int> playersNumber;
+    
     protected:
         bool registerEvents;
     

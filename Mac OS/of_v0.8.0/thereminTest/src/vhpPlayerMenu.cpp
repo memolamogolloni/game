@@ -2,7 +2,7 @@
 
 // Constructor -------------------------------------------------
 
-vhpPlayerMenu::vhpPlayerMenu():scale(1.0),state(MENU){
+vhpPlayerMenu::vhpPlayerMenu():scale(1.0),state(MENU),selected(0){
 
 }
 
@@ -138,6 +138,13 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
                         video.setPosition(10.0/57.0);
                         controller->reset(12.0/57.0, 16.0/57.0);
                         break;
+                    case ONEPLAYER:
+                        if (y>=900) {
+                            selected = 1;
+                            ofNotifyEvent(playersNumber, targetScene);
+                            cout << "ONEPLAYER confirmed!" << endl;
+                        }
+                        break;
                     case TWOPLAYERS:
                         video.setPosition(29.0/57.0);
                         controller->fadeReset(10.0/57.0, 30.0/57.0, 12.0/57.0, 16.0/57.0);
@@ -159,6 +166,13 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
                         video.setPosition(17.0/57.0);
                         controller->fadeReset(22.0/57.0, 18.0/57.0, 24.0/57.0, 28.0/57.0);
                         break;
+                    case TWOPLAYERS:
+                        if (y>=900) {
+                            selected = 2;
+                            ofNotifyEvent(playersNumber, targetScene);
+                            cout << "TWOPLAYERS confirmed!" << endl;
+                        }
+                        break;
                     case FOURPLAYERS:
                         video.setPosition(41.0/57.0);
                         controller->fadeReset(22.0/57.0, 42.0/57.0, 24.0/57.0, 28.0/57.0);
@@ -179,6 +193,13 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
                     case TWOPLAYERS:
                         video.setPosition(29.0/57.0);
                         controller->fadeReset(34.0/57.0, 30.0/57.0, 36.0/57.0, 40.0/57.0);
+                        break;
+                    case FOURPLAYERS:
+                        if (y>=900) {
+                            selected = 4;
+                            ofNotifyEvent(playersNumber, targetScene);
+                            cout << "FOURPLAYERS confirmed!" << endl;
+                        }
                         break;
                 }
                 state = FOURPLAYERS;
@@ -227,3 +248,4 @@ void vhpPlayerMenu::mouseScrolled(ofMouseEventArgs & _args){}
 void vhpPlayerMenu::mouseEntered(ofMouseEventArgs & _args){}
 void vhpPlayerMenu::mouseExited(ofMouseEventArgs & _args){}
 
+ofEvent <int> vhpPlayerMenu::playersNumber;

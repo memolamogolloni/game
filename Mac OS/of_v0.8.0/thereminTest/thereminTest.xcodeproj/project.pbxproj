@@ -13,6 +13,7 @@
 		02DD5F7E1D9EA1CB00883285 /* vhpScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02DD5F751D9EA1CB00883285 /* vhpScreenSaver.cpp */; };
 		02DD5F7F1D9EA1CB00883285 /* vhpThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02DD5F771D9EA1CB00883285 /* vhpThread.cpp */; };
 		02DD5F801D9EA1CB00883285 /* vhpVid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02DD5F791D9EA1CB00883285 /* vhpVid.cpp */; };
+		02DD5F911DA187F000883285 /* vhpStandby.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02DD5F901DA187F000883285 /* vhpStandby.cpp */; };
 		5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC5DA1C87211D4F6377DA719 /* tinyxmlparser.cpp */; };
 		63B57AC5BF4EF088491E0317 /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50DF87D612C5AAE17AAFA6C0 /* ofxXmlSettings.cpp */; };
 		933A2227713C720CEFF80FD9 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B40EDA85BEB63E46785BC29 /* tinyxml.cpp */; };
@@ -83,6 +84,8 @@
 		02DD5F781D9EA1CB00883285 /* vhpThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpThread.h; sourceTree = "<group>"; };
 		02DD5F791D9EA1CB00883285 /* vhpVid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpVid.cpp; sourceTree = "<group>"; };
 		02DD5F7A1D9EA1CB00883285 /* vhpVid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpVid.h; sourceTree = "<group>"; };
+		02DD5F901DA187F000883285 /* vhpStandby.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpStandby.cpp; sourceTree = "<group>"; };
+		02DD5F921DA1882800883285 /* vhpStandby.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpStandby.h; sourceTree = "<group>"; };
 		2B40EDA85BEB63E46785BC29 /* tinyxml.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = tinyxml.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxml.cpp; sourceTree = SOURCE_ROOT; };
 		50DF87D612C5AAE17AAFA6C0 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxXmlSettings.cpp; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.cpp; sourceTree = SOURCE_ROOT; };
 		832BDC407620CDBA568B713D /* tinyxmlerror.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = tinyxmlerror.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxmlerror.cpp; sourceTree = SOURCE_ROOT; };
@@ -247,16 +250,18 @@
 				E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */,
 				02DD5F721D9EA1CB00883285 /* vhpGame.h */,
 				02DD5F711D9EA1CB00883285 /* vhpGame.cpp */,
+				02DD5F761D9EA1CB00883285 /* vhpScreenSaver.h */,
+				02DD5F751D9EA1CB00883285 /* vhpScreenSaver.cpp */,
+				02DD5F741D9EA1CB00883285 /* vhpPlayerMenu.h */,
+				02DD5F731D9EA1CB00883285 /* vhpPlayerMenu.cpp */,
+				02DD5F781D9EA1CB00883285 /* vhpThread.h */,
+				02DD5F771D9EA1CB00883285 /* vhpThread.cpp */,
+				02DD5F921DA1882800883285 /* vhpStandby.h */,
+				02DD5F901DA187F000883285 /* vhpStandby.cpp */,
+				02DD5F7A1D9EA1CB00883285 /* vhpVid.h */,
+				02DD5F791D9EA1CB00883285 /* vhpVid.cpp */,
 				02DD5F701D9EA1CB00883285 /* vhpButton.h */,
 				02DD5F6F1D9EA1CB00883285 /* vhpButton.cpp */,
-				02DD5F731D9EA1CB00883285 /* vhpPlayerMenu.cpp */,
-				02DD5F741D9EA1CB00883285 /* vhpPlayerMenu.h */,
-				02DD5F751D9EA1CB00883285 /* vhpScreenSaver.cpp */,
-				02DD5F761D9EA1CB00883285 /* vhpScreenSaver.h */,
-				02DD5F771D9EA1CB00883285 /* vhpThread.cpp */,
-				02DD5F781D9EA1CB00883285 /* vhpThread.h */,
-				02DD5F791D9EA1CB00883285 /* vhpVid.cpp */,
-				02DD5F7A1D9EA1CB00883285 /* vhpVid.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -369,6 +374,7 @@
 				02DD5F7E1D9EA1CB00883285 /* vhpScreenSaver.cpp in Sources */,
 				02DD5F7F1D9EA1CB00883285 /* vhpThread.cpp in Sources */,
 				02DD5F801D9EA1CB00883285 /* vhpVid.cpp in Sources */,
+				02DD5F911DA187F000883285 /* vhpStandby.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
