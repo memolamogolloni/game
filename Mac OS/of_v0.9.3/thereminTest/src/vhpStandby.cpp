@@ -11,7 +11,11 @@ vhpStandby::~vhpStandby(){
 }
 
 // Inicializar variables y cargar los archivos -----------------
-void vhpStandby::setup(ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene){
+void vhpStandby::setup(vhpStandbyThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene){
+    
+    // Inicializar el hilo de control
+    controller = _controller;
+    controller->setup(&video, 0.0, 9.0/57.0);
     
     // Añadir los vídeos desde el documento xml de settings
     int n = _videoList.getNumTags(_videoTag +":VIDEO");

@@ -4,11 +4,11 @@
 #include "ofEvents.h"
 
 #include "ofxXmlSettings.h"
-#include "vhpThread.h"
-//#include "VHPbutton.h"
 #include "vhpScreenSaver.h"
 #include "vhpPlayerMenu.h"
+#include "vhpThread.h"
 #include "vhpStandby.h"
+#include "vhpStandbyThread.h"
 
 #define SCREENSAVER         0
 #define PLAYERMENU          1
@@ -100,6 +100,7 @@ class vhpGame {
         vhpPlayerMenu               xogadores;
         vhpThread                   controlXogadores;
         vhpStandby                  espera;
+        vhpStandbyThread            controlEspera;
     
         /*
          vector<vhpVid>            background;

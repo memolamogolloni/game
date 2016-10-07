@@ -46,7 +46,8 @@ void vhpGame::setup(){
     
     logos.setup(videoList, "LOGOS", SCREENSAVER, PLAYERMENU);
     xogadores.setup(&controlXogadores, videoList, "XOGADORES",PLAYERMENU, STANDBY);
-    espera.setup(videoList, "ESPERA", PLAYERMENU, STANDBY);
+    espera.setup(&controlEspera, videoList, "ESPERA", PLAYERMENU, STANDBY);
+    controlEspera.setOSC(videoList);
     
     state = SCREENSAVER;
     set(state);
@@ -386,6 +387,7 @@ void vhpGame::fadeInStandby(){
     xogadores.pause();
     espera.play();
     alpha = 0;
+    controlEspera.send(xogadores.selected);
     currentUpdate = &vhpGame::updateStandbyInOut;
     currentDraw = &vhpGame::drawStandbyIn;
 }
