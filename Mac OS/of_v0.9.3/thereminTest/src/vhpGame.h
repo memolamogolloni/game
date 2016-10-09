@@ -1,21 +1,24 @@
 #pragma once
+
 #include "ofMain.h"
 
 #include "ofEvents.h"
-
 #include "ofxXmlSettings.h"
+#include "vhpOSC.h"
+
 #include "vhpScreenSaver.h"
 #include "vhpPlayerMenu.h"
-#include "vhpThread.h"
+#include "vhpPmThread.h"
 #include "vhpStandby.h"
-#include "vhpStandbyThread.h"
+#include "vhpSbThread.h"
+#include "vhpLevelMenu.h"
+#include "vhpLmThread.h"
 
 #define SCREENSAVER         0
 #define PLAYERMENU          1
 #define STANDBY             2
-#define FIRSTLEVEL          3
-#define SECONDLEVEL         4
-#define THIRDLEVEL          5
+#define LEVELMENU           3
+#define GAME                4
 
 class vhpGame {
 
@@ -34,6 +37,10 @@ class vhpGame {
         void drawFrameRate();
         void set(int &_state);
         void toggleScale();
+    
+        // loading
+        void updateLoading();
+        void drawLoading();
     
         // ScreenSaver
         void initScreenSaver();
@@ -66,6 +73,18 @@ class vhpGame {
         void drawStandbyIn();
         void drawStandbyOut();
     
+    // PlayerMenu
+    void initLevelMenu();
+    void stopLevelMenu();
+    void goToLevelMenu();
+    void fadeInLevelMenu();
+    void fadeOutLevelMenu();
+    void updateLevelMenu();
+    void updateLevelMenuInOut();
+    void drawLevelMenu();
+    void drawLevelMenuIn();
+    void drawLevelMenuOut();
+    
         // FirstLevel
         void updateFirstLevel();
         void drawFirstLevel();
@@ -96,11 +115,19 @@ class vhpGame {
         int                         alpha;
         int                         alpha_increment;
     
+        vhpOSC                      mensajeria;
         vhpScreenSaver              logos;
+        bool                        logosLoaded;
         vhpPlayerMenu               xogadores;
-        vhpThread                   controlXogadores;
+        bool                        xogadoresLoaded;
+        vhpPmThread                 controlXogadores;
         vhpStandby                  espera;
-        vhpStandbyThread            controlEspera;
+        bool                        esperaLoaded;
+        vhpSbThread                 controlEspera;
+        vhpLevelMenu                niveis;
+        bool                        niveisLoaded;
+        vhpLmThread                 controlNiveis;
+    
     
         /*
          vector<vhpVid>            background;

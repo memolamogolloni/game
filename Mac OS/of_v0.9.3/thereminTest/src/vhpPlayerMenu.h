@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
-#include "vhpThread.h"
+#include "vhpPmThread.h"
 
 #define MENU                0
 #define ONEPLAYER           1
@@ -21,7 +21,7 @@ class vhpPlayerMenu {
 		/* funciones o métodos */
     
         // Inicializar variables y cargar los archivos
-        void setup(vhpThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
+        void setup(vhpPmThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
     
         // Comenzar e interrumpir los hilos y listeners de la escena
         void start();
@@ -63,7 +63,7 @@ class vhpPlayerMenu {
         int                 height;
     
         // Hilo de control
-        vhpThread *         controller;
+        vhpPmThread *         controller;
     
         // Estado del juego
         int                 currentScene;
@@ -72,7 +72,7 @@ class vhpPlayerMenu {
         int                 state;
         int                 selected;
     
-        // notificación de eventos
+        // notificaci√≥n de eventos
         static ofEvent<int> playersNumber;
     
     protected:

@@ -12,7 +12,7 @@ vhpPlayerMenu::~vhpPlayerMenu(){
 
 // Inicializar variables y cargar los archivos -----------------
 
-void vhpPlayerMenu::setup(vhpThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene){
+void vhpPlayerMenu::setup(vhpPmThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene){
     
     // Inicializar el hilo de control
     controller = _controller;
@@ -33,6 +33,9 @@ void vhpPlayerMenu::setup(vhpThread* _controller, ofxXmlSettings& _videoList, st
     targetScene = _targetScene;     // STANDBY
     width = video.getWidth();
     height = video.getHeight();
+    
+    cout << " video width: " << width << " height: " << height << endl;
+    
     fbo.allocate(width, height, GL_RGBA);
     
     // clean FBO

@@ -10,12 +10,10 @@ vhpGame::vhpGame(){
 
 vhpGame::~vhpGame(){
     if (state==SCREENSAVER) ofRemoveListener(vhpScreenSaver::onClick, this, &vhpGame::set);
-    /*
-    {
+    /*{
         ofRemoveListener(vhpButton::onActive, this, &vhpGame::set);
         myTest.stop();
-    }
-     */
+    }*/
 }
 
 //--------------------------------------------------------------
@@ -46,72 +44,19 @@ void vhpGame::setup(){
     
     logos.setup(videoList, "LOGOS", SCREENSAVER, PLAYERMENU);
     xogadores.setup(&controlXogadores, videoList, "XOGADORES",PLAYERMENU, STANDBY);
-    espera.setup(&controlEspera, videoList, "ESPERA", PLAYERMENU, STANDBY);
-    controlEspera.setOSC(videoList);
+    espera.setup(&controlEspera, videoList, "ESPERA", STANDBY, LEVELMENU);
+    niveis.setup(&controlNiveis, videoList, "NIVEIS", LEVELMENU, GAME);
     
-    state = SCREENSAVER;
-    set(state);
+    logosLoaded = false;
+    xogadoresLoaded = false;
+    esperaLoaded = false;
+    niveisLoaded = false;
     
+    mensajeria.setOSC(videoList);
     
-    /*
+    currentUpdate = &vhpGame::updateLoading;
+    currentDraw = &vhpGame::drawLoading;
     
-    tactil.setup();
-    
-    int n = videoList.getNumTags("BACKGROUND:VIDEO");
-    if(n > 0){
-        videoList.pushTag("BACKGROUND", n-1);
-        int num = videoList.getNumTags("VIDEO");
-        cout << num << " videos in BACKGROUND" << endl;
-        if(num > 0){
-            background.resize(num);
-            for(int i = 0; i < num; i++){
-                cout << videoList.getValue("VIDEO", "", i) << endl;
-                background[i].setup(videoList.getValue("VIDEO", "", i));
-            }
-        }
-        videoList.popTag();
-    }
-   
-    
-    myTest.setup(&tactil, 0.0, 30.0/87.0);
-    myTest.start();
-     start.setRadius(50);
-     start.setPosition(width/2, height/2);
-     
-    */
-    
-    /*
-     n = videoList.getNumTags("WINDOWA:VIDEO");
-     if(n > 0){
-     videoList.pushTag("WINDOWA", n-1);
-     int num = videoList.getNumTags("VIDEO");
-     cout << num << " videos in WINDOWA" << endl;
-     if(num > 0){
-     windowA.resize(num);
-     for(int i = 0; i < num; i++){
-     cout << videoList.getValue("VIDEO", "", i) << endl;
-     windowA[i].load(videoList.getValue("VIDEO", "", i));
-     windowA[i].play();
-     }
-     }
-     videoList.popTag();
-     }
-     n = videoList.getNumTags("WINDOWB:VIDEO");
-     if(n > 0){
-     videoList.pushTag("WINDOWB", n-1);
-     int num = videoList.getNumTags("VIDEO");
-     cout << num << " videos in WINDOWB" << endl;
-     if(num > 0){
-     windowB.resize(num);
-     for(int i = 0; i < num; i++){
-     cout << videoList.getValue("VIDEO", "", i) << endl;
-     windowB[i].load(videoList.getValue("VIDEO", "", i));
-     windowB[i].play();
-     }
-     }
-     videoList.popTag();
-     }
-     */
 
 }
 
@@ -137,6 +82,7 @@ void vhpGame::drawFrameRate(){
 //--------------------------------------------------------------
 
 void vhpGame::set(int &_state){
+    cout << "set " << _state << endl;
     switch (_state) {
             
         case SCREENSAVER:
@@ -155,12 +101,22 @@ void vhpGame::set(int &_state){
             break;
         case STANDBY:
             if (state == PLAYERMENU) {
-                cout << "ole" << endl;
                 fadeInStandby();
             } else {
                 goToStandby();
             }
             break;
+        case LEVELMENU:
+            
+            cout << "LEVELMENU" << endl;
+            
+            if (state == STANDBY) {
+                fadeInLevelMenu();
+            } else {
+                goToLevelMenu();
+            }
+            break;
+        /*
         case FIRSTLEVEL:
             state = FIRSTLEVEL;
             currentUpdate = &vhpGame::updateFirstLevel;
@@ -180,6 +136,7 @@ void vhpGame::set(int &_state){
             break;
         default:
             break;
+        */
     }
 }
 
@@ -193,6 +150,42 @@ void vhpGame::toggleScale(){
         scale = 1.0;
         xogadores.scale = 1.0;
     }
+}
+
+// Loading -----------------------------------------------------
+
+void vhpGame::updateLoading(){
+    if (!logosLoaded) {
+        if (logos.video.isLoaded()) {
+            logosLoaded = true;
+            cout << "logos video is loaded" << endl;
+        }
+    } else if (!xogadoresLoaded) {
+        if (xogadores.video.isLoaded()) {
+            xogadoresLoaded = true;
+            cout << "xogadores video is loaded" << endl;
+        }
+    } else if (!esperaLoaded) {
+        if (espera.video.isLoaded()) {
+            esperaLoaded = true;
+            cout << "espera video is loaded" << endl;
+        }
+    } else if (!niveisLoaded) {
+        if (niveis.video.isLoaded()) {
+            niveisLoaded = true;
+            cout << "niveis video is loaded" << endl;
+        }
+    } else {
+        state = SCREENSAVER;
+        set(state);
+    }
+}
+
+//--------------------------------------------------------------
+
+void vhpGame::drawLoading(){
+    ofBackground(0, 0, 0);
+    drawFrameRate();
 }
 
 // ScreenSaver -------------------------------------------------
@@ -245,13 +238,13 @@ void vhpGame::initPlayerMenu(){
     cout << "PLAYERMENU" << endl;
     state = PLAYERMENU;
     xogadores.start();
-    ofAddListener(vhpThread::timeOut, this, &vhpGame::set);
+    ofAddListener(vhpPmThread::timeOut, this, &vhpGame::set);
     ofAddListener(vhpPlayerMenu::playersNumber, this, &vhpGame::set);
 }
 
 void vhpGame::stopPlayerMenu(){
     xogadores.stop();
-    ofRemoveListener(vhpThread::timeOut, this, &vhpGame::set);
+    ofRemoveListener(vhpPmThread::timeOut, this, &vhpGame::set);
     ofRemoveListener(vhpPlayerMenu::playersNumber, this, &vhpGame::set);
 }
 
@@ -366,6 +359,8 @@ void vhpGame::initStandby(){
     state = STANDBY;
     espera.start();
     // PENDING! ofAddListener(vhpThread::timeOut, this, &vhpGame::set);
+    cout << "ofAddListener vhpOSC::playersReceived" << endl;
+    ofAddListener(vhpOSC::playersReceived, this, &vhpGame::set);
 }
 
 void vhpGame::stopStandby(){
@@ -387,7 +382,7 @@ void vhpGame::fadeInStandby(){
     xogadores.pause();
     espera.play();
     alpha = 0;
-    controlEspera.send(xogadores.selected);
+    mensajeria.send(xogadores.selected);
     currentUpdate = &vhpGame::updateStandbyInOut;
     currentDraw = &vhpGame::drawStandbyIn;
 }
@@ -423,7 +418,7 @@ void vhpGame::drawStandby(){
     ofPopStyle();
     
     drawFrameRate();
-    
+    mensajeria.update();
 }
 
 void vhpGame::drawStandbyIn(){
@@ -445,12 +440,14 @@ void vhpGame::drawStandbyIn(){
     if (alpha>=255) {
         cout << "alpha: 255" << endl;
         alpha = 255;
-        espera.start();
+        initStandby();
         currentUpdate = &vhpGame::updateStandby;
         currentDraw = &vhpGame::drawStandby;
         xogadores.stop();
         xogadores.pause();
     }
+    
+    mensajeria.update();
 }
 
 void vhpGame::drawStandbyOut(){
@@ -473,13 +470,133 @@ void vhpGame::drawStandbyOut(){
         cout << "alpha: 0" << endl;
         alpha = 0;
         xogadores.start();
-        ofAddListener(vhpThread::timeOut, this, &vhpGame::set);
+        ofAddListener(vhpPmThread::timeOut, this, &vhpGame::set);
         currentUpdate = &vhpGame::updatePlayerMenu;
         currentDraw = &vhpGame::drawPlayerMenu;
     }
 }
 
-// ScreenSaver -------------------------------------------------
+// PlayerMenu --------------------------------------------------
+
+void vhpGame::initLevelMenu(){
+    cout << "LEVELMENU" << endl;
+    state = LEVELMENU;
+    niveis.start();
+    ofAddListener(vhpLmThread::timeOut, this, &vhpGame::set);
+    ofAddListener(vhpLevelMenu::levelSelection, this, &vhpGame::set);
+}
+
+void vhpGame::stopLevelMenu(){
+    xogadores.stop();
+    ofRemoveListener(vhpLmThread::timeOut, this, &vhpGame::set);
+    ofRemoveListener(vhpLevelMenu::levelSelection, this, &vhpGame::set);
+}
+
+void vhpGame::goToLevelMenu(){
+    cout << "goToLevelMenu()" << endl;
+    initLevelMenu();
+    niveis.play();
+    currentUpdate = &vhpGame::updateLevelMenu;
+    currentDraw = &vhpGame::drawLevelMenu;
+}
+
+void vhpGame::fadeInLevelMenu(){
+    cout << "fadeInLevelMenu()" << endl;
+    stopStandby();
+    niveis.play();
+    currentUpdate = &vhpGame::updateLevelMenuInOut;
+    currentDraw = &vhpGame::drawLevelMenuIn;
+}
+
+void vhpGame::fadeOutLevelMenu(){
+    cout << "fadeOutLevelMenu()" << endl;
+    stopLevelMenu();
+    espera.play();
+    currentUpdate = &vhpGame::updateLevelMenuInOut;
+    currentDraw = &vhpGame::drawLevelMenuOut;
+}
+
+//--------------------------------------------------------------
+
+void vhpGame::updateLevelMenu(){
+    niveis.update();
+}
+
+void vhpGame::updateLevelMenuInOut(){
+    espera.update();
+    niveis.update();
+}
+
+//--------------------------------------------------------------
+
+void vhpGame::drawLevelMenu(){
+    ofPushStyle();
+    ofSetColor(255, 255, 255);
+    fullScreen.begin();
+    niveis.draw(0, 0);
+    fullScreen.end();
+    fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofPopStyle();
+    
+    drawFrameRate();
+    
+}
+
+void vhpGame::drawLevelMenuIn(){
+    bufferTex.loadData(espera.video.getPixels(), width, height, GL_RGB);
+    ofPushStyle();
+    ofSetColor(255, 255, 255);
+    fullScreen.begin();
+    shaderMixture.begin();
+    shaderMixture.setUniformTexture("tex1", bufferTex, 1);
+    shaderMixture.setUniform1f("mixture", alpha/255.0);
+    niveis.draw(0, 0);
+    shaderMixture.end();
+    fullScreen.end();
+    fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofPopStyle();
+    
+    drawFrameRate();
+    
+    alpha += alpha_increment;
+    if (alpha>=255) {
+        cout << "alpha: 255" << endl;
+        alpha = 255;
+        initLevelMenu();
+        currentUpdate = &vhpGame::updateLevelMenu;
+        currentDraw = &vhpGame::drawLevelMenu;
+        espera.pause();
+    }
+}
+
+void vhpGame::drawLevelMenuOut(){
+    bufferTex.loadData(espera.video.getPixels(), width, height, GL_RGB);
+    ofPushStyle();
+    ofSetColor(255, 255, 255);
+    fullScreen.begin();
+    shaderMixture.begin();
+    shaderMixture.setUniformTexture("tex1", bufferTex, 1);
+    shaderMixture.setUniform1f("mixture", alpha/255.0);
+    niveis.draw(0, 0);
+    shaderMixture.end();
+    fullScreen.end();
+    fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofPopStyle();
+    
+    drawFrameRate();
+    
+    alpha -= alpha_increment;
+    if (alpha<=0) {
+        cout << "alpha: 0" << endl;
+        alpha = 0;
+        initStandby();
+        currentUpdate = &vhpGame::updateStandby;
+        currentDraw = &vhpGame::drawStandby;
+        niveis.pause();
+    }
+}
+
+// FirstLevel -------------------------------------------------
 
 void vhpGame::updateFirstLevel(){
     

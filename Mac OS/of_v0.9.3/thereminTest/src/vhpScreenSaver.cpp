@@ -28,6 +28,9 @@ void vhpScreenSaver::setup(ofxXmlSettings& _videoList, string _videoTag, int _cu
     targetScene = _targetScene;     // PLAYERMENU
     width = video.getWidth();
     height = video.getHeight();
+    
+    cout << " video width: " << width << " height: " << height << endl;
+    
     fbo.allocate(width, height, GL_RGBA);
     
     // clean FBO

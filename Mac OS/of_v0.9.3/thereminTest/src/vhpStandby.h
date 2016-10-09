@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
-#include "vhpStandbyThread.h"
+#include "vhpSbThread.h"
 
 class vhpStandby {
 
@@ -16,7 +16,7 @@ class vhpStandby {
 		/* funciones o métodos */
     
         // Inicializar variables y cargar los archivos
-        void setup(vhpStandbyThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
+        void setup(vhpSbThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
     
         // Comenzar e interrumpir los hilos y listeners de la escena
         void start();
@@ -54,7 +54,7 @@ class vhpStandby {
         int             height;
     
         // Hilo de control
-        vhpStandbyThread *         controller;
+        vhpSbThread *         controller;
     
         // Estado del juego
         int             currentScene;
