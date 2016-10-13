@@ -13,12 +13,15 @@
 #include "vhpSbThread.h"
 #include "vhpLevelMenu.h"
 #include "vhpLmThread.h"
+#include "vhpGameCore.h"
+#include "vhpGcThread.h"
 
 #define SCREENSAVER         0
 #define PLAYERMENU          1
 #define STANDBY             2
 #define LEVELMENU           3
 #define GAME                4
+#define RANKING             5
 
 class vhpGame {
 
@@ -73,29 +76,31 @@ class vhpGame {
         void drawStandbyIn();
         void drawStandbyOut();
     
-    // PlayerMenu
-    void initLevelMenu();
-    void stopLevelMenu();
-    void goToLevelMenu();
-    void fadeInLevelMenu();
-    void fadeOutLevelMenu();
-    void updateLevelMenu();
-    void updateLevelMenuInOut();
-    void drawLevelMenu();
-    void drawLevelMenuIn();
-    void drawLevelMenuOut();
+        // PlayerMenu
+        void initLevelMenu();
+        void stopLevelMenu();
+        void goToLevelMenu();
+        void fadeInLevelMenu();
+        void fadeInDirectLevelMenu();
+        void fadeOutLevelMenu();
+        void updateLevelMenu();
+        void updateLevelMenuInOut();
+        void updateDirectLevelMenuInOut();
+        void drawLevelMenu();
+        void drawLevelMenuIn();
+        void drawLevelMenuOut();
     
-        // FirstLevel
-        void updateFirstLevel();
-        void drawFirstLevel();
-    
-        // SecondLevel
-        void updateSecondLevel();
-        void drawSecondLevel();
-    
-        // ThirdLevel
-        void updateThirdLevel();
-        void drawThirdLevel();
+    // GAME
+    void initGame();
+    void stopGame();
+    void goToGame();
+    void fadeInGame();
+    void fadeOutGame();
+    void updateGame();
+    void updateGameInOut();
+    void drawGame();
+    void drawGameIn();
+    void drawGameOut();
     
         // Events
         void keyReleased(int _key);
@@ -128,6 +133,9 @@ class vhpGame {
         bool                        niveisLoaded;
         vhpLmThread                 controlNiveis;
     
+        vhpGameCore                 xogo;
+        bool                        xogoLoaded;
+        vhpGcThread                 controlXogo;
     
         /*
          vector<vhpVid>            background;

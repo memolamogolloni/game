@@ -30,7 +30,7 @@ void vhpLevelMenu::setup(vhpLmThread* _controller, ofxXmlSettings& _videoList, s
     
     // Inicializar las variables
     currentScene = _currentScene;   // PLAYERMENU
-    targetScene = _targetScene;     // STANDBY
+    targetScene = _targetScene;     // GAME
     width = video.getWidth();
     height = video.getHeight();
     
@@ -135,7 +135,7 @@ void vhpLevelMenu::mouseReleased(ofMouseEventArgs & _args){
         float x =  _args.x*3/scale;
         if ((x>=182)&&(x<=1760)) {
             if (x<=592) {
-                cout << "1 xogador" << endl;
+                cout << "DESTREZA" << endl;
                 switch (state) {
                     case MENUNIVEL:
                         video.setPosition(10.0/57.0);
@@ -145,7 +145,7 @@ void vhpLevelMenu::mouseReleased(ofMouseEventArgs & _args){
                         if (y>=900) {
                             selected = 1;
                             ofNotifyEvent(levelSelection, targetScene);
-                            cout << "ONEPLAYER confirmed!" << endl;
+                            cout << "DESTREZA confirmed!" << endl;
                         }
                         break;
                     case ESPIRITUALIDAD:
@@ -159,7 +159,7 @@ void vhpLevelMenu::mouseReleased(ofMouseEventArgs & _args){
                 }
                 state = DESTREZA;
             } else if (x<=1130) {
-                cout << "2 xogadores" << endl;
+                cout << "ESPIRITUALIDAD" << endl;
                 switch (state) {
                     case MENUNIVEL:
                         video.setPosition(22.0/57.0);
@@ -173,7 +173,7 @@ void vhpLevelMenu::mouseReleased(ofMouseEventArgs & _args){
                         if (y>=900) {
                             selected = 2;
                             ofNotifyEvent(levelSelection, targetScene);
-                            cout << "TWOPLAYERS confirmed!" << endl;
+                            cout << "ESPIRITUALIDAD confirmed!" << endl;
                         }
                         break;
                     case ORATORIA:
@@ -183,7 +183,7 @@ void vhpLevelMenu::mouseReleased(ofMouseEventArgs & _args){
                 }
                 state = ESPIRITUALIDAD;
             } else {
-                cout << "4 xogadores" << endl;
+                cout << "ORATORIA" << endl;
                 switch (state) {
                     case MENUNIVEL:
                         video.setPosition(34.0/57.0);
@@ -201,7 +201,7 @@ void vhpLevelMenu::mouseReleased(ofMouseEventArgs & _args){
                         if (y>=900) {
                             selected = 4;
                             ofNotifyEvent(levelSelection, targetScene);
-                            cout << "FOURPLAYERS confirmed!" << endl;
+                            cout << "ORATORIA confirmed!" << endl;
                         }
                         break;
                 }
