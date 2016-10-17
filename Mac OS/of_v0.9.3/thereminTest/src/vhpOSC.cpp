@@ -48,6 +48,14 @@ void vhpOSC::send(int _players){
     m.addIntArg(_players);
     sender.sendMessage(m, false);
 }
+void vhpOSC::send(string _address, int _players){
+    cout << "send: " << _players << endl;
+    ofxOscMessage m;
+    m.setAddress("/"+_address);
+    m.addIntArg(_players);
+    sender.sendMessage(m, false);
+}
+
 
 //--------------------------------------------------------------
 

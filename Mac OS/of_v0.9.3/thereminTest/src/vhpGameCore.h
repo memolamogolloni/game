@@ -8,6 +8,10 @@
 #define nWINDOWS        7
 #define nROUNDS         4
 
+#define lostW           0
+#define wonW            1
+#define pendingW        2
+
 class vhpGameCore {
 
 	public:
@@ -51,18 +55,10 @@ class vhpGameCore {
         void showWinner();
     
         // Para recoger la pulsación del ratón en la pantalla
-        void mouseMoved(ofMouseEventArgs & _args);
-        void mouseDragged(ofMouseEventArgs & _args);
-    
-        void mousePressed(ofMouseEventArgs & _args);
-        void (vhpGameCore::*currentMousePressed)(ofMouseEventArgs & _args);
-        void mousePressedGame(ofMouseEventArgs & _args);
-        void mousePressedWinner(ofMouseEventArgs & _args);
-    
-        void mouseReleased(ofMouseEventArgs & _args);
-        void mouseScrolled(ofMouseEventArgs & _args);
-        void mouseEntered(ofMouseEventArgs & _args);
-        void mouseExited(ofMouseEventArgs & _args);
+        void touchPressed(float & _x, float & _y);
+        void (vhpGameCore::*currentTouchPressed)(float & _x, float & _y);
+        void touchPressedGame(float & _x, float & _y);
+        void touchPressedWinner(float & _x, float & _y);
     
         /* Variables o propiedades */
     
@@ -82,6 +78,7 @@ class vhpGameCore {
         ofImage             building;
         ofImage             windowA[nWINDOWS];
         ofImage             windowB[nWINDOWS];
+        int                 windowState[2][7];
         ofImage             windowShowA[nWINDOWS];
         ofImage             windowShowB[nWINDOWS];
         ofImage             winnerBackground[2];
@@ -107,8 +104,5 @@ class vhpGameCore {
     
         // notificación de eventos
         static ofEvent<int> onClick;
-    
-    protected:
-        bool registerEvents;
     
 };

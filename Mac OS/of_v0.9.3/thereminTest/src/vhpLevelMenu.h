@@ -46,13 +46,7 @@ class vhpLevelMenu {
         float getPosition();
     
         // Para recoger la pulsación del ratón en la pantalla
-        void mouseMoved(ofMouseEventArgs & _args);
-        void mouseDragged(ofMouseEventArgs & _args);
-        void mousePressed(ofMouseEventArgs & _args);
-        void mouseReleased(ofMouseEventArgs & _args);
-        void mouseScrolled(ofMouseEventArgs & _args);
-        void mouseEntered(ofMouseEventArgs & _args);
-        void mouseExited(ofMouseEventArgs & _args);
+        void touchPressed(float _x, float _y);
     
         /* Variables o propiedades */
     
@@ -68,14 +62,11 @@ class vhpLevelMenu {
         // Estado del juego
         int                 currentScene;
         int                 targetScene;
-        float               scale;
         int                 state;
         int                 selected;
     
         // notificación de eventos
         static ofEvent<int> levelSelection;
     
-    protected:
-        bool registerEvents;
     
 };

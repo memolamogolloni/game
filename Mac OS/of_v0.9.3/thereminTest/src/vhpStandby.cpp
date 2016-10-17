@@ -48,19 +48,9 @@ void vhpStandby::setup(vhpSbThread* _controller, ofxXmlSettings& _videoList, str
 
 void vhpStandby::start(){
     cout << "Standby start();" << endl;
-    if(!registerEvents) {
-        // Esto permite registrar los eventos del ratón sin necesidad de crear eventos propios
-        ofRegisterMouseEvents(this);
-        registerEvents = true;
-    }
 }
 
 void vhpStandby::stop(){
-    if(registerEvents) {
-        // si el objeto no funciona desactivamos el registro de los eventos del ratón
-        ofUnregisterMouseEvents(this);
-        registerEvents = false;
-    }
 }
 
 // Dibujado y actualización variables --------------------------
@@ -108,18 +98,9 @@ void vhpStandby::loopScreenSaver(float _pos){
 }
 
 // Eventos ------------------------------------------------------
-
-void vhpStandby::mouseMoved(ofMouseEventArgs & _args){}
-void vhpStandby::mouseDragged(ofMouseEventArgs & _args){}
-void vhpStandby::mousePressed(ofMouseEventArgs & _args){}
-
-void vhpStandby::mouseReleased(ofMouseEventArgs & _args){
+void vhpStandby::touchPressed(){
     cout << "Button active in Standby!" << endl;
     ofNotifyEvent(onClick, targetScene);
 }
-
-void vhpStandby::mouseScrolled(ofMouseEventArgs & _args){}
-void vhpStandby::mouseEntered(ofMouseEventArgs & _args){}
-void vhpStandby::mouseExited(ofMouseEventArgs & _args){}
 
 ofEvent <int> vhpStandby::onClick;

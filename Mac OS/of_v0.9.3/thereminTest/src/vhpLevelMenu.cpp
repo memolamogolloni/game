@@ -2,7 +2,7 @@
 
 // Constructor -------------------------------------------------
 
-vhpLevelMenu::vhpLevelMenu():scale(1.0),state(MENUNIVEL),selected(0){
+vhpLevelMenu::vhpLevelMenu():state(MENUNIVEL),selected(0){
 
 }
 
@@ -48,18 +48,10 @@ void vhpLevelMenu::setup(vhpLmThread* _controller, ofxXmlSettings& _videoList, s
 // Comenzar e interrumpir los hilos y listeners de la escena ---
 
 void vhpLevelMenu::start(){
-    if(!registerEvents) {
-        ofRegisterMouseEvents(this); // this will enable our circle class to listen to the mouse events.
-        registerEvents = true;
-    }
     controller->start();
 }
 
 void vhpLevelMenu::stop(){
-    if(registerEvents) {
-        ofUnregisterMouseEvents(this); // disable litening to mous events.
-        registerEvents = false;
-    }
     controller->stop();
 }
 
@@ -121,20 +113,14 @@ float vhpLevelMenu::getPosition(){
 
 // Eventos ------------------------------------------------------
 
-void vhpLevelMenu::mouseMoved(ofMouseEventArgs & _args){}
-void vhpLevelMenu::mouseDragged(ofMouseEventArgs & _args){}
-void vhpLevelMenu::mousePressed(ofMouseEventArgs & _args){}
-
-void vhpLevelMenu::mouseReleased(ofMouseEventArgs & _args){
+void vhpLevelMenu::touchPressed(float _x, float _y){
     cout << "Menu active!" << endl;
     //ofNotifyEvent(onClick, gameTarget);
     // min x: 520, min y: 182 408 538 630 160
-    cout << "mouse x: " << _args.x << " mouse y: " << _args.y << endl;
-    float y = _args.y*3/scale;
-    if (y>=520) {
-        float x =  _args.x*3/scale;
-        if ((x>=182)&&(x<=1760)) {
-            if (x<=592) {
+    cout << "mouse x: " << _x << " mouse y: " << _y << endl;
+    if (_y>=520) {
+        if ((_x>=182)&&(_x<=1760)) {
+            if (_x<=592) {
                 cout << "DESTREZA" << endl;
                 switch (state) {
                     case MENUNIVEL:
@@ -142,7 +128,7 @@ void vhpLevelMenu::mouseReleased(ofMouseEventArgs & _args){
                         controller->reset(12.0/57.0, 16.0/57.0);
                         break;
                     case DESTREZA:
-                        if (y>=900) {
+                        if (_y>=900) {
                             selected = 1;
                             ofNotifyEvent(levelSelection, targetScene);
                             cout << "DESTREZA confirmed!" << endl;
@@ -158,7 +144,7 @@ void vhpLevelMenu::mouseReleased(ofMouseEventArgs & _args){
                         break;
                 }
                 state = DESTREZA;
-            } else if (x<=1130) {
+            } else if (_x<=1130) {
                 cout << "ESPIRITUALIDAD" << endl;
                 switch (state) {
                     case MENUNIVEL:
@@ -170,7 +156,7 @@ void vhpLevelMenu::mouseReleased(ofMouseEventArgs & _args){
                         controller->fadeReset(22.0/57.0, 18.0/57.0, 24.0/57.0, 28.0/57.0);
                         break;
                     case ESPIRITUALIDAD:
-                        if (y>=900) {
+                        if (_y>=900) {
                             selected = 2;
                             ofNotifyEvent(levelSelection, targetScene);
                             cout << "ESPIRITUALIDAD confirmed!" << endl;
@@ -198,7 +184,7 @@ void vhpLevelMenu::mouseReleased(ofMouseEventArgs & _args){
                         controller->fadeReset(34.0/57.0, 30.0/57.0, 36.0/57.0, 40.0/57.0);
                         break;
                     case ORATORIA:
-                        if (y>=900) {
+                        if (_y>=900) {
                             selected = 4;
                             ofNotifyEvent(levelSelection, targetScene);
                             cout << "ORATORIA confirmed!" << endl;
@@ -246,9 +232,5 @@ void vhpLevelMenu::mouseReleased(ofMouseEventArgs & _args){
         }
     }
 }
-
-void vhpLevelMenu::mouseScrolled(ofMouseEventArgs & _args){}
-void vhpLevelMenu::mouseEntered(ofMouseEventArgs & _args){}
-void vhpLevelMenu::mouseExited(ofMouseEventArgs & _args){}
 
 ofEvent <int> vhpLevelMenu::levelSelection;

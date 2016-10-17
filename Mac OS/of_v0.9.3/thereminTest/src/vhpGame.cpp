@@ -84,8 +84,9 @@ void vhpGame::drawFrameRate(){
 
 void vhpGame::set(int &_state){
     cout << "set " << _state << endl;
+    mensajeria.send("set", _state);
     switch (_state) {
-            
+        
         case SCREENSAVER:
             if (state == PLAYERMENU) {
                 fadeOutPlayerMenu();
@@ -171,14 +172,8 @@ void vhpGame::set(int &_state){
 void vhpGame::toggleScale(){
     if (scale==1.0) {
         scale = 3.0;
-        xogadores.scale = 3.0;
-        niveis.scale = 3.0;
-        xogo.scale = 3.0;
     } else {
         scale = 1.0;
-        xogadores.scale = 1.0;
-        niveis.scale = 1.0;
-        xogo.scale = 1.0;
     }
 }
 
@@ -799,6 +794,30 @@ void vhpGame::keyReleased(int _key){
 //--------------------------------------------------------------
 
 void vhpGame::mousePressed(int _x, int _y, int _button){
+    float y = _y*3/scale;
+    float x = _x*3/scale;
+    switch (state) {
+            
+        case SCREENSAVER:
+            logos.touchPressed();
+            break;
+            
+        case PLAYERMENU:
+            xogadores.touchPressed(x, y);
+            break;
+            
+        case STANDBY:
+            espera.touchPressed();
+            break;
+            
+        case LEVELMENU:
+            niveis.touchPressed(x, y);
+            break;
+            
+        case GAME:
+            xogo.touchPressed(x, y);
+            break;
+    }
 
 }
 

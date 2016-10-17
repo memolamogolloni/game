@@ -63,6 +63,12 @@ void vhpGameCore::initGame(){
     points[0] = 0;
     points[1] = 0;
     currentRound = 0;
+    for (int i=0; i<2; i++) {
+        for (int u=0; u<7; u++) {
+            windowState[i][u] = pendingW;
+        }
+    }
+    
 }
 void vhpGameCore::initRound(){
     holdSteady = ceil(ofRandom(3));
@@ -88,19 +94,9 @@ void vhpGameCore::initRound(){
 
 void vhpGameCore::start(){
     initGame();
-    if(!registerEvents) {
-        // Esto permite registrar los eventos del ratón sin necesidad de crear eventos propios
-        ofRegisterMouseEvents(this);
-        registerEvents = true;
-    }
 }
 
 void vhpGameCore::stop(){
-    if(registerEvents) {
-        // si el objeto no funciona desactivamos el registro de los eventos del ratón
-        ofUnregisterMouseEvents(this);
-        registerEvents = false;
-    }
 }
 
 // Dibujado y actualización variables --------------------------
@@ -142,7 +138,7 @@ void vhpGameCore::drawGame(){
 void vhpGameCore::play(){
     initRound();
     currentUpdate = &vhpGameCore::playReady;
-    currentMousePressed = &vhpGameCore::mousePressedGame;
+    currentTouchPressed = &vhpGameCore::touchPressedGame;
     video.play();
 }
 
@@ -312,7 +308,7 @@ void vhpGameCore::showWindow(){
             }
             points[winner]++;
             currentUpdate = &vhpGameCore::showWinner;
-            currentMousePressed = &vhpGameCore::mousePressedWinner;
+            currentTouchPressed = &vhpGameCore::touchPressedWinner;
         }
     }
 }
@@ -347,53 +343,49 @@ void vhpGameCore::showWinner(){
 
 // Eventos ------------------------------------------------------
 
-void vhpGameCore::mouseMoved(ofMouseEventArgs & _args){}
-void vhpGameCore::mouseDragged(ofMouseEventArgs & _args){}
-
-void vhpGameCore::mousePressed(ofMouseEventArgs & _args){
-    (*this.*currentMousePressed)(_args);
+void vhpGameCore::touchPressed(float & _x, float & _y){
+    (*this.*currentTouchPressed)(_x, _y);
 }
-void vhpGameCore::mousePressedGame(ofMouseEventArgs & _args){
+
+void vhpGameCore::touchPressedGame(float & _x, float & _y){
     cout << "MousePressed in game!" << endl;
     //ofNotifyEvent(onClick, gameTarget);
     
     // min y: 353, max y: 540
-    cout << "mouse x: " << _args.y*3/scale << " mouse y: " << _args.x*3/scale << endl;
-    float y = _args.y*3/scale;
-    if ((y>=350)&&(y<=545)) {
-        float x =  _args.x*3/scale;
+    cout << "mouse x: " << _y*3/scale << " mouse y: " << _x*3/scale << endl;
+    if ((_y>=350)&&(_y<=545)) {
         // Player A
-        if (x<=960) {
+        if (_x<=960) {
             if (!hold[0]) {
                 hold[0] = true;
                 time[0] = ofGetElapsedTimeMillis();
                 // Window 1
-                if (x<=171) {
+                if (_x<=171) {
                     clicked[0] = 0;
                     cout << "Window 0" << endl;
                     
                     // Window 2
-                } else if (x<=316) {
+                } else if (_x<=316) {
                     clicked[0] = 1;
                     cout << "Window 1" << endl;
                     
                     // Window 3
-                } else if (x<=455) {
+                } else if (_x<=455) {
                     clicked[0] = 2;
                     cout << "Window 2" << endl;
                     
                     // Window 4
-                } else if (x<=587) {
+                } else if (_x<=587) {
                     clicked[0] = 3;
                     cout << "Window 3" << endl;
                     
                     // Window 5
-                } else if (x<=711) {
+                } else if (_x<=711) {
                     clicked[0] = 4;
                     cout << "Window 4" << endl;
                     
                     // Window 6
-                } else if (x<=832) {
+                } else if (_x<=832) {
                     clicked[0] = 5;
                     cout << "Window 5" << endl;
                     
@@ -412,32 +404,32 @@ void vhpGameCore::mousePressedGame(ofMouseEventArgs & _args){
                 hold[1] = true;
                 time[1] = ofGetElapsedTimeMillis();
                 // Window 7
-                if (x<=1088) {
+                if (_x<=1088) {
                     clicked[1] = 6;
                     cout << "Window 6" << endl;
                     
                     // Window 6
-                } else if (x<=1210) {
+                } else if (_x<=1210) {
                     clicked[1] = 5;
                     cout << "Window 5" << endl;
                     
                     // Window 5
-                } else if (x<=1334) {
+                } else if (_x<=1334) {
                     clicked[1] = 4;
                     cout << "Window 4" << endl;
                     
                     // Window 4
-                } else if (x<=1466) {
+                } else if (_x<=1466) {
                     clicked[1] = 3;
                     cout << "Window 3" << endl;
                     
                     // Window 3
-                } else if (x<=1603) {
+                } else if (_x<=1603) {
                     clicked[1] = 2;
                     cout << "Window 2" << endl;
                     
                     // Window 2
-                } else if (x<=1748) {
+                } else if (_x<=1748) {
                     clicked[1] = 1;
                     cout << "Window 1" << endl;
                     
@@ -453,18 +445,16 @@ void vhpGameCore::mousePressedGame(ofMouseEventArgs & _args){
         }
     }
 }
-void vhpGameCore::mousePressedWinner(ofMouseEventArgs & _args){
+void vhpGameCore::touchPressedWinner(float & _x, float & _y){
  //
     cout << "MousePressed after game!" << endl;
     //ofNotifyEvent(onClick, gameTarget);
     
     // min y: 690, max y: 860
-    cout << "mouse x: " << _args.y*3/scale << " mouse y: " << _args.x*3/scale << endl;
-    float y = _args.y*3/scale;
-    if ((y>=690)&&(y<=860)) {
-        float x =  _args.x*3/scale;
+    cout << "mouse x: " << _y << " mouse y: " << _x << endl;
+    if ((_y>=690)&&(_y<=860)) {
         // Player A
-        if (x<=960) {
+        if (_x<=960) {
             next[0] = true;
             if (next[1]) {
                 cout << "Next Round!" << endl;
@@ -473,7 +463,7 @@ void vhpGameCore::mousePressedWinner(ofMouseEventArgs & _args){
                 // cuatro primeras rondas
                 if (currentRound<5) {
                     currentUpdate = &vhpGameCore::playReady;
-                    currentMousePressed = &vhpGameCore::mousePressedGame;
+                    currentTouchPressed = &vhpGameCore::touchPressedGame;
                 // última ronda
                 } else {
                     
@@ -489,7 +479,7 @@ void vhpGameCore::mousePressedWinner(ofMouseEventArgs & _args){
                 // cuatro primeras rondas
                 if (currentRound<5) {
                     currentUpdate = &vhpGameCore::playReady;
-                    currentMousePressed = &vhpGameCore::mousePressedGame;
+                    currentTouchPressed = &vhpGameCore::touchPressedGame;
                 
                 // última ronda
                 } else {
@@ -499,14 +489,5 @@ void vhpGameCore::mousePressedWinner(ofMouseEventArgs & _args){
         }
     }
 }
-
-void vhpGameCore::mouseReleased(ofMouseEventArgs & _args){
-    cout << "Button released in game!" << endl;
-    //ofNotifyEvent(onClick, targetScene);
-}
-
-void vhpGameCore::mouseScrolled(ofMouseEventArgs & _args){}
-void vhpGameCore::mouseEntered(ofMouseEventArgs & _args){}
-void vhpGameCore::mouseExited(ofMouseEventArgs & _args){}
 
 ofEvent <int> vhpGameCore::onClick;

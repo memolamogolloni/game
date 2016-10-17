@@ -16,6 +16,7 @@ class vhpOSC {
         void setup();
         void setOSC(ofxXmlSettings& _settings);
         void send(int _players);
+        void send(string _address, int _players);
         void start();
         void stop();
         void update();

@@ -44,19 +44,9 @@ void vhpScreenSaver::setup(ofxXmlSettings& _videoList, string _videoTag, int _cu
 
 void vhpScreenSaver::start(){
     cout << "Screen Saver start();" << endl;
-    if(!registerEvents) {
-        // Esto permite registrar los eventos del ratón sin necesidad de crear eventos propios
-        ofRegisterMouseEvents(this);
-        registerEvents = true;
-    }
 }
 
 void vhpScreenSaver::stop(){
-    if(registerEvents) {
-        // si el objeto no funciona desactivamos el registro de los eventos del ratón
-        ofUnregisterMouseEvents(this);
-        registerEvents = false;
-    }
 }
 
 // Dibujado y actualización variables --------------------------
@@ -104,18 +94,9 @@ void vhpScreenSaver::loopScreenSaver(float _pos){
 }
 
 // Eventos ------------------------------------------------------
-
-void vhpScreenSaver::mouseMoved(ofMouseEventArgs & _args){}
-void vhpScreenSaver::mouseDragged(ofMouseEventArgs & _args){}
-void vhpScreenSaver::mousePressed(ofMouseEventArgs & _args){}
-
-void vhpScreenSaver::mouseReleased(ofMouseEventArgs & _args){
+void vhpScreenSaver::touchPressed(){
     cout << "Button active in Screen Saver!" << endl;
     ofNotifyEvent(onClick, targetScene);
 }
-
-void vhpScreenSaver::mouseScrolled(ofMouseEventArgs & _args){}
-void vhpScreenSaver::mouseEntered(ofMouseEventArgs & _args){}
-void vhpScreenSaver::mouseExited(ofMouseEventArgs & _args){}
 
 ofEvent <int> vhpScreenSaver::onClick;

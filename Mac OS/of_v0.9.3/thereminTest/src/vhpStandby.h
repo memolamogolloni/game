@@ -37,13 +37,7 @@ class vhpStandby {
         void loopScreenSaver(float _pos);
     
         // Para recoger la pulsación del ratón en la pantalla
-        void mouseMoved(ofMouseEventArgs & _args);
-        void mouseDragged(ofMouseEventArgs & _args);
-        void mousePressed(ofMouseEventArgs & _args);
-        void mouseReleased(ofMouseEventArgs & _args);
-        void mouseScrolled(ofMouseEventArgs & _args);
-        void mouseEntered(ofMouseEventArgs & _args);
-        void mouseExited(ofMouseEventArgs & _args);
+        void touchPressed();
     
         /* Variables o propiedades */
     
@@ -62,8 +56,5 @@ class vhpStandby {
     
         // notificación de eventos
         static ofEvent<int> onClick;
-    
-    protected:
-        bool registerEvents;
     
 };
