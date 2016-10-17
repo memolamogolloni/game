@@ -172,9 +172,13 @@ void vhpGame::toggleScale(){
     if (scale==1.0) {
         scale = 3.0;
         xogadores.scale = 3.0;
+        niveis.scale = 3.0;
+        xogo.scale = 3.0;
     } else {
         scale = 1.0;
         xogadores.scale = 1.0;
+        niveis.scale = 1.0;
+        xogo.scale = 1.0;
     }
 }
 

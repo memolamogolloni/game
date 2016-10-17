@@ -2,7 +2,7 @@
 
 // Constructor -------------------------------------------------
 
-vhpGameCore::vhpGameCore(): scale(1.0), currentRound(1){
+vhpGameCore::vhpGameCore(): scale(1.0){
 
 }
 
@@ -59,6 +59,11 @@ void vhpGameCore::setup(vhpGcThread* _controller, ofxXmlSettings& _videoList, st
     fbo.end();
     
 }
+void vhpGameCore::initGame(){
+    points[0] = 0;
+    points[1] = 0;
+    currentRound = 0;
+}
 void vhpGameCore::initRound(){
     holdSteady = ceil(ofRandom(3));
     targetsShot[0]= ceil(ofRandom(nWINDOWS-1));
@@ -71,12 +76,18 @@ void vhpGameCore::initRound(){
     clicked[1] = 0;
     ok[0] = false;
     ok[1] = false;
+    hold[0] = false;
+    hold[1] = false;
+    next[0] = false;
+    next[1] = false;
     winner = 0;
+    delay = 90;
 }
 
 // Comenzar e interrumpir los hilos y listeners de la escena ---
 
 void vhpGameCore::start(){
+    initGame();
     if(!registerEvents) {
         // Esto permite registrar los eventos del ratón sin necesidad de crear eventos propios
         ofRegisterMouseEvents(this);
@@ -106,11 +117,14 @@ void vhpGameCore::draw(int _x, int _y){
 
 void vhpGameCore::drawScore(){
     ofPushStyle();
-    score[0].draw(260, 925, 700, 81);
-    score[1].draw(260+700, 925, 700, 81);
+    int diff = points[0] - points[1];
+    int widthA = 700 + (100*diff);
+    int widthB = 700 - (100*diff);
+    score[0].draw(260, 925, widthA, 81);
+    score[1].draw(260 + widthA, 925, widthB, 81);
     ofSetColor(255,255,255);
     ofSetLineWidth(1);
-    ofDrawLine(260+700, 925+16, 260+700, 925+16+49);
+    ofDrawLine(260 + widthA, 925+16, 260 + widthA, 925+16+49);
     ofPopStyle();
 }
 
@@ -128,6 +142,7 @@ void vhpGameCore::drawGame(){
 void vhpGameCore::play(){
     initRound();
     currentUpdate = &vhpGameCore::playReady;
+    currentMousePressed = &vhpGameCore::mousePressedGame;
     video.play();
 }
 
@@ -231,6 +246,7 @@ void vhpGameCore::playGo(){
 
 // Show Window -----------------------------------
 void vhpGameCore::showWindow(){
+    // pequeño delay antes de enseñar la ventana
     // Reproduce el video y lo dibuja en el FBO
     video.update();
     fbo.begin();
@@ -242,13 +258,13 @@ void vhpGameCore::showWindow(){
     windowShowB[targetsShot[1]].draw(0,0);
     if (clicked[0]!=0) {
         ofSetColor(255,255,255,alphaWindow[0]);
-        windowA[clicked[0]-1].draw(0,0);
+        windowA[clicked[0]].draw(0,0);
         alphaWindow[0] += 35;
         if (alphaWindow[0]>=255) alphaWindow[0] = 255;
     }
     if (clicked[1]!=0) {
         ofSetColor(255,255,255,alphaWindow[1]);
-        windowB[clicked[1]-1].draw(0,0);
+        windowB[clicked[1]].draw(0,0);
         alphaWindow[1] += 35;
         if (alphaWindow[1]>=255) alphaWindow[1] = 255;
     }
@@ -261,33 +277,43 @@ void vhpGameCore::showWindow(){
         //currentUpdate = &vhpGameCore::playScreenSaver;
     }
     if ((alphaWindow[0]==255)&&(alphaWindow[1]==255)) {
-        cout << "Both user have trigered a window" << endl;
-        cout << "Time A: " << time[0] << endl;
-        cout << "Time B: " << time[1] << endl;
-        alpha = 0;
-        // os dous acertaron
-        if (ok[0]&&ok[1]) {
-            // gaña o mais rápido
-            if (time[0]<=time[1]) {
-                winner = 0;
+        delay--;
+        if (delay<=0) {
+            cout << "Both user have trigered a window" << endl;
+            cout << "Time A: " << time[0] << endl;
+            cout << "Time B: " << time[1] << endl;
+            alpha = 0;
+            // os dous acertaron
+            if (ok[0]&&ok[1]) {
+                // gaña o mais rápido
+                if (time[0]<=time[1]) {
+                    cout << "Player 0 was faster!" << endl;
+                    winner = 0;
+                } else {
+                    cout << "Player 1 was faster!" << endl;
+                    winner = 1;
+                }
             } else {
-                winner = 1;
+                // acertou só 0
+                if (ok[0]) {
+                    cout << "Only 0 was succesful" << endl;
+                    winner = 0;
+                    
+                    // acertou só 1
+                } else if (ok[1]) {
+                    cout << "Only 1 was succesful" << endl;
+                    winner = 1;
+                    
+                    // no acertou ninguén
+                } else {
+                    cout << "Both players failed" << endl;
+                    
+                }
             }
-        } else {
-            // acertou só 0
-            if (ok[0]) {
-                winner = 0;
-                
-            // acertou só 1
-            } else if (ok[1]) {
-                winner = 1;
-            
-            // no acertou ninguén
-            } else {
-                
-            }
+            points[winner]++;
+            currentUpdate = &vhpGameCore::showWinner;
+            currentMousePressed = &vhpGameCore::mousePressedWinner;
         }
-        currentUpdate = &vhpGameCore::showWinner;
     }
 }
 
@@ -323,7 +349,11 @@ void vhpGameCore::showWinner(){
 
 void vhpGameCore::mouseMoved(ofMouseEventArgs & _args){}
 void vhpGameCore::mouseDragged(ofMouseEventArgs & _args){}
+
 void vhpGameCore::mousePressed(ofMouseEventArgs & _args){
+    (*this.*currentMousePressed)(_args);
+}
+void vhpGameCore::mousePressedGame(ofMouseEventArgs & _args){
     cout << "MousePressed in game!" << endl;
     //ofNotifyEvent(onClick, gameTarget);
     
@@ -339,41 +369,42 @@ void vhpGameCore::mousePressed(ofMouseEventArgs & _args){
                 time[0] = ofGetElapsedTimeMillis();
                 // Window 1
                 if (x<=171) {
+                    clicked[0] = 0;
+                    cout << "Window 0" << endl;
+                    
+                    // Window 2
+                } else if (x<=316) {
                     clicked[0] = 1;
                     cout << "Window 1" << endl;
                     
-                // Window 2
-                } else if (x<=316) {
+                    // Window 3
+                } else if (x<=455) {
                     clicked[0] = 2;
                     cout << "Window 2" << endl;
                     
-                // Window 3
-                } else if (x<=455) {
+                    // Window 4
+                } else if (x<=587) {
                     clicked[0] = 3;
                     cout << "Window 3" << endl;
                     
-                // Window 4
-                } else if (x<=587) {
+                    // Window 5
+                } else if (x<=711) {
                     clicked[0] = 4;
                     cout << "Window 4" << endl;
                     
-                // Window 5
-                } else if (x<=711) {
+                    // Window 6
+                } else if (x<=832) {
                     clicked[0] = 5;
                     cout << "Window 5" << endl;
                     
-                // Window 6
-                } else if (x<=832) {
+                    // Window 7
+                } else {
                     clicked[0] = 6;
                     cout << "Window 6" << endl;
                     
-                // Window 7
-                } else {
-                    clicked[0] = 7;
-                    cout << "Window 7" << endl;
-                    
                 }
                 if (clicked[0]==targetsShot[0]) ok[0] = true;
+                cout << "TargetShot " << targetsShot[0] << endl;
             }
         // Player B
         } else {
@@ -382,41 +413,88 @@ void vhpGameCore::mousePressed(ofMouseEventArgs & _args){
                 time[1] = ofGetElapsedTimeMillis();
                 // Window 7
                 if (x<=1088) {
-                    clicked[1] = 7;
-                    cout << "Window 7" << endl;
-                    
-                // Window 6
-                } else if (x<=1210) {
                     clicked[1] = 6;
                     cout << "Window 6" << endl;
                     
-                // Window 5
-                } else if (x<=1334) {
+                    // Window 6
+                } else if (x<=1210) {
                     clicked[1] = 5;
                     cout << "Window 5" << endl;
                     
-                // Window 4
-                } else if (x<=1466) {
+                    // Window 5
+                } else if (x<=1334) {
                     clicked[1] = 4;
                     cout << "Window 4" << endl;
                     
-                // Window 3
-                } else if (x<=1603) {
+                    // Window 4
+                } else if (x<=1466) {
                     clicked[1] = 3;
                     cout << "Window 3" << endl;
                     
-                // Window 2
-                } else if (x<=1748) {
+                    // Window 3
+                } else if (x<=1603) {
                     clicked[1] = 2;
                     cout << "Window 2" << endl;
-                
-                // Window 1
-                } else {
+                    
+                    // Window 2
+                } else if (x<=1748) {
                     clicked[1] = 1;
                     cout << "Window 1" << endl;
                     
+                    // Window 1
+                } else {
+                    clicked[1] = 0;
+                    cout << "Window 0" << endl;
+                    
                 }
                 if (clicked[1]==targetsShot[1]) ok[1] = true;
+                cout << "TargetShot " << targetsShot[1] << endl;
+            }
+        }
+    }
+}
+void vhpGameCore::mousePressedWinner(ofMouseEventArgs & _args){
+ //
+    cout << "MousePressed after game!" << endl;
+    //ofNotifyEvent(onClick, gameTarget);
+    
+    // min y: 690, max y: 860
+    cout << "mouse x: " << _args.y*3/scale << " mouse y: " << _args.x*3/scale << endl;
+    float y = _args.y*3/scale;
+    if ((y>=690)&&(y<=860)) {
+        float x =  _args.x*3/scale;
+        // Player A
+        if (x<=960) {
+            next[0] = true;
+            if (next[1]) {
+                cout << "Next Round!" << endl;
+                initRound();
+                currentRound++;
+                // cuatro primeras rondas
+                if (currentRound<5) {
+                    currentUpdate = &vhpGameCore::playReady;
+                    currentMousePressed = &vhpGameCore::mousePressedGame;
+                // última ronda
+                } else {
+                    
+                }
+            }
+        // Player B
+        } else {
+            next[1] = true;
+            if (next[0]) {
+                cout << "Next Round!" << endl;
+                initRound();
+                currentRound++;
+                // cuatro primeras rondas
+                if (currentRound<5) {
+                    currentUpdate = &vhpGameCore::playReady;
+                    currentMousePressed = &vhpGameCore::mousePressedGame;
+                
+                // última ronda
+                } else {
+                    
+                }
             }
         }
     }
