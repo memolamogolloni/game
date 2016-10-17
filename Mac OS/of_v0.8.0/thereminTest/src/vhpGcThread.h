@@ -1,18 +1,15 @@
 #pragma once
 
 #include "ofMain.h"
-//#include "vhpGame.h"
 #include "ofEvents.h"
 
-#define LOOP            0
-#define PAUSE           1
 
-class vhpThread: public ofThread {
+class vhpGcThread: public ofThread {
 
 	public:
 	
 		// constructor
-		vhpThread();
+		vhpGcThread();
 		
 		// funcións ou métodos
         void setup(ofVideoPlayer* _target, float _start, float _end);
@@ -22,7 +19,7 @@ class vhpThread: public ofThread {
         void start();
         void stop();
         void update();
-        void (vhpThread::*currentUpdate)();
+        void (vhpGcThread::*currentUpdate)();
     
         // video controller
         void loop();
@@ -32,7 +29,6 @@ class vhpThread: public ofThread {
         //int getCount();
     
         ofVideoPlayer *         target;
-        //vhpGame *             game;
         float                   video_start;
         float                   video_end;
         float                   stored_start;

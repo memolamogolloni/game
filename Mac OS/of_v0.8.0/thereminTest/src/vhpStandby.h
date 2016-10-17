@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
+#include "vhpSbThread.h"
 
 class vhpStandby {
 
@@ -15,7 +16,7 @@ class vhpStandby {
 		/* funciones o métodos */
     
         // Inicializar variables y cargar los archivos
-        void setup(ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
+        void setup(vhpSbThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
     
         // Comenzar e interrumpir los hilos y listeners de la escena
         void start();
@@ -36,13 +37,7 @@ class vhpStandby {
         void loopScreenSaver(float _pos);
     
         // Para recoger la pulsación del ratón en la pantalla
-        void mouseMoved(ofMouseEventArgs & _args);
-        void mouseDragged(ofMouseEventArgs & _args);
-        void mousePressed(ofMouseEventArgs & _args);
-        void mouseReleased(ofMouseEventArgs & _args);
-        void mouseScrolled(ofMouseEventArgs & _args);
-        void mouseEntered(ofMouseEventArgs & _args);
-        void mouseExited(ofMouseEventArgs & _args);
+        void touchPressed();
     
         /* Variables o propiedades */
     
@@ -52,14 +47,14 @@ class vhpStandby {
         int             width;
         int             height;
     
+        // Hilo de control
+        vhpSbThread *         controller;
+    
         // Estado del juego
         int             currentScene;
         int             targetScene;
     
         // notificación de eventos
         static ofEvent<int> onClick;
-    
-    protected:
-        bool registerEvents;
     
 };

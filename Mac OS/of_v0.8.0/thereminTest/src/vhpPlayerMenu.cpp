@@ -2,7 +2,7 @@
 
 // Constructor -------------------------------------------------
 
-vhpPlayerMenu::vhpPlayerMenu():scale(1.0),state(MENU),selected(0){
+vhpPlayerMenu::vhpPlayerMenu():state(MENU),selected(0){
 
 }
 
@@ -12,7 +12,7 @@ vhpPlayerMenu::~vhpPlayerMenu(){
 
 // Inicializar variables y cargar los archivos -----------------
 
-void vhpPlayerMenu::setup(vhpThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene){
+void vhpPlayerMenu::setup(vhpPmThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene){
     
     // Inicializar el hilo de control
     controller = _controller;
@@ -33,6 +33,9 @@ void vhpPlayerMenu::setup(vhpThread* _controller, ofxXmlSettings& _videoList, st
     targetScene = _targetScene;     // STANDBY
     width = video.getWidth();
     height = video.getHeight();
+    
+    cout << " video width: " << width << " height: " << height << endl;
+    
     fbo.allocate(width, height, GL_RGBA);
     
     // clean FBO
@@ -45,18 +48,11 @@ void vhpPlayerMenu::setup(vhpThread* _controller, ofxXmlSettings& _videoList, st
 // Comenzar e interrumpir los hilos y listeners de la escena ---
 
 void vhpPlayerMenu::start(){
-    if(!registerEvents) {
-        ofRegisterMouseEvents(this); // this will enable our circle class to listen to the mouse events.
-        registerEvents = true;
-    }
+    cout << "Player Menu start();" << endl;
     controller->start();
 }
 
 void vhpPlayerMenu::stop(){
-    if(registerEvents) {
-        ofUnregisterMouseEvents(this); // disable litening to mous events.
-        registerEvents = false;
-    }
     controller->stop();
 }
 
@@ -118,20 +114,14 @@ float vhpPlayerMenu::getPosition(){
 
 // Eventos ------------------------------------------------------
 
-void vhpPlayerMenu::mouseMoved(ofMouseEventArgs & _args){}
-void vhpPlayerMenu::mouseDragged(ofMouseEventArgs & _args){}
-void vhpPlayerMenu::mousePressed(ofMouseEventArgs & _args){}
-
-void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
+void vhpPlayerMenu::touchPressed(float _x, float _y){
     cout << "Menu active!" << endl;
     //ofNotifyEvent(onClick, gameTarget);
     // min x: 520, min y: 182 408 538 630 160
-    cout << "mouse x: " << _args.x << " mouse y: " << _args.y << endl;
-    float y = _args.y*3/scale;
-    if (y>=520) {
-        float x =  _args.x*3/scale;
-        if ((x>=182)&&(x<=1760)) {
-            if (x<=592) {
+    cout << "mouse x: " << _x << " mouse y: " << _y << endl;
+    if (_y>=520) {
+        if ((_x>=182)&&(_x<=1760)) {
+            if (_x<=592) {
                 cout << "1 xogador" << endl;
                 switch (state) {
                     case MENU:
@@ -139,7 +129,7 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
                         controller->reset(12.0/57.0, 16.0/57.0);
                         break;
                     case ONEPLAYER:
-                        if (y>=900) {
+                        if (_y>=900) {
                             selected = 1;
                             ofNotifyEvent(playersNumber, targetScene);
                             cout << "ONEPLAYER confirmed!" << endl;
@@ -155,7 +145,7 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
                         break;
                 }
                 state = ONEPLAYER;
-            } else if (x<=1130) {
+            } else if (_x<=1130) {
                 cout << "2 xogadores" << endl;
                 switch (state) {
                     case MENU:
@@ -167,7 +157,7 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
                         controller->fadeReset(22.0/57.0, 18.0/57.0, 24.0/57.0, 28.0/57.0);
                         break;
                     case TWOPLAYERS:
-                        if (y>=900) {
+                        if (_y>=900) {
                             selected = 2;
                             ofNotifyEvent(playersNumber, targetScene);
                             cout << "TWOPLAYERS confirmed!" << endl;
@@ -195,7 +185,7 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
                         controller->fadeReset(34.0/57.0, 30.0/57.0, 36.0/57.0, 40.0/57.0);
                         break;
                     case FOURPLAYERS:
-                        if (y>=900) {
+                        if (_y>=900) {
                             selected = 4;
                             ofNotifyEvent(playersNumber, targetScene);
                             cout << "FOURPLAYERS confirmed!" << endl;
@@ -243,9 +233,5 @@ void vhpPlayerMenu::mouseReleased(ofMouseEventArgs & _args){
         }
     }
 }
-
-void vhpPlayerMenu::mouseScrolled(ofMouseEventArgs & _args){}
-void vhpPlayerMenu::mouseEntered(ofMouseEventArgs & _args){}
-void vhpPlayerMenu::mouseExited(ofMouseEventArgs & _args){}
 
 ofEvent <int> vhpPlayerMenu::playersNumber;

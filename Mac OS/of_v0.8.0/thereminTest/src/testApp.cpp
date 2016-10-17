@@ -37,7 +37,7 @@ void testApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-    //thereminTourette.mousePressed(x*3, y*3, button);
+    thereminTourette.mousePressed(x, y, button);
 }
 
 //--------------------------------------------------------------

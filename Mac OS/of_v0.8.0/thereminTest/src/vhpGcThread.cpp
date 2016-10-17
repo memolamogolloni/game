@@ -1,40 +1,40 @@
-#include "vhpThread.h"
+#include "vhpGcThread.h"
 
 //--------------------------------------------------------------
-vhpThread::vhpThread(): video_start(0.0), video_end(1.0), count(0), goTo(0){
+vhpGcThread::vhpGcThread(): video_start(0.0), video_end(1.0), count(0), goTo(0){
 
 }
 
 //--------------------------------------------------------------
-void vhpThread::setup(ofVideoPlayer* _target, float _start, float _end){
+void vhpGcThread::setup(ofVideoPlayer* _target, float _start, float _end){
     target = _target;
     video_start = _start;
     video_end = _end;
-    currentUpdate = &vhpThread::loop;
+    currentUpdate = &vhpGcThread::loop;
 }
 
 //--------------------------------------------------------------
-void vhpThread::reset(float _start, float _end){
+void vhpGcThread::reset(float _start, float _end){
     cout << "reset" << endl;
     if(lock()) {
         count = 0;
         video_start = _start;
         video_end = _end;
-        currentUpdate = &vhpThread::loop;
+        currentUpdate = &vhpGcThread::loop;
         unlock();
     }
 }
 
 //--------------------------------------------------------------
-void vhpThread::internalReset(float _start, float _end){
+void vhpGcThread::internalReset(float _start, float _end){
     cout << "internalReset" << endl;
     video_start = _start;
     video_end = _end;
-    currentUpdate = &vhpThread::loop;
+    currentUpdate = &vhpGcThread::loop;
 }
 
 //--------------------------------------------------------------
-void vhpThread::fadeReset(float _start, float _end, float _stored_start, float _stored_end){
+void vhpGcThread::fadeReset(float _start, float _end, float _stored_start, float _stored_end){
     cout << "fadeReset" << endl;
     if(lock()) {
         count = 0;
@@ -42,28 +42,28 @@ void vhpThread::fadeReset(float _start, float _end, float _stored_start, float _
         video_end = _end;
         stored_start = _stored_start;
         stored_end = _stored_end;
-        currentUpdate = &vhpThread::fadeLoop;
+        currentUpdate = &vhpGcThread::fadeLoop;
         unlock();
     }
 }
 
 //--------------------------------------------------------------
-void vhpThread::stop(){
+void vhpGcThread::stop(){
     stopThread();
 }
 
 //--------------------------------------------------------------
-void vhpThread::start(){
+void vhpGcThread::start(){
     startThread(true, true);
 }
 
 //--------------------------------------------------------------
-void vhpThread::update(){
+void vhpGcThread::update(){
     (*this.*currentUpdate)();
 }
 
 // Video Controller -------------------------------------------------
-void vhpThread::loop(){
+void vhpGcThread::loop(){
     // Do something
     cout << "video loop: " << target->getPosition() << endl;
     count ++;
@@ -79,7 +79,7 @@ void vhpThread::loop(){
 }
 
 //--------------------------------------------------------------
-void vhpThread::fadeLoop(){
+void vhpGcThread::fadeLoop(){
     // Do something
     cout << "video fadeLoop: " << target->getPosition() << endl;
     if (target->getPosition()>=video_end){
@@ -90,20 +90,20 @@ void vhpThread::fadeLoop(){
 }
 
 //--------------------------------------------------------------
-void vhpThread::draw(){
+void vhpGcThread::draw(){
 
 }
 
 /*
 //--------------------------------------------------------------
-int vhpThread::getCount() {
+int vhpLevelMenuThread::getCount() {
     unique_lock<std::mutex> lock(mutex);
     return count;
 }
 */
 
 //--------------------------------------------------------------
-void vhpThread::threadedFunction(){
+void vhpGcThread::threadedFunction(){
     while(isThreadRunning()) {
         if(lock()) {
             update();
@@ -114,4 +114,4 @@ void vhpThread::threadedFunction(){
     }
 }
 
-ofEvent <int> vhpThread::timeOut;
+ofEvent <int> vhpGcThread::timeOut;

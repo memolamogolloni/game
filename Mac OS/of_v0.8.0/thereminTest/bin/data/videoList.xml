@@ -1,3 +1,10 @@
+<SENDER>
+    <PORT>12345</PORT>
+    <HOST>localhost</HOST>
+</SENDER>
+<RECEIVER>
+    <PORT>12346</PORT>
+</RECEIVER>
 <LOGOS>
     <VIDEO>HD_logos.mov</VIDEO>
 </LOGOS>
@@ -7,3 +14,9 @@
 <ESPERA>
     <VIDEO>HD_espera.mov</VIDEO>
 </ESPERA>
+<NIVEIS>
+    <VIDEO>HD_seleccion_niveles.mov</VIDEO>
+</NIVEIS>
+<XOGO>
+    <VIDEO>HD_fondo_juego.mov</VIDEO>
+</XOGO>
