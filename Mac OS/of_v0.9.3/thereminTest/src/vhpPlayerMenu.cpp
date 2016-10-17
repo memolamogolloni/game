@@ -48,6 +48,7 @@ void vhpPlayerMenu::setup(vhpPmThread* _controller, ofxXmlSettings& _videoList, 
 // Comenzar e interrumpir los hilos y listeners de la escena ---
 
 void vhpPlayerMenu::start(){
+    cout << "Player Menu start();" << endl;
     if(!registerEvents) {
         ofRegisterMouseEvents(this); // this will enable our circle class to listen to the mouse events.
         registerEvents = true;

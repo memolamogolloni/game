@@ -43,6 +43,7 @@ void vhpScreenSaver::setup(ofxXmlSettings& _videoList, string _videoTag, int _cu
 // Comenzar e interrumpir los hilos y listeners de la escena ---
 
 void vhpScreenSaver::start(){
+    cout << "Screen Saver start();" << endl;
     if(!registerEvents) {
         // Esto permite registrar los eventos del ratón sin necesidad de crear eventos propios
         ofRegisterMouseEvents(this);
@@ -109,7 +110,7 @@ void vhpScreenSaver::mouseDragged(ofMouseEventArgs & _args){}
 void vhpScreenSaver::mousePressed(ofMouseEventArgs & _args){}
 
 void vhpScreenSaver::mouseReleased(ofMouseEventArgs & _args){
-    cout << "Button active!" << endl;
+    cout << "Button active in Screen Saver!" << endl;
     ofNotifyEvent(onClick, targetScene);
 }
 

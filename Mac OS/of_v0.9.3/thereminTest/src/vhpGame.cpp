@@ -33,7 +33,7 @@ void vhpGame::setup(){
     alpha = 0;
     alpha_increment = 15;
     
-    TTF.load("mono.ttf", 7);
+    TTF.load("fonts/mono.ttf", 7);
     
     cout << "loading videoList.xml" << endl;
     if( videoList.loadFile("videoList.xml") ){
@@ -135,6 +135,9 @@ void vhpGame::set(int &_state){
             if (state == LEVELMENU) {
                 fadeInGame();
             } else {
+                if (state == SCREENSAVER) {
+                    stopScreenSaver();
+                }
                 goToGame();
             }
             break;
@@ -642,7 +645,7 @@ void vhpGame::drawLevelMenuOut(){
 void vhpGame::initGame(){
     cout << "GAME" << endl;
     state = GAME;
-    espera.start();
+    xogo.start();
     // PENDING! ofAddListener(vhpThread::timeOut, this, &vhpGame::set);
     // cout << "ofAddListener vhpOSC::playersReceived" << endl;
     // ofAddListener(vhpOSC::playersReceived, this, &vhpGame::set);
@@ -776,7 +779,17 @@ void vhpGame::keyReleased(int _key){
     } else if (_key=='2') {
         int scene = PLAYERMENU;
         set(scene);
+    } else if (_key=='3') {
+        int scene = STANDBY;
+        set(scene);
+    } else if (_key=='4') {
+        int scene = LEVELMENU;
+        set(scene);
+    } else if (_key=='5') {
+        int scene = GAME;
+        set(scene);
     }
+
 }
 
 //--------------------------------------------------------------
