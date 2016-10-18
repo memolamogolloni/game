@@ -10,7 +10,6 @@
 		02DD662502ECDC87F64802FE /* vhpGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2408A10E984793E40E2B19 /* vhpGame.cpp */; };
 		0546D1A38E13BD319CC9755B /* OscReceivedElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9BF3AA0D4FAA89D0F8A0E545 /* OscReceivedElements.cpp */; };
 		30195DFE5A7CE1510313E021 /* vhpPlayerMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BEAD265C965A1EA9C6180D4 /* vhpPlayerMenu.cpp */; };
-		3764F80BD8EEA16CBD685027 /* vhpVid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6291BD9235E0353872D6E5BE /* vhpVid.cpp */; };
 		4ADB88E2FB52E76A471065DE /* ofxOscParameterSync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AED834CE4DEC5260AF302A2 /* ofxOscParameterSync.cpp */; };
 		510CAFE035E576A4E1502D52 /* UdpSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E6DEF695B88BA5FAACEAA937 /* UdpSocket.cpp */; };
 		52354B8710CB9E23266AC150 /* vhpPmThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2693DFF4ED390FE69B31F4F4 /* vhpPmThread.cpp */; };
@@ -28,7 +27,6 @@
 		A3A8E6FBC894B4C4A5854D22 /* vhpStandby.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CB860141CB6B1C88AB0316A1 /* vhpStandby.cpp */; };
 		ADE367465D2A8EBAD4C7A8D9 /* IpEndpointName.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ADD194746185E2DA11468377 /* IpEndpointName.cpp */; };
 		AFAB799ADFB5C3A1F164DB8F /* vhpSbThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188B6B93E7A46D5431D10E8D /* vhpSbThread.cpp */; };
-		B073E556F1A10A42B4012F5A /* vhpButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F1142C249AE7468F046EDFA /* vhpButton.cpp */; };
 		C40250681DA7EF6E00F60A3D /* vhpOSC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C40250661DA7EF6E00F60A3D /* vhpOSC.cpp */; };
 		C402506B1DA7F7AF00F60A3D /* vhpLevelMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C40250691DA7F7AF00F60A3D /* vhpLevelMenu.cpp */; };
 		C402506E1DA7FAB900F60A3D /* vhpLmThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C402506C1DA7FAB900F60A3D /* vhpLmThread.cpp */; };
@@ -91,21 +89,17 @@
 		4E95FB446A9C9C6F0DE12D75 /* OscPrintReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscPrintReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscPrintReceivedElements.h; sourceTree = SOURCE_ROOT; };
 		50DF87D612C5AAE17AAFA6C0 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxXmlSettings.cpp; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.cpp; sourceTree = SOURCE_ROOT; };
 		5BEAD265C965A1EA9C6180D4 /* vhpPlayerMenu.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpPlayerMenu.cpp; path = src/vhpPlayerMenu.cpp; sourceTree = SOURCE_ROOT; };
-		6291BD9235E0353872D6E5BE /* vhpVid.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpVid.cpp; path = src/vhpVid.cpp; sourceTree = SOURCE_ROOT; };
 		63A47AC60FFAFC3BF093EC0F /* OscOutboundPacketStream.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = OscOutboundPacketStream.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscOutboundPacketStream.cpp; sourceTree = SOURCE_ROOT; };
 		65EEFA3DA3526E9CDD9C21F9 /* ofxOscBundle.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxOscBundle.cpp; path = ../../../addons/ofxOsc/src/ofxOscBundle.cpp; sourceTree = SOURCE_ROOT; };
 		672F4EA72DCFE094350FAEBB /* vhpSbThread.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vhpSbThread.h; path = src/vhpSbThread.h; sourceTree = SOURCE_ROOT; };
 		6B65E6930994CC4B2D2B8B33 /* OscPacketListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscPacketListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscPacketListener.h; sourceTree = SOURCE_ROOT; };
-		747D66E9BF3144316037739F /* vhpVid.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vhpVid.h; path = src/vhpVid.h; sourceTree = SOURCE_ROOT; };
 		7689F8A0F3D0B7635A8C3104 /* ofxOscArg.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscArg.h; path = ../../../addons/ofxOsc/src/ofxOscArg.h; sourceTree = SOURCE_ROOT; };
 		7EE889A562FE54D59B5C6812 /* vhpStandby.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vhpStandby.h; path = src/vhpStandby.h; sourceTree = SOURCE_ROOT; };
-		7FA0A7412BC0E31122526B0A /* vhpButton.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vhpButton.h; path = src/vhpButton.h; sourceTree = SOURCE_ROOT; };
 		805B3D941DC94BA6CEFFEE18 /* vhpScreenSaver.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpScreenSaver.cpp; path = src/vhpScreenSaver.cpp; sourceTree = SOURCE_ROOT; };
 		81967292BFC87A0144BD32C6 /* ofxOscSender.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxOscSender.cpp; path = ../../../addons/ofxOsc/src/ofxOscSender.cpp; sourceTree = SOURCE_ROOT; };
 		832BDC407620CDBA568B713D /* tinyxmlerror.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = tinyxmlerror.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxmlerror.cpp; sourceTree = SOURCE_ROOT; };
 		8B30E93FD3D3475EED522A0E /* ofxOscBundle.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscBundle.h; path = ../../../addons/ofxOsc/src/ofxOscBundle.h; sourceTree = SOURCE_ROOT; };
 		8C75AFC8774A62495DD53464 /* ofxOscReceiver.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscReceiver.h; path = ../../../addons/ofxOsc/src/ofxOscReceiver.h; sourceTree = SOURCE_ROOT; };
-		8F1142C249AE7468F046EDFA /* vhpButton.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpButton.cpp; path = src/vhpButton.cpp; sourceTree = SOURCE_ROOT; };
 		9BF3AA0D4FAA89D0F8A0E545 /* OscReceivedElements.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = OscReceivedElements.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscReceivedElements.cpp; sourceTree = SOURCE_ROOT; };
 		9E2408A10E984793E40E2B19 /* vhpGame.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpGame.cpp; path = src/vhpGame.cpp; sourceTree = SOURCE_ROOT; };
 		9F7986DC4EB05E75FCE2C777 /* ofxOscSender.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscSender.h; path = ../../../addons/ofxOsc/src/ofxOscSender.h; sourceTree = SOURCE_ROOT; };
@@ -265,17 +259,6 @@
 			name = src;
 			sourceTree = "<group>";
 		};
-		C4E45BB21DA6ACBE00CB7B39 /* kk */ = {
-			isa = PBXGroup;
-			children = (
-				747D66E9BF3144316037739F /* vhpVid.h */,
-				6291BD9235E0353872D6E5BE /* vhpVid.cpp */,
-				7FA0A7412BC0E31122526B0A /* vhpButton.h */,
-				8F1142C249AE7468F046EDFA /* vhpButton.cpp */,
-			);
-			name = kk;
-			sourceTree = "<group>";
-		};
 		D27B2221A225CA523C019676 /* src */ = {
 			isa = PBXGroup;
 			children = (
@@ -334,7 +317,6 @@
 				C486DB791DAFF0750016D8BB /* vhpGameCore.cpp */,
 				C486DB7D1DAFF2D20016D8BB /* vhpGcThread.h */,
 				C486DB7C1DAFF2D20016D8BB /* vhpGcThread.cpp */,
-				C4E45BB21DA6ACBE00CB7B39 /* kk */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -461,14 +443,12 @@
 				C402506B1DA7F7AF00F60A3D /* vhpLevelMenu.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
-				B073E556F1A10A42B4012F5A /* vhpButton.cpp in Sources */,
 				02DD662502ECDC87F64802FE /* vhpGame.cpp in Sources */,
 				30195DFE5A7CE1510313E021 /* vhpPlayerMenu.cpp in Sources */,
 				C99FEE73831E528628F63FE6 /* vhpScreenSaver.cpp in Sources */,
 				A3A8E6FBC894B4C4A5854D22 /* vhpStandby.cpp in Sources */,
 				AFAB799ADFB5C3A1F164DB8F /* vhpSbThread.cpp in Sources */,
 				52354B8710CB9E23266AC150 /* vhpPmThread.cpp in Sources */,
-				3764F80BD8EEA16CBD685027 /* vhpVid.cpp in Sources */,
 				C486DB7B1DAFF0750016D8BB /* vhpGameCore.cpp in Sources */,
 				72A929D3561B8232A182ABFC /* ofxOscBundle.cpp in Sources */,
 				5864AD82E20F15536D054EA3 /* ofxOscMessage.cpp in Sources */,

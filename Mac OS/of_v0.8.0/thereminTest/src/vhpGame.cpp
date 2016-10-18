@@ -28,8 +28,9 @@ void vhpGame::setup(){
     ofClear(255,255,255, 0);
     fullScreen.end();
     
-    bufferTex.allocate(width, height, GL_RGB);
-
+    // bufferTex.allocate(width, height, GL_RGB);
+	
+	/*
     #ifdef TARGET_OPENGLES
         cout << "TARGET_OPENGLES" << endl;
         shaderMixture.load("shadersGL2/mixture.vert","shadersGL2/mixture.frag");
@@ -42,6 +43,7 @@ void vhpGame::setup(){
         shaderMixture.load("shadersGL2/mixture.vert", "shadersGL2/mixture.frag");
     }
     #endif
+    */
     alpha = 0;
     alpha_increment = 15;
     
@@ -341,17 +343,24 @@ void vhpGame::drawPlayerMenu(){
 }
 
 void vhpGame::drawPlayerMenuIn(){
-    bufferTex.loadData(logos.video.getPixels(), width, height, GL_RGB);
+    
+    //bufferTex.loadData(logos.video.getPixels(), width, height, GL_RGB);
+    
     ofPushStyle();
+    ofEnableAlphaBlending();
     ofSetColor(255, 255, 255);
     fullScreen.begin();
-    shaderMixture.begin();
-    shaderMixture.setUniformTexture("tex1", bufferTex, 1);
-    shaderMixture.setUniform1f("mixture", alpha/255.0);
+    //shaderMixture.begin();
+    //shaderMixture.setUniformTexture("tex1", bufferTex, 1);
+    //shaderMixture.setUniform1f("mixture", alpha/255.0);
+    logos.draw(0, 0);
+    ofSetColor(255,255,255,alpha);
     xogadores.draw(0, 0);
-    shaderMixture.end();
+    ofSetColor(255, 255, 255);
+    //shaderMixture.end();
     fullScreen.end();
     fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofDisableAlphaBlending();
     ofPopStyle();
     
     drawFrameRate();
@@ -368,17 +377,22 @@ void vhpGame::drawPlayerMenuIn(){
 }
 
 void vhpGame::drawPlayerMenuOut(){
-    bufferTex.loadData(logos.video.getPixels(), width, height, GL_RGB);
+   // bufferTex.loadData(logos.video.getPixels(), width, height, GL_RGB);
     ofPushStyle();
+    ofEnableAlphaBlending();
     ofSetColor(255, 255, 255);
     fullScreen.begin();
-    shaderMixture.begin();
-    shaderMixture.setUniformTexture("tex1", bufferTex, 1);
-    shaderMixture.setUniform1f("mixture", alpha/255.0);
+    //shaderMixture.begin();
+    //shaderMixture.setUniformTexture("tex1", bufferTex, 1);
+    //shaderMixture.setUniform1f("mixture", alpha/255.0);
     xogadores.draw(0, 0);
-    shaderMixture.end();
+    ofSetColor(255,255,255,alpha);
+    logos.draw(0, 0);
+    ofSetColor(255, 255, 255);
+    //shaderMixture.end();
     fullScreen.end();
     fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofDisableAlphaBlending();
     ofPopStyle();
     
     drawFrameRate();
@@ -465,15 +479,20 @@ void vhpGame::drawStandby(){
 
 void vhpGame::drawStandbyIn(){
     ofPushStyle();
+    ofEnableAlphaBlending();
     ofSetColor(255, 255, 255);
     fullScreen.begin();
-    shaderMixture.begin();
-    shaderMixture.setUniformTexture("tex1", xogadores.fbo.getTextureReference(), 1);
-    shaderMixture.setUniform1f("mixture", alpha/255.0);
+    //shaderMixture.begin();
+    //shaderMixture.setUniformTexture("tex1", xogadores.fbo.getTexture(), 1);
+    //shaderMixture.setUniform1f("mixture", alpha/255.0);
+    xogadores.draw(0, 0);
+    ofSetColor(255,255,255,alpha);
     espera.draw(0, 0);
-    shaderMixture.end();
+    ofSetColor(255, 255, 255);
+    //shaderMixture.end();
     fullScreen.end();
     fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofDisableAlphaBlending();
     ofPopStyle();
     
     drawFrameRate();
@@ -494,15 +513,20 @@ void vhpGame::drawStandbyIn(){
 
 void vhpGame::drawStandbyOut(){
     ofPushStyle();
+    ofEnableAlphaBlending();
     ofSetColor(255, 255, 255);
     fullScreen.begin();
-    shaderMixture.begin();
-    shaderMixture.setUniformTexture("tex1", xogadores.fbo.getTextureReference(), 1);
-    shaderMixture.setUniform1f("mixture", alpha/255.0);
+    //shaderMixture.begin();
+    //shaderMixture.setUniformTexture("tex1", xogadores.fbo.getTexture(), 1);
+    //shaderMixture.setUniform1f("mixture", alpha/255.0);
     espera.draw(0, 0);
-    shaderMixture.end();
+    ofSetColor(255,255,255,alpha);
+    xogadores.draw(0, 0);
+    ofSetColor(255, 255, 255);
+    //shaderMixture.end();
     fullScreen.end();
     fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofDisableAlphaBlending();
     ofPopStyle();
     
     drawFrameRate();
@@ -598,17 +622,22 @@ void vhpGame::drawLevelMenu(){
 }
 
 void vhpGame::drawLevelMenuIn(){
-    bufferTex.loadData(espera.video.getPixels(), width, height, GL_RGB);
+    //bufferTex.loadData(espera.video.getPixels(), width, height, GL_RGB);
     ofPushStyle();
+    ofEnableAlphaBlending();
     ofSetColor(255, 255, 255);
     fullScreen.begin();
-    shaderMixture.begin();
-    shaderMixture.setUniformTexture("tex1", bufferTex, 1);
-    shaderMixture.setUniform1f("mixture", alpha/255.0);
+    //shaderMixture.begin();
+    //shaderMixture.setUniformTexture("tex1", bufferTex, 1);
+    //shaderMixture.setUniform1f("mixture", alpha/255.0);
+    espera.draw(0, 0);
+    ofSetColor(255,255,255,alpha);
     niveis.draw(0, 0);
-    shaderMixture.end();
+    ofSetColor(255, 255, 255);
+    //shaderMixture.end();
     fullScreen.end();
     fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofDisableAlphaBlending();
     ofPopStyle();
     
     drawFrameRate();
@@ -625,17 +654,22 @@ void vhpGame::drawLevelMenuIn(){
 }
 
 void vhpGame::drawLevelMenuOut(){
-    bufferTex.loadData(espera.video.getPixels(), width, height, GL_RGB);
+    //bufferTex.loadData(espera.video.getPixels(), width, height, GL_RGB);
     ofPushStyle();
+    ofEnableAlphaBlending();
     ofSetColor(255, 255, 255);
     fullScreen.begin();
-    shaderMixture.begin();
-    shaderMixture.setUniformTexture("tex1", bufferTex, 1);
-    shaderMixture.setUniform1f("mixture", alpha/255.0);
+    //shaderMixture.begin();
+    //shaderMixture.setUniformTexture("tex1", bufferTex, 1);
+    //shaderMixture.setUniform1f("mixture", alpha/255.0);
     niveis.draw(0, 0);
-    shaderMixture.end();
+    ofSetColor(255,255,255,alpha);
+    espera.draw(0, 0);
+    ofSetColor(255, 255, 255);
+    //shaderMixture.end();
     fullScreen.end();
     fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofDisableAlphaBlending();
     ofPopStyle();
     
     drawFrameRate();
@@ -722,15 +756,20 @@ void vhpGame::drawGame(){
 
 void vhpGame::drawGameIn(){
     ofPushStyle();
+    ofEnableAlphaBlending();
     ofSetColor(255, 255, 255);
     fullScreen.begin();
-    shaderMixture.begin();
-    shaderMixture.setUniformTexture("tex1", niveis.fbo.getTextureReference(), 1);
-    shaderMixture.setUniform1f("mixture", alpha/255.0);
+    //shaderMixture.begin();
+    //shaderMixture.setUniformTexture("tex1", niveis.fbo.getTexture(), 1);
+    //shaderMixture.setUniform1f("mixture", alpha/255.0);
+    niveis.draw(0, 0);
+    ofSetColor(255,255,255,alpha);
     xogo.draw(0, 0);
-    shaderMixture.end();
+    ofSetColor(255, 255, 255);
+    //shaderMixture.end();
     fullScreen.end();
     fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofDisableAlphaBlending();
     ofPopStyle();
     
     drawFrameRate();
@@ -751,15 +790,20 @@ void vhpGame::drawGameIn(){
 
 void vhpGame::drawGameOut(){
     ofPushStyle();
+    ofEnableAlphaBlending();
     ofSetColor(255, 255, 255);
     fullScreen.begin();
-    shaderMixture.begin();
-    shaderMixture.setUniformTexture("tex1", niveis.fbo.getTextureReference(), 1);
-    shaderMixture.setUniform1f("mixture", alpha/255.0);
+    //shaderMixture.begin();
+    //shaderMixture.setUniformTexture("tex1", niveis.fbo.getTexture(), 1);
+    //shaderMixture.setUniform1f("mixture", alpha/255.0);
     xogo.draw(0, 0);
-    shaderMixture.end();
+    ofSetColor(255,255,255,alpha);
+    niveis.draw(0, 0);
+    ofSetColor(255, 255, 255);
+    //shaderMixture.end();
     fullScreen.end();
     fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofDisableAlphaBlending();
     ofPopStyle();
     
     drawFrameRate();

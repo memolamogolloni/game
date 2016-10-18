@@ -90,17 +90,17 @@ class vhpGame {
         void drawLevelMenuIn();
         void drawLevelMenuOut();
     
-    // GAME
-    void initGame();
-    void stopGame();
-    void goToGame();
-    void fadeInGame();
-    void fadeOutGame();
-    void updateGame();
-    void updateGameInOut();
-    void drawGame();
-    void drawGameIn();
-    void drawGameOut();
+        // GAME
+        void initGame();
+        void stopGame();
+        void goToGame();
+        void fadeInGame();
+        void fadeOutGame();
+        void updateGame();
+        void updateGameInOut();
+        void drawGame();
+        void drawGameIn();
+        void drawGameOut();
     
         // Events
         void keyReleased(int _key);
@@ -115,8 +115,10 @@ class vhpGame {
         int                         height;
         ofxXmlSettings              videoList;
         ofFbo                       fullScreen;
+        /*
         ofShader                    shaderMixture;
         ofTexture                   bufferTex;
+         */
         int                         alpha;
         int                         alpha_increment;
     
