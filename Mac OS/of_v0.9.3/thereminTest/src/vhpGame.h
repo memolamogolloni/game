@@ -4,8 +4,8 @@
 
 #include "ofEvents.h"
 #include "ofxXmlSettings.h"
-#include "vhpOSC.h"
 
+#include "vhpOSC.h"
 #include "vhpScreenSaver.h"
 #include "vhpPlayerMenu.h"
 #include "vhpPmThread.h"

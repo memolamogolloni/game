@@ -1,7 +1,11 @@
-<SENDER>
+<SENDER1>
+    <PORT>12344</PORT>
+    <HOST>localhost</HOST>
+</SENDER1>
+<SENDER2>
     <PORT>12345</PORT>
     <HOST>localhost</HOST>
-</SENDER>
+</SENDER2>
 <RECEIVER>
     <PORT>12346</PORT>
 </RECEIVER>

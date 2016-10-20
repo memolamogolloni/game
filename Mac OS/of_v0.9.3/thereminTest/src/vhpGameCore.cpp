@@ -32,16 +32,23 @@ void vhpGameCore::setup(vhpGcThread* _controller, ofxXmlSettings& _videoList, st
     winnerButton[0].load("images/red-wins-button.png");
     winnerButton[1].load("images/blue-wins-button.png");
     go.load("images/go.png");
+    tie.load("images/empate.png");
     for (int i = 0; i<nWINDOWS; i++) {
-        windowA[i].load("images/1P-Boton-0"+ ofToString(i) +".png");
-        windowB[i].load("images/2P-Boton-0"+ ofToString(i) +".png");
-        windowShowA[i].load("images/window_ashow_0"+ ofToString(i) +".png");
-        windowShowB[i].load("images/window_bshow_0"+ ofToString(i) +".png");
+        wClickA[i].load("images/1P-Boton-0"+ ofToString(i) +".png");
+        wClickB[i].load("images/2P-Boton-0"+ ofToString(i) +".png");
+        wFrameA[i].load("images/marco-rojo-"+ ofToString(i+1) +".png");
+        wFrameB[i].load("images/marco-azul-"+ ofToString(i+1) +".png");
+        wIconAzulA[i].load("images/azul-a-"+ ofToString(i+1) +".png");
+        wIconAzulB[i].load("images/azul-b-"+ ofToString(i+1) +".png");
+        wIconRojoA[i].load("images/rojo-a-"+ ofToString(i+1) +".png");
+        wIconRojoB[i].load("images/rojo-b-"+ ofToString(i+1) +".png");
+        windowShowA[i].load("images/click-a-"+ ofToString(i+1) +".png");
+        windowShowB[i].load("images/click-b-"+ ofToString(i+1) +".png");
     }
     alpha = 0;
     alpha_increment = 5;
     
-    TTF.load("fonts/TitilliumWeb-Light.ttf", 70);
+    TTF.load("fonts/titilliumweblight.ttf", 70);
     
     // Inicializar las variables
     currentScene = _currentScene;   // SCREENSAVER
@@ -72,8 +79,8 @@ void vhpGameCore::initGame(){
 }
 void vhpGameCore::initRound(){
     holdSteady = ceil(ofRandom(3));
-    targetsShot[0]= ceil(ofRandom(nWINDOWS-1));
-    targetsShot[1]= ceil(ofRandom(nWINDOWS-1));
+    targetsShot = randomWindow();
+    mensajeria.send("targetsShot", targetsShot);
     alpha = 0;
     alphaWindow[0] = 0;
     alphaWindow[1] = 0;
@@ -89,6 +96,26 @@ void vhpGameCore::initRound(){
     winner = 0;
     delay = 90;
 }
+void vhpGameCore::initPattern(){
+    holdSteady = ceil(ofRandom(3));
+    targetsShot = randomWindow();
+    alpha = 0;
+    alphaWindow[0] = 0;
+    alphaWindow[1] = 0;
+    alpha_increment = 5;
+    clicked[0] = 0;
+    clicked[1] = 0;
+    ok[0] = false;
+    ok[1] = false;
+    hold[0] = false;
+    hold[1] = false;
+    next[0] = false;
+    next[1] = false;
+    winner = 0;
+    delay = 90;
+}
+
+
 
 // Comenzar e interrumpir los hilos y listeners de la escena ---
 
@@ -129,7 +156,42 @@ void vhpGameCore::drawGame(){
     ofSetColor(255, 255, 255);
     video.draw(0, 0);
     building.draw(0, 0);
+    drawWindows();
     drawScore();
+    ofPopStyle();
+}
+void vhpGameCore::drawWindows(){
+    ofPushStyle();
+    for (int i = 0; i<nWINDOWS; i++) {
+        switch (windowState[0][i]) {
+            case pendingW:
+                wIconRojoA[i].draw(0,0);
+                wFrameA[i].draw(0,0);
+                break;
+            case lostW:
+                wIconAzulA[i].draw(0,0);
+                break;
+            case wonW:
+                wIconRojoA[i].draw(0,0);
+                break;
+            default:
+                break;
+        }
+        switch (windowState[1][i]) {
+            case pendingW:
+                wIconAzulB[i].draw(0,0);
+                wFrameB[i].draw(0,0);
+                break;
+            case lostW:
+                wIconRojoB[i].draw(0,0);
+                break;
+            case wonW:
+                wIconAzulB[i].draw(0,0);
+                break;
+            default:
+                break;
+        }
+    }
     ofPopStyle();
 }
 
@@ -139,6 +201,7 @@ void vhpGameCore::play(){
     initRound();
     currentUpdate = &vhpGameCore::playReady;
     currentTouchPressed = &vhpGameCore::touchPressedGame;
+    mensajeria.send("gamestate", 0);
     video.play();
 }
 
@@ -187,6 +250,7 @@ void vhpGameCore::playReady(){
         alpha = 0;
         alpha_increment = -1 * alpha_increment;
         currentUpdate = &vhpGameCore::playSteady;
+        mensajeria.send("gamestate", 1);
     }
 }
 
@@ -212,6 +276,7 @@ void vhpGameCore::playSteady(){
         alpha_increment = -1 * alpha_increment;
         if (holdSteady<=0) {
             currentUpdate = &vhpGameCore::playGo;
+            mensajeria.send("gamestate", 2);
         }
         holdSteady --;
     }
@@ -237,6 +302,7 @@ void vhpGameCore::playGo(){
         alpha = 0;
         alpha_increment = -1 * alpha_increment;
         currentUpdate = &vhpGameCore::showWindow;
+        mensajeria.send("gamestate", 3);
     }
 }
 
@@ -250,17 +316,17 @@ void vhpGameCore::showWindow(){
     ofPushStyle();
     ofEnableAlphaBlending();
     ofSetColor(255,255,255,alpha);
-    windowShowA[targetsShot[0]].draw(0,0);
-    windowShowB[targetsShot[1]].draw(0,0);
+    windowShowA[targetsShot].draw(0,0);
+    windowShowB[targetsShot].draw(0,0);
     if (clicked[0]!=0) {
         ofSetColor(255,255,255,alphaWindow[0]);
-        windowA[clicked[0]].draw(0,0);
+        wClickA[clicked[0]].draw(0,0);
         alphaWindow[0] += 35;
         if (alphaWindow[0]>=255) alphaWindow[0] = 255;
     }
     if (clicked[1]!=0) {
         ofSetColor(255,255,255,alphaWindow[1]);
-        windowB[clicked[1]].draw(0,0);
+        wClickB[clicked[1]].draw(0,0);
         alphaWindow[1] += 35;
         if (alphaWindow[1]>=255) alphaWindow[1] = 255;
     }
@@ -279,36 +345,51 @@ void vhpGameCore::showWindow(){
             cout << "Time A: " << time[0] << endl;
             cout << "Time B: " << time[1] << endl;
             alpha = 0;
+            bool tie = false;
             // os dous acertaron
             if (ok[0]&&ok[1]) {
                 // gaña o mais rápido
                 if (time[0]<=time[1]) {
                     cout << "Player 0 was faster!" << endl;
                     winner = 0;
+                    windowState[0][targetsShot] = wonW;
+                    windowState[1][targetsShot] = lostW;
                 } else {
                     cout << "Player 1 was faster!" << endl;
                     winner = 1;
+                    windowState[0][targetsShot] = lostW;
+                    windowState[1][targetsShot] = wonW;
                 }
             } else {
                 // acertou só 0
                 if (ok[0]) {
                     cout << "Only 0 was succesful" << endl;
                     winner = 0;
-                    
-                    // acertou só 1
+                    windowState[0][targetsShot] = wonW;
+                    windowState[1][targetsShot] = lostW;
+                // acertou só 1
                 } else if (ok[1]) {
                     cout << "Only 1 was succesful" << endl;
                     winner = 1;
-                    
-                    // no acertou ninguén
+                    windowState[0][targetsShot] = lostW;
+                    windowState[1][targetsShot] = wonW;
+                // no acertou ninguén
                 } else {
                     cout << "Both players failed" << endl;
-                    
+                    tie = true;
                 }
             }
-            points[winner]++;
-            currentUpdate = &vhpGameCore::showWinner;
-            currentTouchPressed = &vhpGameCore::touchPressedWinner;
+            if (tie) {
+                currentUpdate = &vhpGameCore::showTie;
+                currentTouchPressed = &vhpGameCore::touchPressedWinner;
+                mensajeria.send("gamestate", 5);
+            } else {
+                points[winner]++;
+                currentUpdate = &vhpGameCore::showWinner;
+                currentTouchPressed = &vhpGameCore::touchPressedWinner;
+                mensajeria.send("gamestate", 4);
+            }
+            
         }
     }
 }
@@ -324,11 +405,14 @@ void vhpGameCore::showWinner(){
     ofSetColor(255,255,255,alpha);
     winnerBackground[winner].draw(0,0);
     ofSetColor(255, 255, 255);
+    
+    /*
     if (winner==0) {
         TTF.drawString("¡Rojo gana ronda 1!", 520, 180);
     } else {
         TTF.drawString("¡Azul gana ronda 1!", 520, 180);
     }
+     */
     winnerButton[0].draw(0,0);
     winnerButton[1].draw(0,0);
     ofDisableAlphaBlending();
@@ -340,6 +424,30 @@ void vhpGameCore::showWinner(){
         //currentUpdate = &vhpGameCore::playScreenSaver;
     }
 }
+
+
+// Show Tie -----------------------------------
+void vhpGameCore::showTie(){
+    // Reproduce el video y lo dibuja en el FBO
+    video.update();
+    fbo.begin();
+    drawGame();
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    ofSetColor(255, 255, 255);
+    tie.draw(0,0);
+    winnerButton[0].draw(0,0);
+    winnerButton[1].draw(0,0);
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    fbo.end();
+    alpha += alpha_increment;
+    if (alpha>=255) {
+        alpha = 255;
+        //currentUpdate = &vhpGameCore::playScreenSaver;
+    }
+}
+
 
 // Eventos ------------------------------------------------------
 
@@ -362,41 +470,48 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                 // Window 1
                 if (_x<=171) {
                     clicked[0] = 0;
+                    mensajeria.send("windowclick/a", 0);
                     cout << "Window 0" << endl;
                     
                     // Window 2
                 } else if (_x<=316) {
                     clicked[0] = 1;
+                    mensajeria.send("windowclick/a", 1);
                     cout << "Window 1" << endl;
                     
                     // Window 3
                 } else if (_x<=455) {
                     clicked[0] = 2;
+                    mensajeria.send("windowclick/a", 2);
                     cout << "Window 2" << endl;
                     
                     // Window 4
                 } else if (_x<=587) {
                     clicked[0] = 3;
+                    mensajeria.send("windowclick/a", 3);
                     cout << "Window 3" << endl;
                     
                     // Window 5
                 } else if (_x<=711) {
                     clicked[0] = 4;
+                    mensajeria.send("windowclick/a", 4);
                     cout << "Window 4" << endl;
                     
                     // Window 6
                 } else if (_x<=832) {
                     clicked[0] = 5;
+                    mensajeria.send("windowclick/a", 5);
                     cout << "Window 5" << endl;
                     
                     // Window 7
                 } else {
                     clicked[0] = 6;
+                    mensajeria.send("windowclick/a", 6);
                     cout << "Window 6" << endl;
                     
                 }
-                if (clicked[0]==targetsShot[0]) ok[0] = true;
-                cout << "TargetShot " << targetsShot[0] << endl;
+                if (clicked[0]==targetsShot) ok[0] = true;
+                cout << "TargetShot " << targetsShot << endl;
             }
         // Player B
         } else {
@@ -406,41 +521,48 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                 // Window 7
                 if (_x<=1088) {
                     clicked[1] = 6;
+                    mensajeria.send("windowclick/b", 6);
                     cout << "Window 6" << endl;
                     
                     // Window 6
                 } else if (_x<=1210) {
                     clicked[1] = 5;
+                    mensajeria.send("windowclick/b", 5);
                     cout << "Window 5" << endl;
                     
                     // Window 5
                 } else if (_x<=1334) {
                     clicked[1] = 4;
+                    mensajeria.send("windowclick/b", 4);
                     cout << "Window 4" << endl;
                     
                     // Window 4
                 } else if (_x<=1466) {
                     clicked[1] = 3;
+                    mensajeria.send("windowclick/b", 3);
                     cout << "Window 3" << endl;
                     
                     // Window 3
                 } else if (_x<=1603) {
                     clicked[1] = 2;
+                    mensajeria.send("windowclick/b", 2);
                     cout << "Window 2" << endl;
                     
                     // Window 2
                 } else if (_x<=1748) {
                     clicked[1] = 1;
+                    mensajeria.send("windowclick/b", 1);
                     cout << "Window 1" << endl;
                     
                     // Window 1
                 } else {
                     clicked[1] = 0;
+                    mensajeria.send("windowclick/b", 0);
                     cout << "Window 0" << endl;
                     
                 }
-                if (clicked[1]==targetsShot[1]) ok[1] = true;
-                cout << "TargetShot " << targetsShot[1] << endl;
+                if (clicked[1]==targetsShot) ok[1] = true;
+                cout << "TargetShot " << targetsShot << endl;
             }
         }
     }
@@ -461,12 +583,12 @@ void vhpGameCore::touchPressedWinner(float & _x, float & _y){
                 initRound();
                 currentRound++;
                 // cuatro primeras rondas
-                if (currentRound<5) {
+                if (currentRound<nROUNDS) {
                     currentUpdate = &vhpGameCore::playReady;
                     currentTouchPressed = &vhpGameCore::touchPressedGame;
                 // última ronda
                 } else {
-                    
+                    randomPattern();
                 }
             }
         // Player B
@@ -477,17 +599,66 @@ void vhpGameCore::touchPressedWinner(float & _x, float & _y){
                 initRound();
                 currentRound++;
                 // cuatro primeras rondas
-                if (currentRound<5) {
+                if (currentRound<nROUNDS) {
                     currentUpdate = &vhpGameCore::playReady;
                     currentTouchPressed = &vhpGameCore::touchPressedGame;
                 
                 // última ronda
                 } else {
-                    
+                    randomPattern();
                 }
             }
         }
     }
 }
+
+
+int vhpGameCore::randomWindow(){
+    vector<int> nums;
+    for (int i=0; i<nWINDOWS; i++) {
+        if (windowState[0][i]==pendingW) {
+            nums.push_back(i);
+        }
+    }
+    return nums[ceil(ofRandom(nums.size()-1))];
+}
+void vhpGameCore::randomPattern(){
+    int first = ceil(ofRandom(3));
+    int u = 0;
+    vector<int> nums;
+    for (int i=0; i<nWINDOWS; i++) {
+        if (windowState[0][i]==pendingW) {
+            if (u==first) {
+                targetsPattern[0]= i;
+                cout << "targetsPattern[0]=" << i << endl;
+                u++;
+            } else {
+                nums.push_back(i);
+                u++;
+            }
+        }
+    }
+    int second = ceil(nums.size()-1);
+    vector<int> snums;
+    for (int i=0; i<nums.size(); i++) {
+        if (i==second) {
+            targetsPattern[1]= nums[i];
+            cout << "targetsPattern[1]=" << nums[i] << endl;
+        } else {
+            snums.push_back(i);
+        }
+    }
+    int third = ceil(snums.size()-1);
+    for (int i=0; i<snums.size(); i++) {
+        if (i==third) {
+            targetsPattern[2]= snums[i];
+            cout << "targetsPattern[2]=" << snums[i] << endl;
+        } else {
+            targetsPattern[3]= snums[i];
+            cout << "targetsPattern[3]=" << snums[i] << endl;
+        }
+    }
+}
+
 
 ofEvent <int> vhpGameCore::onClick;

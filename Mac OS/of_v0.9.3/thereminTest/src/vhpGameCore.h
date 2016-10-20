@@ -6,7 +6,7 @@
 #include "vhpGcThread.h"
 
 #define nWINDOWS        7
-#define nROUNDS         4
+#define nROUNDS         3
 
 #define lostW           0
 #define wonW            1
@@ -26,7 +26,8 @@ class vhpGameCore {
         void setup(vhpGcThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
         void initGame();
         void initRound();
-                   
+        void initPattern();
+    
         // Comenzar e interrumpir los hilos y listeners de la escena
         void start();
         void stop();
@@ -39,6 +40,7 @@ class vhpGameCore {
         // Dibujado de elementos
         void drawScore();
         void drawGame();
+        void drawWindows();
     
         // reproducir o detener la escena modificando currentUpdate
         void play();
@@ -53,6 +55,7 @@ class vhpGameCore {
         void playGo();
         void showWindow();
         void showWinner();
+        void showTie();
     
         // Para recoger la pulsación del ratón en la pantalla
         void touchPressed(float & _x, float & _y);
@@ -60,7 +63,13 @@ class vhpGameCore {
         void touchPressedGame(float & _x, float & _y);
         void touchPressedWinner(float & _x, float & _y);
     
+    
+        int randomWindow();
+        void randomPattern();
+    
         /* Variables o propiedades */
+    
+        vhpOSC                      mensajeria;
     
         // Video de fondo
         ofVideoPlayer       video;
@@ -75,9 +84,19 @@ class vhpGameCore {
         ofImage             ready;
         ofImage             steady;
         ofImage             go;
+        ofImage             tie;
         ofImage             building;
-        ofImage             windowA[nWINDOWS];
-        ofImage             windowB[nWINDOWS];
+    
+        ofImage             wClickA[nWINDOWS];
+        ofImage             wClickB[nWINDOWS];
+        ofImage             wFrameA[nWINDOWS];
+        ofImage             wFrameB[nWINDOWS];
+        ofImage             wIconAzulA[nWINDOWS];
+        ofImage             wIconAzulB[nWINDOWS];
+        ofImage             wIconRojoA[nWINDOWS];
+        ofImage             wIconRojoB[nWINDOWS];
+    
+    
         int                 windowState[2][7];
         ofImage             windowShowA[nWINDOWS];
         ofImage             windowShowB[nWINDOWS];
@@ -98,7 +117,8 @@ class vhpGameCore {
         bool            next[2];
         int             winner;
         int             holdSteady;
-        int             targetsShot[2];
+        int             targetsShot;
+        int             targetsPattern[4];
         int             currentRound;
         int             delay;
     

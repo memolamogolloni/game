@@ -56,7 +56,8 @@ void vhpGame::setup(){
     niveisLoaded = false;
     xogoLoaded = false;
     
-    mensajeria.setOSC(videoList);
+    mensajeria.setOSC(videoList, "SENDER1");
+    xogo.mensajeria.setOSC(videoList, "SENDER2");
     
     currentUpdate = &vhpGame::updateLoading;
     currentDraw = &vhpGame::drawLoading;

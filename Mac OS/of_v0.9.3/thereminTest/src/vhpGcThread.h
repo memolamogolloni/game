@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofEvents.h"
+#include "vhpOSC.h"
 
 
 class vhpGcThread: public ofThread {
