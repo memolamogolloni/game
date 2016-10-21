@@ -4,6 +4,7 @@
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
 #include "vhpGcThread.h"
+#include "ofxThreadedImageLoader.h"
 
 #define nWINDOWS        7
 #define nROUNDS         3
@@ -56,6 +57,7 @@ class vhpGameCore {
         void showWindow();
         void showWinner();
         void showTie();
+        void showPattern();
     
         // Para recoger la pulsación del ratón en la pantalla
         void touchPressed(float & _x, float & _y);
@@ -66,6 +68,8 @@ class vhpGameCore {
     
         int randomWindow();
         void randomPattern();
+        void setTimeReference();
+        float getElapsedtime();
     
         /* Variables o propiedades */
     
@@ -79,7 +83,7 @@ class vhpGameCore {
     
         // Elementos gráficos
         int                 alpha;
-        int                 alphaWindow[2];
+        int                 alphaWindow[4];
         int                 alpha_increment;
         ofImage             ready;
         ofImage             steady;
@@ -87,19 +91,27 @@ class vhpGameCore {
         ofImage             tie;
         ofImage             building;
     
-        ofImage             wClickA[nWINDOWS];
-        ofImage             wClickB[nWINDOWS];
-        ofImage             wFrameA[nWINDOWS];
-        ofImage             wFrameB[nWINDOWS];
-        ofImage             wIconAzulA[nWINDOWS];
-        ofImage             wIconAzulB[nWINDOWS];
-        ofImage             wIconRojoA[nWINDOWS];
-        ofImage             wIconRojoB[nWINDOWS];
-    
+        ofxThreadedImageLoader      loader;
+        vector<ofImage>             wClickA;
+        vector<ofImage>             wClickB;
+        vector<ofImage>             wFrameA;
+        vector<ofImage>             wFrameB;
+        vector<ofImage>             wIconAzulA;
+        vector<ofImage>             wIconAzulB;
+        vector<ofImage>             wIconRojoA;
+        vector<ofImage>             wIconRojoB;
+        vector<ofImage>             wPurpleA;
+        vector<ofImage>             wYellowA;
+        vector<ofImage>             wBlueA;
+        vector<ofImage>             wGreenA;
+        vector<ofImage>             wPurpleB;
+        vector<ofImage>             wYellowB;
+        vector<ofImage>             wBlueB;
+        vector<ofImage>             wGreenB;
+        vector<ofImage>             windowShowA;
+        vector<ofImage>             windowShowB;
     
         int                 windowState[2][7];
-        ofImage             windowShowA[nWINDOWS];
-        ofImage             windowShowB[nWINDOWS];
         ofImage             winnerBackground[2];
         ofImage             winnerButton[2];
         ofImage             score[2];
@@ -121,6 +133,8 @@ class vhpGameCore {
         int             targetsPattern[4];
         int             currentRound;
         int             delay;
+    
+        float           tRef;
     
         // notificación de eventos
         static ofEvent<int> onClick;
