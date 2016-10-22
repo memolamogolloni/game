@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup>
+		<ClCompile Include="src\testApp.cpp">
+			<Filter>src</Filter>
+		</ClCompile>
+		<ClCompile Include="src\main.cpp">
+			<Filter>src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxWin7\src\GestureEngine.cpp">
+			<Filter>addons\ofxWin7\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxWin7\src\ofBaseTouchApp.cpp">
+			<Filter>addons\ofxWin7\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxWin7\src\ofWinGestureEngine.cpp">
+			<Filter>addons\ofxWin7\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxWin7\src\ofWinGlutWindow.cpp">
+			<Filter>addons\ofxWin7\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxWin7\src\ofWinTouchEngine.cpp">
+			<Filter>addons\ofxWin7\src</Filter>
+		</ClCompile>
+	</ItemGroup>
+	<ItemGroup>
+		<Filter Include="src">
+			<UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons">
+			<UniqueIdentifier>{71834F65-F3A9-211E-73B8-DC85}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxWin7">
+			<UniqueIdentifier>{4A0CE742-51FE-7453-9512-E61C}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxWin7\src">
+			<UniqueIdentifier>{CD8A5311-5F87-8B60-EFBE-E3B4}</UniqueIdentifier>
+		</Filter>
+	</ItemGroup>
+	<ItemGroup>
+		<ClInclude Include="src\testApp.h">
+			<Filter>src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxWin7\src\GestureEngine.h">
+			<Filter>addons\ofxWin7\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxWin7\src\ofBaseTouchApp.h">
+			<Filter>addons\ofxWin7\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxWin7\src\ofWinGestureEngine.h">
+			<Filter>addons\ofxWin7\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxWin7\src\ofWinGlutWindow.h">
+			<Filter>addons\ofxWin7\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxWin7\src\ofWinTouchEngine.h">
+			<Filter>addons\ofxWin7\src</Filter>
+		</ClInclude>
+	</ItemGroup>
+	<ItemGroup>
+		<ResourceCompile Include="icon.rc" />
+	</ItemGroup>
+</Project>
