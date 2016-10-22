@@ -2,7 +2,7 @@
 
 // Constructor -------------------------------------------------
 
-vhpGameCore::vhpGameCore(): scale(1.0){
+vhpGameCore::vhpGameCore(): scale(1.0), loaded(false), loading(false){
 
 }
 
@@ -19,77 +19,44 @@ void vhpGameCore::setup(vhpGcThread* _controller, ofxXmlSettings& _videoList, st
         _videoList.pushTag(_videoTag, n-1);
         int num = _videoList.getNumTags("VIDEO");
         cout << num << " videos in " << _videoTag << " " << _videoList.getValue("VIDEO", "", 0) << endl;
-        if(num > 0) video.load(_videoList.getValue("VIDEO", "", 0));
+        if(num > 0) videoFile = _videoList.getValue("VIDEO", "", 0);
         _videoList.popTag();
     }
-    building.load("images/fondo-edificio.png");
-    score[0].load("images/red-bar.png");
-    score[1].load("images/blue-bar.png");
-    ready.load("images/ready.png");
-    steady.load("images/steady.png");
-    winnerBackground[0].load("images/red-wins.png");
-    winnerBackground[1].load("images/blue-wins.png");
-    winnerButton[0].load("images/red-wins-button.png");
-    winnerButton[1].load("images/blue-wins-button.png");
-    go.load("images/go.png");
-    tie.load("images/empate.png");
-    wClickA.resize(nWINDOWS);
-    wClickB.resize(nWINDOWS);
-    wFrameA.resize(nWINDOWS);
-    wFrameB.resize(nWINDOWS);
-    wIconAzulA.resize(nWINDOWS);
-    wIconAzulB.resize(nWINDOWS);
-    wIconRojoA.resize(nWINDOWS);
-    wIconRojoB.resize(nWINDOWS);
-    wPurpleA.resize(nWINDOWS);
-    wYellowA.resize(nWINDOWS);
-    wBlueA.resize(nWINDOWS);
-    wGreenA.resize(nWINDOWS);
-    wPurpleB.resize(nWINDOWS);
-    wYellowB.resize(nWINDOWS);
-    wBlueB.resize(nWINDOWS);
-    wGreenB.resize(nWINDOWS);
-    windowShowA.resize(nWINDOWS);
-    windowShowB.resize(nWINDOWS);
-    for (int i = 0; i<nWINDOWS; i++) {
-        loader.loadFromDisk(wClickA[i],"images/1P-Boton-0"+ ofToString(i) +".png");
-        loader.loadFromDisk(wClickB[i],"images/2P-Boton-0"+ ofToString(i) +".png");
-        loader.loadFromDisk(wFrameA[i],"images/marco-rojo-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wFrameB[i],"images/marco-azul-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wIconAzulA[i],"images/azul-a-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wIconAzulB[i],"images/azul-b-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wIconRojoA[i],"images/rojo-a-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wIconRojoB[i],"images/rojo-b-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(windowShowA[i],"images/click-a-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(windowShowB[i],"images/click-b-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wPurpleA[i],"images/ronda-a1-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wYellowA[i],"images/ronda-a2-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wBlueA[i],"images/ronda-a3-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wGreenA[i],"images/ronda-a4-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wPurpleB[i],"images/ronda-b1-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wYellowB[i],"images/ronda-b2-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wBlueB[i],"images/ronda-b3-"+ ofToString(i+1) +".png");
-        loader.loadFromDisk(wGreenB[i],"images/ronda-b4-"+ ofToString(i+1) +".png");
-    }
-    alpha = 0;
-    alpha_increment = 5;
     
+    // Añadir las imágenes Sueltas
+    loadingSilge.push_back(&building);
+    filesSingle.push_back("fondo-edificio");
+    loadingSilge.push_back(&score[0]);
+    filesSingle.push_back("red-bar");
+    loadingSilge.push_back(&score[1]);
+    filesSingle.push_back("blue-bar");
+    loadingSilge.push_back(&ready);
+    filesSingle.push_back("ready");
+    loadingSilge.push_back(&steady);
+    filesSingle.push_back("steady");
+    loadingSilge.push_back(&go);
+    filesSingle.push_back("go");
+    loadingSilge.push_back(&tie);
+    filesSingle.push_back("empate");
+    loadingSilge.push_back(&winnerBackground[0]);
+    filesSingle.push_back("red-wins");
+    loadingSilge.push_back(&winnerBackground[1]);
+    filesSingle.push_back("blue-wins");
+    loadingSilge.push_back(&winnerButton[0]);
+    filesSingle.push_back("red-wins-button");
+    loadingSilge.push_back(&winnerButton[1]);
+    filesSingle.push_back("blue-wins-button");
+    
+    // Añadir las fuentes
     TTF.load("fonts/titilliumweblight.ttf", 70);
+    
+    currentLoad = &vhpGameCore::loadVideo;
     
     // Inicializar las variables
     currentScene = _currentScene;   // SCREENSAVER
     targetScene = _targetScene;     // PLAYERMENU
-    width = video.getWidth();
-    height = video.getHeight();
-    
-    cout << " video width: " << width << " height: " << height << endl;
-    
-    fbo.allocate(width, height, GL_RGBA);
-    
-    // clean FBO
-    fbo.begin();
-    ofClear(255,255,255, 0);
-    fbo.end();
+    alpha = 0;
+    alpha_increment = 5;
     
 }
 void vhpGameCore::initGame(){
@@ -144,6 +111,186 @@ void vhpGameCore::initPattern(){
 }
 
 
+// Precarga de todos los elementos -----------------------------
+void vhpGameCore::load(){
+    (*this.*currentLoad)();
+}
+void vhpGameCore::loadVideo(){
+    if (!loaded) {
+        if (video.isLoaded()) {
+            cout << "video: " << videoFile << " is loaded!" << endl;
+            width = video.getWidth();
+            height = video.getHeight();
+            cout << " video width: " << width << " height: " << height << endl;
+            fbo.allocate(width, height, GL_RGBA);
+            // clean FBO
+            fbo.begin();
+            ofClear(255,255,255, 0);
+            fbo.end();
+            loading = false;
+            currentLoad = &vhpGameCore::loadWindows;
+        } else if (!loading) {
+            video.load(videoFile);
+            loading = true;
+        }
+    }
+}
+void vhpGameCore::loadWindows(){
+     if (!loaded) {
+         int actual = files.size() - 1;
+         if ((actual>=0)&&(!loadedImages[actual])) {
+             int count = loadingWindows->size();
+             if (count<nWINDOWS) {
+                 if (!loading) {
+                     loadingWindows->push_back(ofImage());
+                     (*loadingWindows)[count].load("images/"+ files[actual] + ofToString(count+1) +".png");
+                     cout << "image " << count << ": images/"+ files[actual] + ofToString(count+1) +".png" << endl;
+                     loading = true;
+                 } else {
+                     if((*loadingWindows)[count-1].isAllocated()) {
+                         cout << "image "+ ofToString(count-1) +" loaded!" << endl;
+                         loading = false;
+                     }
+                 }
+             } else {
+                 if((*loadingWindows)[count-1].isAllocated()) {
+                     cout << "image "+ ofToString(count-1) +" loaded!" << endl;
+                     loading = false;
+                     loadedImages[actual] = true;
+                 }
+             }
+         } else {
+             if (actual<17) {
+                 cout << "nextLoad();" << endl;
+                 nextWindows();
+             } else {
+                 cout << "loading windows finished!" << endl;
+                 currentLoad = &vhpGameCore::loadSingle;
+             }
+             
+         }
+    }
+}
+void vhpGameCore::nextWindows(){
+    int count = files.size();
+    switch (count) {
+        case 0:
+            files.push_back("marco-rojo-");
+            loadedImages.push_back(false);
+            loadingWindows = &wFrameA;
+            break;
+        case 1:
+            files.push_back("marco-azul-");
+            loadedImages.push_back(false);
+            loadingWindows = &wFrameB;
+            break;
+        case 2:
+            files.push_back("azul-a-");
+            loadedImages.push_back(false);
+            loadingWindows = &wIconAzulA;
+            break;
+        case 3:
+            files.push_back("azul-b-");
+            loadedImages.push_back(false);
+            loadingWindows = &wIconAzulB;
+            break;
+        case 4:
+            files.push_back("rojo-a-");
+            loadedImages.push_back(false);
+            loadingWindows = &wIconRojoA;
+            break;
+        case 5:
+            files.push_back("rojo-b-");
+            loadedImages.push_back(false);
+            loadingWindows = &wIconRojoB;
+            break;
+        case 6:
+            files.push_back("click-a-");
+            loadedImages.push_back(false);
+            loadingWindows = &windowShowA;
+            break;
+        case 7:
+            files.push_back("click-b-");
+            loadedImages.push_back(false);
+            loadingWindows = &windowShowB;
+            break;
+        case 8:
+            files.push_back("ronda-a1-");
+            loadedImages.push_back(false);
+            loadingWindows = &wPurpleA;
+            break;
+        case 9:
+            files.push_back("ronda-a2-");
+            loadedImages.push_back(false);
+            loadingWindows = &wYellowA;
+            break;
+        case 10:
+            files.push_back("ronda-a3-");
+            loadedImages.push_back(false);
+            loadingWindows = &wBlueA;
+            break;
+        case 11:
+            files.push_back("ronda-a4-");
+            loadedImages.push_back(false);
+            loadingWindows = &wGreenA;
+            break;
+        case 12:
+            files.push_back("ronda-b1-");
+            loadedImages.push_back(false);
+            loadingWindows = &wPurpleB;
+            break;
+        case 13:
+            files.push_back("ronda-b2-");
+            loadedImages.push_back(false);
+            loadingWindows = &wYellowB;
+            break;
+        case 14:
+            files.push_back("ronda-b3-");
+            loadedImages.push_back(false);
+            loadingWindows = &wBlueB;
+            break;
+        case 15:
+            files.push_back("ronda-b4-");
+            loadedImages.push_back(false);
+            loadingWindows = &wGreenB;
+            break;
+        case 16:
+            files.push_back("1P-Boton-0");
+            loadedImages.push_back(false);
+            loadingWindows = &wClickA;
+            break;
+        case 17:
+            files.push_back("2P-Boton-0");
+            loadedImages.push_back(false);
+            loadingWindows = &wClickB;
+            break;
+        default:
+            break;
+    }
+}
+void vhpGameCore::loadSingle(){
+    if (!loaded) {
+        cout << "loadSingle() " << filesSingle.size() << endl;
+        int actual = filesSingle.size() -1;
+        if (actual>=0) {
+            if(loadingSilge[actual]->isAllocated()) {
+                loadingSilge.pop_back();
+                filesSingle.pop_back();
+                loading = false;
+            } else {
+                if (!loading) {
+                    loadingSilge[actual]->load("images/"+ filesSingle[actual] +".png");
+                    cout << "images/"+ filesSingle[actual] +".png" << endl;
+                    loading = true;
+                }
+            }
+            
+        } else {
+            cout << "loading single images finished!" << endl;
+            loaded = true;
+        }
+    }
+}
 
 // Comenzar e interrumpir los hilos y listeners de la escena ---
 

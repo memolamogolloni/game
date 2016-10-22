@@ -4,7 +4,6 @@
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
 #include "vhpGcThread.h"
-#include "ofxThreadedImageLoader.h"
 
 #define nWINDOWS        7
 #define nROUNDS         3
@@ -28,6 +27,14 @@ class vhpGameCore {
         void initGame();
         void initRound();
         void initPattern();
+    
+        // Precarga de todos los elementos
+        void load();
+        void (vhpGameCore::*currentLoad)();
+        void loadVideo();
+        void loadWindows();
+        void loadSingle();
+        void nextWindows();
     
         // Comenzar e interrumpir los hilos y listeners de la escena
         void start();
@@ -77,6 +84,7 @@ class vhpGameCore {
     
         // Video de fondo
         ofVideoPlayer       video;
+        string              videoFile;
         ofFbo               fbo;
         int                 width;
         int                 height;
@@ -91,7 +99,7 @@ class vhpGameCore {
         ofImage             tie;
         ofImage             building;
     
-        ofxThreadedImageLoader      loader;
+    
         vector<ofImage>             wClickA;
         vector<ofImage>             wClickB;
         vector<ofImage>             wFrameA;
@@ -110,6 +118,14 @@ class vhpGameCore {
         vector<ofImage>             wGreenB;
         vector<ofImage>             windowShowA;
         vector<ofImage>             windowShowB;
+    
+        vector<ofImage*>            loadingSilge;
+        vector<string>              filesSingle;
+        vector<ofImage>*            loadingWindows;
+        vector<string>              files;
+        vector<bool>                loadedImages;
+        bool                        loaded;
+        bool                        loading;
     
         int                 windowState[2][7];
         ofImage             winnerBackground[2];

@@ -42,7 +42,8 @@ class vhpGame {
         void toggleScale();
     
         // loading
-        void updateLoading();
+        void loadScreenSaver();
+        void loadGame();
         void drawLoading();
     
         // ScreenSaver
