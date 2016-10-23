@@ -2,7 +2,7 @@
 
 // Constructor -------------------------------------------------
 
-vhpGameCore::vhpGameCore(): scale(1.0){
+vhpGameCore::vhpGameCore(): scale(1.0), loaded(false), loading(false){
 
 }
 
@@ -19,44 +19,44 @@ void vhpGameCore::setup(vhpGcThread* _controller, ofxXmlSettings& _videoList, st
         _videoList.pushTag(_videoTag, n-1);
         int num = _videoList.getNumTags("VIDEO");
         cout << num << " videos in " << _videoTag << " " << _videoList.getValue("VIDEO", "", 0) << endl;
-        if(num > 0) video.loadMovie(_videoList.getValue("VIDEO", "", 0));
+        if(num > 0) videoFile = _videoList.getValue("VIDEO", "", 0);
         _videoList.popTag();
     }
-    building.loadImage("images/fondo-edificio.png");
-    score[0].loadImage("images/red-bar.png");
-    score[1].loadImage("images/blue-bar.png");
-    ready.loadImage("images/ready.png");
-    steady.loadImage("images/steady.png");
-    winnerBackground[0].loadImage("images/red-wins.png");
-    winnerBackground[1].loadImage("images/blue-wins.png");
-    winnerButton[0].loadImage("images/red-wins-button.png");
-    winnerButton[1].loadImage("images/blue-wins-button.png");
-    go.loadImage("images/go.png");
-    for (int i = 0; i<nWINDOWS; i++) {
-        windowA[i].loadImage("images/1P-Boton-0"+ ofToString(i) +".png");
-        windowB[i].loadImage("images/2P-Boton-0"+ ofToString(i) +".png");
-        windowShowA[i].loadImage("images/window_ashow_0"+ ofToString(i) +".png");
-        windowShowB[i].loadImage("images/window_bshow_0"+ ofToString(i) +".png");
-    }
-    alpha = 0;
-    alpha_increment = 5;
     
-    TTF.loadFont("fonts/TitilliumWeb-Light.ttf", 70);
+    // Añadir las imágenes Sueltas
+    loadingSilge.push_back(&building);
+    filesSingle.push_back("fondo-edificio");
+    loadingSilge.push_back(&score[0]);
+    filesSingle.push_back("red-bar");
+    loadingSilge.push_back(&score[1]);
+    filesSingle.push_back("blue-bar");
+    loadingSilge.push_back(&ready);
+    filesSingle.push_back("ready");
+    loadingSilge.push_back(&steady);
+    filesSingle.push_back("steady");
+    loadingSilge.push_back(&go);
+    filesSingle.push_back("go");
+    loadingSilge.push_back(&tie);
+    filesSingle.push_back("empate");
+    loadingSilge.push_back(&winnerBackground[0]);
+    filesSingle.push_back("red-wins");
+    loadingSilge.push_back(&winnerBackground[1]);
+    filesSingle.push_back("blue-wins");
+    loadingSilge.push_back(&winnerButton[0]);
+    filesSingle.push_back("red-wins-button");
+    loadingSilge.push_back(&winnerButton[1]);
+    filesSingle.push_back("blue-wins-button");
+    
+    // Añadir las fuentes
+    TTF.loadFont("fonts/titilliumweblight.ttf", 70);
+    
+    currentLoad = &vhpGameCore::loadVideo;
     
     // Inicializar las variables
     currentScene = _currentScene;   // SCREENSAVER
     targetScene = _targetScene;     // PLAYERMENU
-    width = video.getWidth();
-    height = video.getHeight();
-    
-    cout << " video width: " << width << " height: " << height << endl;
-    
-    fbo.allocate(width, height, GL_RGBA);
-    
-    // clean FBO
-    fbo.begin();
-    ofClear(255,255,255, 0);
-    fbo.end();
+    alpha = 0;
+    alpha_increment = 5;
     
 }
 void vhpGameCore::initGame(){
@@ -72,11 +72,12 @@ void vhpGameCore::initGame(){
 }
 void vhpGameCore::initRound(){
     holdSteady = ceil(ofRandom(3));
-    targetsShot[0]= ceil(ofRandom(nWINDOWS-1));
-    targetsShot[1]= ceil(ofRandom(nWINDOWS-1));
+    targetsShot = randomWindow();
+    mensajeria.send("targetsShot", targetsShot);
     alpha = 0;
-    alphaWindow[0] = 0;
-    alphaWindow[1] = 0;
+    for (int i=0; i<4; i++) {
+        alphaWindow[i] = 0;
+    }
     alpha_increment = 5;
     clicked[0] = 0;
     clicked[1] = 0;
@@ -88,6 +89,207 @@ void vhpGameCore::initRound(){
     next[1] = false;
     winner = 0;
     delay = 90;
+}
+void vhpGameCore::initPattern(){
+    holdSteady = ceil(ofRandom(3));
+    targetsShot = randomWindow();
+    alpha = 0;
+    for (int i=0; i<4; i++) {
+        alphaWindow[i] = 0;
+    }
+    alpha_increment = 5;
+    clicked[0] = 0;
+    clicked[1] = 0;
+    ok[0] = false;
+    ok[1] = false;
+    hold[0] = false;
+    hold[1] = false;
+    next[0] = false;
+    next[1] = false;
+    winner = 0;
+    delay = 90;
+}
+
+
+// Precarga de todos los elementos -----------------------------
+void vhpGameCore::load(){
+    (*this.*currentLoad)();
+}
+void vhpGameCore::loadVideo(){
+    if (!loaded) {
+        if (video.isLoaded()) {
+            cout << "video: " << videoFile << " is loaded!" << endl;
+            width = video.getWidth();
+            height = video.getHeight();
+            cout << " video width: " << width << " height: " << height << endl;
+            fbo.allocate(width, height, GL_RGBA);
+            // clean FBO
+            fbo.begin();
+            ofClear(255,255,255, 0);
+            fbo.end();
+            loading = false;
+            currentLoad = &vhpGameCore::loadWindows;
+        } else if (!loading) {
+            video.loadMovie(videoFile);
+            loading = true;
+        }
+    }
+}
+void vhpGameCore::loadWindows(){
+     if (!loaded) {
+         int actual = files.size() - 1;
+         if ((actual>=0)&&(!loadedImages[actual])) {
+             int count = loadingWindows->size();
+             if (count<nWINDOWS) {
+                 if (!loading) {
+                     loadingWindows->push_back(ofImage());
+                     (*loadingWindows)[count].loadImage("images/"+ files[actual] + ofToString(count+1) +".png");
+                     cout << "image " << count << ": images/"+ files[actual] + ofToString(count+1) +".png" << endl;
+                     loading = true;
+                 } else {
+                     if((*loadingWindows)[count-1].isAllocated()) {
+                         cout << "image "+ ofToString(count-1) +" loaded!" << endl;
+                         loading = false;
+                     }
+                 }
+             } else {
+                 if((*loadingWindows)[count-1].isAllocated()) {
+                     cout << "image "+ ofToString(count-1) +" loaded!" << endl;
+                     loading = false;
+                     loadedImages[actual] = true;
+                 }
+             }
+         } else {
+             if (actual<17) {
+                 cout << "nextLoad();" << endl;
+                 nextWindows();
+             } else {
+                 cout << "loading windows finished!" << endl;
+                 currentLoad = &vhpGameCore::loadSingle;
+             }
+             
+         }
+    }
+}
+void vhpGameCore::nextWindows(){
+    int count = files.size();
+    switch (count) {
+        case 0:
+            files.push_back("marco-rojo-");
+            loadedImages.push_back(false);
+            loadingWindows = &wFrameA;
+            break;
+        case 1:
+            files.push_back("marco-azul-");
+            loadedImages.push_back(false);
+            loadingWindows = &wFrameB;
+            break;
+        case 2:
+            files.push_back("azul-a-");
+            loadedImages.push_back(false);
+            loadingWindows = &wIconAzulA;
+            break;
+        case 3:
+            files.push_back("azul-b-");
+            loadedImages.push_back(false);
+            loadingWindows = &wIconAzulB;
+            break;
+        case 4:
+            files.push_back("rojo-a-");
+            loadedImages.push_back(false);
+            loadingWindows = &wIconRojoA;
+            break;
+        case 5:
+            files.push_back("rojo-b-");
+            loadedImages.push_back(false);
+            loadingWindows = &wIconRojoB;
+            break;
+        case 6:
+            files.push_back("click-a-");
+            loadedImages.push_back(false);
+            loadingWindows = &windowShowA;
+            break;
+        case 7:
+            files.push_back("click-b-");
+            loadedImages.push_back(false);
+            loadingWindows = &windowShowB;
+            break;
+        case 8:
+            files.push_back("ronda-a1-");
+            loadedImages.push_back(false);
+            loadingWindows = &wPurpleA;
+            break;
+        case 9:
+            files.push_back("ronda-a2-");
+            loadedImages.push_back(false);
+            loadingWindows = &wYellowA;
+            break;
+        case 10:
+            files.push_back("ronda-a3-");
+            loadedImages.push_back(false);
+            loadingWindows = &wBlueA;
+            break;
+        case 11:
+            files.push_back("ronda-a4-");
+            loadedImages.push_back(false);
+            loadingWindows = &wGreenA;
+            break;
+        case 12:
+            files.push_back("ronda-b1-");
+            loadedImages.push_back(false);
+            loadingWindows = &wPurpleB;
+            break;
+        case 13:
+            files.push_back("ronda-b2-");
+            loadedImages.push_back(false);
+            loadingWindows = &wYellowB;
+            break;
+        case 14:
+            files.push_back("ronda-b3-");
+            loadedImages.push_back(false);
+            loadingWindows = &wBlueB;
+            break;
+        case 15:
+            files.push_back("ronda-b4-");
+            loadedImages.push_back(false);
+            loadingWindows = &wGreenB;
+            break;
+        case 16:
+            files.push_back("1P-Boton-0");
+            loadedImages.push_back(false);
+            loadingWindows = &wClickA;
+            break;
+        case 17:
+            files.push_back("2P-Boton-0");
+            loadedImages.push_back(false);
+            loadingWindows = &wClickB;
+            break;
+        default:
+            break;
+    }
+}
+void vhpGameCore::loadSingle(){
+    if (!loaded) {
+        cout << "loadSingle() " << filesSingle.size() << endl;
+        int actual = filesSingle.size() -1;
+        if (actual>=0) {
+            if(loadingSilge[actual]->isAllocated()) {
+                loadingSilge.pop_back();
+                filesSingle.pop_back();
+                loading = false;
+            } else {
+                if (!loading) {
+                    loadingSilge[actual]->loadImage("images/"+ filesSingle[actual] +".png");
+                    cout << "images/"+ filesSingle[actual] +".png" << endl;
+                    loading = true;
+                }
+            }
+            
+        } else {
+            cout << "loading single images finished!" << endl;
+            loaded = true;
+        }
+    }
 }
 
 // Comenzar e interrumpir los hilos y listeners de la escena ---
@@ -129,7 +331,42 @@ void vhpGameCore::drawGame(){
     ofSetColor(255, 255, 255);
     video.draw(0, 0);
     building.draw(0, 0);
+    drawWindows();
     drawScore();
+    ofPopStyle();
+}
+void vhpGameCore::drawWindows(){
+    ofPushStyle();
+    for (int i = 0; i<nWINDOWS; i++) {
+        switch (windowState[0][i]) {
+            case pendingW:
+                wIconRojoA[i].draw(0,0);
+                wFrameA[i].draw(0,0);
+                break;
+            case lostW:
+                wIconAzulA[i].draw(0,0);
+                break;
+            case wonW:
+                wIconRojoA[i].draw(0,0);
+                break;
+            default:
+                break;
+        }
+        switch (windowState[1][i]) {
+            case pendingW:
+                wIconAzulB[i].draw(0,0);
+                wFrameB[i].draw(0,0);
+                break;
+            case lostW:
+                wIconRojoB[i].draw(0,0);
+                break;
+            case wonW:
+                wIconAzulB[i].draw(0,0);
+                break;
+            default:
+                break;
+        }
+    }
     ofPopStyle();
 }
 
@@ -139,6 +376,7 @@ void vhpGameCore::play(){
     initRound();
     currentUpdate = &vhpGameCore::playReady;
     currentTouchPressed = &vhpGameCore::touchPressedGame;
+    mensajeria.send("gamestate", 0);
     video.play();
 }
 
@@ -187,6 +425,7 @@ void vhpGameCore::playReady(){
         alpha = 0;
         alpha_increment = -1 * alpha_increment;
         currentUpdate = &vhpGameCore::playSteady;
+        mensajeria.send("gamestate", 1);
     }
 }
 
@@ -212,6 +451,7 @@ void vhpGameCore::playSteady(){
         alpha_increment = -1 * alpha_increment;
         if (holdSteady<=0) {
             currentUpdate = &vhpGameCore::playGo;
+            mensajeria.send("gamestate", 2);
         }
         holdSteady --;
     }
@@ -237,6 +477,7 @@ void vhpGameCore::playGo(){
         alpha = 0;
         alpha_increment = -1 * alpha_increment;
         currentUpdate = &vhpGameCore::showWindow;
+        mensajeria.send("gamestate", 3);
     }
 }
 
@@ -250,17 +491,17 @@ void vhpGameCore::showWindow(){
     ofPushStyle();
     ofEnableAlphaBlending();
     ofSetColor(255,255,255,alpha);
-    windowShowA[targetsShot[0]].draw(0,0);
-    windowShowB[targetsShot[1]].draw(0,0);
+    windowShowA[targetsShot].draw(0,0);
+    windowShowB[targetsShot].draw(0,0);
     if (clicked[0]!=0) {
         ofSetColor(255,255,255,alphaWindow[0]);
-        windowA[clicked[0]].draw(0,0);
+        wClickA[clicked[0]].draw(0,0);
         alphaWindow[0] += 35;
         if (alphaWindow[0]>=255) alphaWindow[0] = 255;
     }
     if (clicked[1]!=0) {
         ofSetColor(255,255,255,alphaWindow[1]);
-        windowB[clicked[1]].draw(0,0);
+        wClickB[clicked[1]].draw(0,0);
         alphaWindow[1] += 35;
         if (alphaWindow[1]>=255) alphaWindow[1] = 255;
     }
@@ -279,36 +520,51 @@ void vhpGameCore::showWindow(){
             cout << "Time A: " << time[0] << endl;
             cout << "Time B: " << time[1] << endl;
             alpha = 0;
+            bool tie = false;
             // os dous acertaron
             if (ok[0]&&ok[1]) {
                 // gaña o mais rápido
                 if (time[0]<=time[1]) {
                     cout << "Player 0 was faster!" << endl;
                     winner = 0;
+                    windowState[0][targetsShot] = wonW;
+                    windowState[1][targetsShot] = lostW;
                 } else {
                     cout << "Player 1 was faster!" << endl;
                     winner = 1;
+                    windowState[0][targetsShot] = lostW;
+                    windowState[1][targetsShot] = wonW;
                 }
             } else {
                 // acertou só 0
                 if (ok[0]) {
                     cout << "Only 0 was succesful" << endl;
                     winner = 0;
-                    
-                    // acertou só 1
+                    windowState[0][targetsShot] = wonW;
+                    windowState[1][targetsShot] = lostW;
+                // acertou só 1
                 } else if (ok[1]) {
                     cout << "Only 1 was succesful" << endl;
                     winner = 1;
-                    
-                    // no acertou ninguén
+                    windowState[0][targetsShot] = lostW;
+                    windowState[1][targetsShot] = wonW;
+                // no acertou ninguén
                 } else {
                     cout << "Both players failed" << endl;
-                    
+                    tie = true;
                 }
             }
-            points[winner]++;
-            currentUpdate = &vhpGameCore::showWinner;
-            currentTouchPressed = &vhpGameCore::touchPressedWinner;
+            if (tie) {
+                currentUpdate = &vhpGameCore::showTie;
+                currentTouchPressed = &vhpGameCore::touchPressedWinner;
+                mensajeria.send("gamestate", 5);
+            } else {
+                points[winner]++;
+                currentUpdate = &vhpGameCore::showWinner;
+                currentTouchPressed = &vhpGameCore::touchPressedWinner;
+                mensajeria.send("gamestate", 4);
+            }
+            
         }
     }
 }
@@ -324,11 +580,14 @@ void vhpGameCore::showWinner(){
     ofSetColor(255,255,255,alpha);
     winnerBackground[winner].draw(0,0);
     ofSetColor(255, 255, 255);
+    
+    /*
     if (winner==0) {
         TTF.drawString("¡Rojo gana ronda 1!", 520, 180);
     } else {
         TTF.drawString("¡Azul gana ronda 1!", 520, 180);
     }
+     */
     winnerButton[0].draw(0,0);
     winnerButton[1].draw(0,0);
     ofDisableAlphaBlending();
@@ -339,6 +598,107 @@ void vhpGameCore::showWinner(){
         alpha = 255;
         //currentUpdate = &vhpGameCore::playScreenSaver;
     }
+}
+
+
+// Show Tie -----------------------------------
+void vhpGameCore::showTie(){
+    // Reproduce el video y lo dibuja en el FBO
+    video.update();
+    fbo.begin();
+    drawGame();
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    ofSetColor(255, 255, 255);
+    tie.draw(0,0);
+    winnerButton[0].draw(0,0);
+    winnerButton[1].draw(0,0);
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    fbo.end();
+    alpha += alpha_increment;
+    if (alpha>=255) {
+        alpha = 255;
+        //currentUpdate = &vhpGameCore::playScreenSaver;
+    }
+}
+
+// Show Window -----------------------------------
+void vhpGameCore::showPattern(){
+    // peque√±o delay antes de ense√±ar la ventana
+    // Reproduce el video y lo dibuja en el FBO
+    video.update();
+    fbo.begin();
+    drawGame();
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    ofSetColor(255,255,255,alpha);
+    if (alphaWindow[0]<255) {
+        ofSetColor(255,255,255,alphaWindow[0]);
+        wPurpleA[targetsPattern[0]].draw(0,0);
+        wPurpleB[targetsPattern[0]].draw(0,0);
+        alphaWindow[0] += 15;
+    } else {
+        alphaWindow[0] = 255;
+        wPurpleA[targetsPattern[0]].draw(0,0);
+        wPurpleB[targetsPattern[0]].draw(0,0);
+        if (alphaWindow[1]<255) {
+            ofSetColor(255,255,255,alphaWindow[1]);
+            wYellowA[targetsPattern[1]].draw(0,0);
+            wYellowB[targetsPattern[1]].draw(0,0);
+            alphaWindow[1] += 15;
+        } else {
+            alphaWindow[1] = 255;
+            wYellowA[targetsPattern[1]].draw(0,0);
+            wYellowB[targetsPattern[1]].draw(0,0);
+            if (alphaWindow[2]<255) {
+                ofSetColor(255,255,255,alphaWindow[2]);
+                wBlueA[targetsPattern[2]].draw(0,0);
+                wBlueB[targetsPattern[2]].draw(0,0);
+                alphaWindow[2] += 15;
+            } else {
+                alphaWindow[2] = 255;
+                wBlueA[targetsPattern[2]].draw(0,0);
+                wBlueB[targetsPattern[2]].draw(0,0);
+                if (alphaWindow[3]<255) {
+                    ofSetColor(255,255,255,alphaWindow[3]);
+                    wGreenA[targetsPattern[3]].draw(0,0);
+                    wGreenB[targetsPattern[3]].draw(0,0);
+                    alphaWindow[3] += 15;
+                } else {
+                    alphaWindow[3] = 255;
+                    wGreenA[targetsPattern[3]].draw(0,0);
+                    wGreenB[targetsPattern[3]].draw(0,0);
+                }
+            }
+        }
+    }
+    
+    /*
+    if (clicked[0]!=0) {
+        ofSetColor(255,255,255,alphaWindow[0]);
+        wClickA[clicked[0]].draw(0,0);
+        
+        if (alphaWindow[0]>=255) alphaWindow[0] = 255;
+    }
+    if (clicked[1]!=0) {
+        ofSetColor(255,255,255,alphaWindow[1]);
+        wClickB[clicked[1]].draw(0,0);
+        alphaWindow[1] += 35;
+        if (alphaWindow[1]>=255) alphaWindow[1] = 255;
+    }
+    */
+    
+    
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    fbo.end();
+    alpha += alpha_increment;
+    if (alpha>=255) {
+        alpha = 255;
+        //currentUpdate = &vhpGameCore::playScreenSaver;
+    }
+    
 }
 
 // Eventos ------------------------------------------------------
@@ -362,41 +722,48 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                 // Window 1
                 if (_x<=171) {
                     clicked[0] = 0;
+                    mensajeria.send("windowclick/a", 0);
                     cout << "Window 0" << endl;
                     
                     // Window 2
                 } else if (_x<=316) {
                     clicked[0] = 1;
+                    mensajeria.send("windowclick/a", 1);
                     cout << "Window 1" << endl;
                     
                     // Window 3
                 } else if (_x<=455) {
                     clicked[0] = 2;
+                    mensajeria.send("windowclick/a", 2);
                     cout << "Window 2" << endl;
                     
                     // Window 4
                 } else if (_x<=587) {
                     clicked[0] = 3;
+                    mensajeria.send("windowclick/a", 3);
                     cout << "Window 3" << endl;
                     
                     // Window 5
                 } else if (_x<=711) {
                     clicked[0] = 4;
+                    mensajeria.send("windowclick/a", 4);
                     cout << "Window 4" << endl;
                     
                     // Window 6
                 } else if (_x<=832) {
                     clicked[0] = 5;
+                    mensajeria.send("windowclick/a", 5);
                     cout << "Window 5" << endl;
                     
                     // Window 7
                 } else {
                     clicked[0] = 6;
+                    mensajeria.send("windowclick/a", 6);
                     cout << "Window 6" << endl;
                     
                 }
-                if (clicked[0]==targetsShot[0]) ok[0] = true;
-                cout << "TargetShot " << targetsShot[0] << endl;
+                if (clicked[0]==targetsShot) ok[0] = true;
+                cout << "TargetShot " << targetsShot << endl;
             }
         // Player B
         } else {
@@ -406,41 +773,48 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                 // Window 7
                 if (_x<=1088) {
                     clicked[1] = 6;
+                    mensajeria.send("windowclick/b", 6);
                     cout << "Window 6" << endl;
                     
                     // Window 6
                 } else if (_x<=1210) {
                     clicked[1] = 5;
+                    mensajeria.send("windowclick/b", 5);
                     cout << "Window 5" << endl;
                     
                     // Window 5
                 } else if (_x<=1334) {
                     clicked[1] = 4;
+                    mensajeria.send("windowclick/b", 4);
                     cout << "Window 4" << endl;
                     
                     // Window 4
                 } else if (_x<=1466) {
                     clicked[1] = 3;
+                    mensajeria.send("windowclick/b", 3);
                     cout << "Window 3" << endl;
                     
                     // Window 3
                 } else if (_x<=1603) {
                     clicked[1] = 2;
+                    mensajeria.send("windowclick/b", 2);
                     cout << "Window 2" << endl;
                     
                     // Window 2
                 } else if (_x<=1748) {
                     clicked[1] = 1;
+                    mensajeria.send("windowclick/b", 1);
                     cout << "Window 1" << endl;
                     
                     // Window 1
                 } else {
                     clicked[1] = 0;
+                    mensajeria.send("windowclick/b", 0);
                     cout << "Window 0" << endl;
                     
                 }
-                if (clicked[1]==targetsShot[1]) ok[1] = true;
-                cout << "TargetShot " << targetsShot[1] << endl;
+                if (clicked[1]==targetsShot) ok[1] = true;
+                cout << "TargetShot " << targetsShot << endl;
             }
         }
     }
@@ -461,11 +835,15 @@ void vhpGameCore::touchPressedWinner(float & _x, float & _y){
                 initRound();
                 currentRound++;
                 // cuatro primeras rondas
-                if (currentRound<5) {
+                if (currentRound<nROUNDS) {
                     currentUpdate = &vhpGameCore::playReady;
                     currentTouchPressed = &vhpGameCore::touchPressedGame;
                 // última ronda
                 } else {
+                    randomPattern();
+                    setTimeReference();
+                    currentUpdate = &vhpGameCore::showPattern;
+                    currentTouchPressed = &vhpGameCore::touchPressedGame;
                     
                 }
             }
@@ -477,17 +855,85 @@ void vhpGameCore::touchPressedWinner(float & _x, float & _y){
                 initRound();
                 currentRound++;
                 // cuatro primeras rondas
-                if (currentRound<5) {
+                if (currentRound<nROUNDS) {
                     currentUpdate = &vhpGameCore::playReady;
                     currentTouchPressed = &vhpGameCore::touchPressedGame;
                 
                 // última ronda
                 } else {
+                    randomPattern();
+                    setTimeReference();
+                    currentUpdate = &vhpGameCore::showPattern;
+                    currentTouchPressed = &vhpGameCore::touchPressedGame;
                     
                 }
             }
         }
     }
 }
+
+
+int vhpGameCore::randomWindow(){
+    vector<int> nums;
+    for (int i=0; i<nWINDOWS; i++) {
+        if (windowState[0][i]==pendingW) {
+            nums.push_back(i);
+        }
+    }
+    return nums[ceil(ofRandom(nums.size()-1))];
+}
+void vhpGameCore::randomPattern(){
+    int first = ceil(ofRandom(nWINDOWS-1));
+    cout << "firt =" << first << endl;
+    vector<int> nums;
+    for (int i=0; i<nWINDOWS; i++) {
+        if (i==first) {
+            targetsPattern[0]= i;
+            cout << "targetsPattern[0]=" << i << endl;
+        } else {
+            nums.push_back(i);
+        }
+    }
+    int second = ceil(ofRandom(nums.size()-1));
+    cout << "second =" << second << endl;
+    vector<int> snums;
+    for (int i=0; i<nums.size(); i++) {
+        if (i==second) {
+            targetsPattern[1]= nums[i];
+            cout << "targetsPattern[1]=" << nums[i] << endl;
+        } else {
+            snums.push_back(nums[i]);
+        }
+    }
+    int third = ceil(ofRandom(snums.size()-1));
+    cout << "third =" << third << endl;
+    vector<int> tnums;
+    for (int i=0; i<snums.size(); i++) {
+        if (i==third) {
+            targetsPattern[2]= snums[i];
+            cout << "targetsPattern[2]=" << snums[i] << endl;
+        } else {
+            tnums.push_back(snums[i]);
+        }
+    }
+    
+    int fourth = ceil(ofRandom(tnums.size()-1));
+    cout << "fourth =" << fourth << endl;
+    for (int i=0; i<tnums.size(); i++) {
+        if (i==fourth) {
+            targetsPattern[3]= tnums[i];
+            cout << "targetsPattern[3]=" << tnums[i] << endl;
+        }
+    }
+}
+
+void vhpGameCore::setTimeReference(){
+    tRef = ofGetElapsedTimef();
+}
+
+float vhpGameCore::getElapsedtime(){
+    return ofGetElapsedTimef() - tRef;
+}
+
 
 ofEvent <int> vhpGameCore::onClick;

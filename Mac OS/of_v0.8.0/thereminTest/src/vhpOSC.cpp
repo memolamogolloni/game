@@ -9,12 +9,12 @@ vhpOSC::vhpOSC() {
 void vhpOSC::setup(){
     
 }
-void vhpOSC::setOSC(ofxXmlSettings& _settings){
+void vhpOSC::setOSC(ofxXmlSettings& _settings, string _sender){
     
     // Añadir LOS PUERTOS Y EL HOST desde el documento xml de settings
-    int n = _settings.getNumTags("SENDER");
+    int n = _settings.getNumTags(_sender);
     if(n > 0){
-        _settings.pushTag("SENDER", n-1);
+        _settings.pushTag(_sender, n-1);
         int num = _settings.getNumTags("PORT");
         cout << num << " ports: " << _settings.getValue("PORT", 8000, 0) << endl;
         s_port = _settings.getValue("PORT", 8000, 0);
@@ -48,11 +48,11 @@ void vhpOSC::send(int _players){
     m.addIntArg(_players);
     sender.sendMessage(m);
 }
-void vhpOSC::send(string _address, int _players){
-    cout << "send: " << _players << endl;
+void vhpOSC::send(string _address, int _val){
+    cout << "send: " << _val << " to: /" << _address << endl;
     ofxOscMessage m;
-    m.setAddress("/"+_address);
-    m.addIntArg(_players);
+    m.setAddress("/"+ _address);
+    m.addIntArg(_val);
     sender.sendMessage(m);
 }
 
