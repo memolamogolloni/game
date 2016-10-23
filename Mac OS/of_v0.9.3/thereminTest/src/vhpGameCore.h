@@ -4,13 +4,15 @@
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
 #include "vhpGcThread.h"
+#include "vhpWindow.h"
 
 #define nWINDOWS        7
-#define nROUNDS         3
+#define nROUNDS         1
 
 #define lostW           0
 #define wonW            1
 #define pendingW        2
+#define whiteW          3
 
 class vhpGameCore {
 
@@ -63,7 +65,9 @@ class vhpGameCore {
         void playGo();
         void showWindow();
         void showWinner();
+        void showFinalWinner();
         void showTie();
+        void setWindowPattern();
         void showPattern();
     
         // Para recoger la pulsación del ratón en la pantalla
@@ -71,7 +75,8 @@ class vhpGameCore {
         void (vhpGameCore::*currentTouchPressed)(float & _x, float & _y);
         void touchPressedGame(float & _x, float & _y);
         void touchPressedWinner(float & _x, float & _y);
-    
+        void touchPressedPattern(float & _x, float & _y);
+        void touchPressedPatternWinner(float & _x, float & _y);
     
         int randomWindow();
         void randomPattern();
@@ -83,11 +88,11 @@ class vhpGameCore {
         vhpOSC                      mensajeria;
     
         // Video de fondo
-        ofVideoPlayer       video;
-        string              videoFile;
-        ofFbo               fbo;
-        int                 width;
-        int                 height;
+        vector<ofVideoPlayer>       video;
+        vector<string>              videoFile;
+        ofFbo                       fbo;
+        int                         width;
+        int                         height;
     
         // Elementos gráficos
         int                 alpha;
@@ -127,6 +132,8 @@ class vhpGameCore {
         bool                        loaded;
         bool                        loading;
     
+        vhpWindow                   pWindow[2];
+    
         int                 windowState[2][7];
         ofImage             winnerBackground[2];
         ofImage             winnerButton[2];
@@ -147,6 +154,7 @@ class vhpGameCore {
         int             holdSteady;
         int             targetsShot;
         int             targetsPattern[4];
+        int             registeredPattern[2][4];
         int             currentRound;
         int             delay;
     
