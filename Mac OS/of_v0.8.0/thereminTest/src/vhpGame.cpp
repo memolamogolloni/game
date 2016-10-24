@@ -841,23 +841,24 @@ void vhpGame::drawGameOut(){
 void vhpGame::keyReleased(int _key){
     if ((_key=='s')||(_key=='S')) {
         toggleScale();
-    } else if (_key=='1') {
-        int scene = SCREENSAVER;
-        set(scene);
-    } else if (_key=='2') {
-        int scene = PLAYERMENU;
-        set(scene);
-    } else if (_key=='3') {
-        int scene = STANDBY;
-        set(scene);
-    } else if (_key=='4') {
-        int scene = LEVELMENU;
-        set(scene);
-    } else if (_key=='5') {
-        int scene = GAME;
-        set(scene);
+    } else if (xogo.loaded) {
+        if (_key=='1') {
+            int scene = SCREENSAVER;
+            set(scene);
+        } else if (_key=='2') {
+            int scene = PLAYERMENU;
+            set(scene);
+        } else if (_key=='3') {
+            int scene = STANDBY;
+            set(scene);
+        } else if (_key=='4') {
+            int scene = LEVELMENU;
+            set(scene);
+        } else if (_key=='5') {
+            int scene = GAME;
+            set(scene);
+        }
     }
-
 }
 
 //--------------------------------------------------------------

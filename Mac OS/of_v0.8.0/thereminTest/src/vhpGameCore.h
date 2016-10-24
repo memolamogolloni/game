@@ -4,13 +4,15 @@
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
 #include "vhpGcThread.h"
+#include "vhpWindow.h"
 
 #define nWINDOWS        7
-#define nROUNDS         3
+#define nROUNDS         4
 
 #define lostW           0
 #define wonW            1
 #define pendingW        2
+#define whiteW          3
 
 class vhpGameCore {
 
@@ -32,9 +34,7 @@ class vhpGameCore {
         void load();
         void (vhpGameCore::*currentLoad)();
         void loadVideo();
-        void loadWindows();
         void loadSingle();
-        void nextWindows();
     
         // Comenzar e interrumpir los hilos y listeners de la escena
         void start();
@@ -63,7 +63,9 @@ class vhpGameCore {
         void playGo();
         void showWindow();
         void showWinner();
+        void showFinalWinner();
         void showTie();
+        void setWindowPattern();
         void showPattern();
     
         // Para recoger la pulsación del ratón en la pantalla
@@ -71,7 +73,8 @@ class vhpGameCore {
         void (vhpGameCore::*currentTouchPressed)(float & _x, float & _y);
         void touchPressedGame(float & _x, float & _y);
         void touchPressedWinner(float & _x, float & _y);
-    
+        void touchPressedPattern(float & _x, float & _y);
+        void touchPressedPatternWinner(float & _x, float & _y);
     
         int randomWindow();
         void randomPattern();
@@ -83,11 +86,11 @@ class vhpGameCore {
         vhpOSC                      mensajeria;
     
         // Video de fondo
-        ofVideoPlayer       video;
-        string              videoFile;
-        ofFbo               fbo;
-        int                 width;
-        int                 height;
+        vector<ofVideoPlayer>       video;
+        vector<string>              videoFile;
+        ofFbo                       fbo;
+        int                         width;
+        int                         height;
     
         // Elementos gráficos
         int                 alpha;
@@ -100,37 +103,27 @@ class vhpGameCore {
         ofImage             building;
     
     
-        vector<ofImage>             wClickA;
-        vector<ofImage>             wClickB;
-        vector<ofImage>             wFrameA;
-        vector<ofImage>             wFrameB;
-        vector<ofImage>             wIconAzulA;
-        vector<ofImage>             wIconAzulB;
-        vector<ofImage>             wIconRojoA;
-        vector<ofImage>             wIconRojoB;
-        vector<ofImage>             wPurpleA;
-        vector<ofImage>             wYellowA;
-        vector<ofImage>             wBlueA;
-        vector<ofImage>             wGreenA;
-        vector<ofImage>             wPurpleB;
-        vector<ofImage>             wYellowB;
-        vector<ofImage>             wBlueB;
-        vector<ofImage>             wGreenB;
-        vector<ofImage>             windowShowA;
-        vector<ofImage>             windowShowB;
-    
         vector<ofImage*>            loadingSilge;
         vector<string>              filesSingle;
-        vector<ofImage>*            loadingWindows;
-        vector<string>              files;
-        vector<bool>                loadedImages;
         bool                        loaded;
         bool                        loading;
+    
+        vhpWindow                   pWindow;
     
         int                 windowState[2][7];
         ofImage             winnerBackground[2];
         ofImage             winnerButton[2];
         ofImage             score[2];
+        ofImage             purple;
+        ofImage             yellow;
+        ofImage             blue;
+        ofImage             green;
+        ofImage             iconosR;
+        ofImage             iconosA;
+        ofImage             marcos;
+        ofImage             avisos;
+        ofImage             click;
+    
         ofTrueTypeFont      TTF;
     
         // Estado del juego
@@ -147,10 +140,17 @@ class vhpGameCore {
         int             holdSteady;
         int             targetsShot;
         int             targetsPattern[4];
+        int             registeredPattern[2][4];
         int             currentRound;
         int             delay;
     
         float           tRef;
+    
+        // Recorte de las ventanas
+        int             wHeight;
+        int             wWidth[2][nWINDOWS];
+        int             wY;
+        int             wX[2][nWINDOWS];
     
         // notificación de eventos
         static ofEvent<int> onClick;
