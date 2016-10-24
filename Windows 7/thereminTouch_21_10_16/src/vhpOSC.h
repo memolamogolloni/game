@@ -14,9 +14,9 @@ class vhpOSC {
     
         // funcións ou métodos
         void setup();
-        void setOSC(ofxXmlSettings& _settings);
+        void setOSC(ofxXmlSettings& _settings, string _sender);
         void send(int _players);
-        void send(string _address, int _players);
+        void send(string _address, int _val);
         void start();
         void stop();
         void update();

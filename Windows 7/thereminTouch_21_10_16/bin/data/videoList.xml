@@ -1,7 +1,11 @@
-<SENDER>
+<SENDER1>
+    <PORT>12344</PORT>
+    <HOST>localhost</HOST>
+</SENDER1>
+<SENDER2>
     <PORT>12345</PORT>
     <HOST>localhost</HOST>
-</SENDER>
+</SENDER2>
 <RECEIVER>
     <PORT>12346</PORT>
 </RECEIVER>
@@ -19,4 +23,5 @@
 </NIVEIS>
 <XOGO>
     <VIDEO>HD_fondo_juego.mov</VIDEO>
+    <VIDEO>HD_gana_juego.mov</VIDEO>
 </XOGO>

@@ -69,9 +69,10 @@ void vhpGame::setup(){
     niveisLoaded = false;
     xogoLoaded = false;
     
-    mensajeria.setOSC(videoList);
+    mensajeria.setOSC(videoList, "SENDER1");
+    xogo.mensajeria.setOSC(videoList, "SENDER2");
     
-    currentUpdate = &vhpGame::updateLoading;
+    currentUpdate = &vhpGame::loadScreenSaver;
     currentDraw = &vhpGame::drawLoading;
     
 }
@@ -195,13 +196,20 @@ void vhpGame::toggleScale(){
 
 // Loading -----------------------------------------------------
 
-void vhpGame::updateLoading(){
+void vhpGame::loadScreenSaver(){
     if (!logosLoaded) {
         if (logos.video.isLoaded()) {
             logosLoaded = true;
             cout << "logos video is loaded" << endl;
         }
-    } else if (!xogadoresLoaded) {
+    } else {
+        state = SCREENSAVER;
+        set(state);
+    }
+}
+
+void vhpGame::loadGame(){
+    if (!xogadoresLoaded) {
         if (xogadores.video.isLoaded()) {
             xogadoresLoaded = true;
             cout << "xogadores video is loaded" << endl;
@@ -217,16 +225,15 @@ void vhpGame::updateLoading(){
             cout << "niveis video is loaded" << endl;
         }
     }  else if (!xogoLoaded) {
-        if (xogo.video.isLoaded()) {
+        if(!xogo.loaded) {
+            xogo.load();
+        } else {
             xogoLoaded = true;
-            cout << "xogo video is loaded" << endl;
+            ofAddListener(vhpScreenSaver::onClick, this, &vhpGame::set);
+            cout << "xogo is loaded" << endl;
         }
-    } else {
-        state = SCREENSAVER;
-        set(state);
     }
 }
-
 //--------------------------------------------------------------
 
 void vhpGame::drawLoading(){
@@ -240,7 +247,7 @@ void vhpGame::initScreenSaver(){
     cout << "SCREENSAVER" << endl;
     state = SCREENSAVER;
     logos.start();
-    ofAddListener(vhpScreenSaver::onClick, this, &vhpGame::set);
+    if (xogoLoaded) ofAddListener(vhpScreenSaver::onClick, this, &vhpGame::set);
 }
 
 void vhpGame::stopScreenSaver(){
@@ -260,6 +267,7 @@ void vhpGame::goToScreenSaver(){
 
 void vhpGame::updateScreenSaver(){
     logos.update();
+    loadGame();
 }
 
 //--------------------------------------------------------------
@@ -273,8 +281,13 @@ void vhpGame::drawScreenSaver(){
     fullScreen.end();
     fullScreen.draw(0, 0, width * scale, height * scale/3);
     ofPopStyle();
-    
     drawFrameRate();
+    if (!xogoLoaded) {
+        ofPushStyle();
+        ofSetColor(255, 255, 255);
+        TTF.drawString("Loading", 20, 60);
+        ofPopStyle();
+    }
     
 }
 
@@ -830,23 +843,24 @@ void vhpGame::drawGameOut(){
 void vhpGame::keyReleased(int _key){
     if ((_key=='s')||(_key=='S')) {
         toggleScale();
-    } else if (_key=='1') {
-        int scene = SCREENSAVER;
-        set(scene);
-    } else if (_key=='2') {
-        int scene = PLAYERMENU;
-        set(scene);
-    } else if (_key=='3') {
-        int scene = STANDBY;
-        set(scene);
-    } else if (_key=='4') {
-        int scene = LEVELMENU;
-        set(scene);
-    } else if (_key=='5') {
-        int scene = GAME;
-        set(scene);
+    } else if (xogo.loaded) {
+        if (_key=='1') {
+            int scene = SCREENSAVER;
+            set(scene);
+        } else if (_key=='2') {
+            int scene = PLAYERMENU;
+            set(scene);
+        } else if (_key=='3') {
+            int scene = STANDBY;
+            set(scene);
+        } else if (_key=='4') {
+            int scene = LEVELMENU;
+            set(scene);
+        } else if (_key=='5') {
+            int scene = GAME;
+            set(scene);
+        }
     }
-
 }
 
 //--------------------------------------------------------------
