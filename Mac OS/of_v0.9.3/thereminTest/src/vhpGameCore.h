@@ -7,7 +7,7 @@
 #include "vhpWindow.h"
 
 #define nWINDOWS        7
-#define nROUNDS         1
+#define nROUNDS         4
 
 #define lostW           0
 #define wonW            1
@@ -34,9 +34,7 @@ class vhpGameCore {
         void load();
         void (vhpGameCore::*currentLoad)();
         void loadVideo();
-        void loadWindows();
         void loadSingle();
-        void nextWindows();
     
         // Comenzar e interrumpir los hilos y listeners de la escena
         void start();
@@ -105,39 +103,27 @@ class vhpGameCore {
         ofImage             building;
     
     
-        vector<ofImage>             wClickA;
-        vector<ofImage>             wClickB;
-        vector<ofImage>             wFrameA;
-        vector<ofImage>             wFrameB;
-        vector<ofImage>             wIconAzulA;
-        vector<ofImage>             wIconAzulB;
-        vector<ofImage>             wIconRojoA;
-        vector<ofImage>             wIconRojoB;
-        vector<ofImage>             wPurpleA;
-        vector<ofImage>             wYellowA;
-        vector<ofImage>             wBlueA;
-        vector<ofImage>             wGreenA;
-        vector<ofImage>             wPurpleB;
-        vector<ofImage>             wYellowB;
-        vector<ofImage>             wBlueB;
-        vector<ofImage>             wGreenB;
-        vector<ofImage>             windowShowA;
-        vector<ofImage>             windowShowB;
-    
         vector<ofImage*>            loadingSilge;
         vector<string>              filesSingle;
-        vector<ofImage>*            loadingWindows;
-        vector<string>              files;
-        vector<bool>                loadedImages;
         bool                        loaded;
         bool                        loading;
     
-        vhpWindow                   pWindow[2];
+        vhpWindow                   pWindow;
     
         int                 windowState[2][7];
         ofImage             winnerBackground[2];
         ofImage             winnerButton[2];
         ofImage             score[2];
+        ofImage             purple;
+        ofImage             yellow;
+        ofImage             blue;
+        ofImage             green;
+        ofImage             iconosR;
+        ofImage             iconosA;
+        ofImage             marcos;
+        ofImage             avisos;
+        ofImage             click;
+    
         ofTrueTypeFont      TTF;
     
         // Estado del juego
@@ -159,6 +145,12 @@ class vhpGameCore {
         int             delay;
     
         float           tRef;
+    
+        // Recorte de las ventanas
+        int             wHeight;
+        int             wWidth[2][nWINDOWS];
+        int             wY;
+        int             wX[2][nWINDOWS];
     
         // notificación de eventos
         static ofEvent<int> onClick;

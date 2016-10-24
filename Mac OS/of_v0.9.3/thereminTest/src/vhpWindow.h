@@ -15,7 +15,7 @@ class vhpWindow {
 		
 		// funcións ou métodos
 		void setup();
-        void setWindows(ofImage* _purple, ofImage* _yellow, ofImage* _blue, ofImage* _green);
+        void setWindows(ofImage* _purple, int _nP, ofImage* _yellow, int _nY, ofImage* _blue, int _nB, ofImage* _green, int _nG);
         void setActualWindow();
     
         void update();
@@ -53,5 +53,13 @@ class vhpWindow {
         ofImage*        blue;
         ofImage*        green;
         int             alpha;
+    
+        // Recorte de las ventanas
+        int             n;
+        int             nW[4];
+        int             wHeight;
+        int             wWidth[2][7];
+        int             wY;
+        int             wX[2][7];
 		
 };

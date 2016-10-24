@@ -4,6 +4,32 @@
 
 vhpGameCore::vhpGameCore(): scale(1.0), loaded(false), loading(false){
 
+    wHeight = 223;
+    wY = 335;
+    wWidth[0][0] = 172;
+    wWidth[0][1] = 146;
+    wWidth[0][2] = 138;
+    wWidth[0][3] = 131;
+    wWidth[0][4] = 125;
+    wWidth[0][5] = 120;
+    wWidth[0][6] = 128;
+    wWidth[1][6] = 172;
+    wWidth[1][5] = 146;
+    wWidth[1][4] = 138;
+    wWidth[1][3] = 131;
+    wWidth[1][2] = 125;
+    wWidth[1][1] = 120;
+    wWidth[1][0] = 128;
+    
+    wX[0][0] = 0;
+    for (int i = 1; i < nWINDOWS; i++) {
+        wX[0][i] = wX[0][i-1] + wWidth[0][i-1];
+    }
+    wX[1][0] = wX[0][6] + wWidth[0][6];
+    for (int i = 1; i < nWINDOWS; i++) {
+        wX[1][i] = wX[1][i-1] + wWidth[1][i-1];
+    }
+    
 }
 
 vhpGameCore::~vhpGameCore(){
@@ -51,6 +77,24 @@ void vhpGameCore::setup(vhpGcThread* _controller, ofxXmlSettings& _videoList, st
     filesSingle.push_back("red-wins-button");
     loadingSilge.push_back(&winnerButton[1]);
     filesSingle.push_back("blue-wins-button");
+    loadingSilge.push_back(&purple);
+    filesSingle.push_back("purple");
+    loadingSilge.push_back(&yellow);
+    filesSingle.push_back("yellow");
+    loadingSilge.push_back(&blue);
+    filesSingle.push_back("blue");
+    loadingSilge.push_back(&green);
+    filesSingle.push_back("green");
+    loadingSilge.push_back(&iconosR);
+    filesSingle.push_back("iconos-rojo");
+    loadingSilge.push_back(&iconosA);
+    filesSingle.push_back("iconos-azul");
+    loadingSilge.push_back(&marcos);
+    filesSingle.push_back("marcos");
+    loadingSilge.push_back(&avisos);
+    filesSingle.push_back("avisos");
+    loadingSilge.push_back(&click);
+    filesSingle.push_back("click");
     
     // Añadir las fuentes
     TTF.load("fonts/titilliumweblight.ttf", 70);
@@ -63,8 +107,7 @@ void vhpGameCore::setup(vhpGcThread* _controller, ofxXmlSettings& _videoList, st
     alpha = 0;
     alpha_increment = 5;
     
-    pWindow[0].setup();
-    pWindow[1].setup();
+    pWindow.setup();
     
 }
 void vhpGameCore::initGame(){
@@ -159,141 +202,8 @@ void vhpGameCore::loadVideo(){
             ofClear(255,255,255, 0);
             fbo.end();
             loading = false;
-            currentLoad = &vhpGameCore::loadWindows;
+            currentLoad = &vhpGameCore::loadSingle;
         }
-    }
-}
-void vhpGameCore::loadWindows(){
-     if (!loaded) {
-         int actual = files.size() - 1;
-         if ((actual>=0)&&(!loadedImages[actual])) {
-             int count = loadingWindows->size();
-             if (count<nWINDOWS) {
-                 if (!loading) {
-                     loadingWindows->push_back(ofImage());
-                     (*loadingWindows)[count].load("images/"+ files[actual] + ofToString(count+1) +".png");
-                     cout << "image " << count << ": images/"+ files[actual] + ofToString(count+1) +".png" << endl;
-                     loading = true;
-                 } else {
-                     if((*loadingWindows)[count-1].isAllocated()) {
-                         cout << "image "+ ofToString(count-1) +" loaded!" << endl;
-                         loading = false;
-                     }
-                 }
-             } else {
-                 if((*loadingWindows)[count-1].isAllocated()) {
-                     cout << "image "+ ofToString(count-1) +" loaded!" << endl;
-                     loading = false;
-                     loadedImages[actual] = true;
-                 }
-             }
-         } else {
-             if (actual<17) {
-                 cout << "nextLoad();" << endl;
-                 nextWindows();
-             } else {
-                 cout << "loading windows finished!" << endl;
-                 currentLoad = &vhpGameCore::loadSingle;
-             }
-             
-         }
-    }
-}
-void vhpGameCore::nextWindows(){
-    int count = files.size();
-    switch (count) {
-        case 0:
-            files.push_back("marco-rojo-");
-            loadedImages.push_back(false);
-            loadingWindows = &wFrameA;
-            break;
-        case 1:
-            files.push_back("marco-azul-");
-            loadedImages.push_back(false);
-            loadingWindows = &wFrameB;
-            break;
-        case 2:
-            files.push_back("azul-a-");
-            loadedImages.push_back(false);
-            loadingWindows = &wIconAzulA;
-            break;
-        case 3:
-            files.push_back("azul-b-");
-            loadedImages.push_back(false);
-            loadingWindows = &wIconAzulB;
-            break;
-        case 4:
-            files.push_back("rojo-a-");
-            loadedImages.push_back(false);
-            loadingWindows = &wIconRojoA;
-            break;
-        case 5:
-            files.push_back("rojo-b-");
-            loadedImages.push_back(false);
-            loadingWindows = &wIconRojoB;
-            break;
-        case 6:
-            files.push_back("click-a-");
-            loadedImages.push_back(false);
-            loadingWindows = &windowShowA;
-            break;
-        case 7:
-            files.push_back("click-b-");
-            loadedImages.push_back(false);
-            loadingWindows = &windowShowB;
-            break;
-        case 8:
-            files.push_back("ronda-a1-");
-            loadedImages.push_back(false);
-            loadingWindows = &wPurpleA;
-            break;
-        case 9:
-            files.push_back("ronda-a2-");
-            loadedImages.push_back(false);
-            loadingWindows = &wYellowA;
-            break;
-        case 10:
-            files.push_back("ronda-a3-");
-            loadedImages.push_back(false);
-            loadingWindows = &wBlueA;
-            break;
-        case 11:
-            files.push_back("ronda-a4-");
-            loadedImages.push_back(false);
-            loadingWindows = &wGreenA;
-            break;
-        case 12:
-            files.push_back("ronda-b1-");
-            loadedImages.push_back(false);
-            loadingWindows = &wPurpleB;
-            break;
-        case 13:
-            files.push_back("ronda-b2-");
-            loadedImages.push_back(false);
-            loadingWindows = &wYellowB;
-            break;
-        case 14:
-            files.push_back("ronda-b3-");
-            loadedImages.push_back(false);
-            loadingWindows = &wBlueB;
-            break;
-        case 15:
-            files.push_back("ronda-b4-");
-            loadedImages.push_back(false);
-            loadingWindows = &wGreenB;
-            break;
-        case 16:
-            files.push_back("1P-Boton-0");
-            loadedImages.push_back(false);
-            loadingWindows = &wClickA;
-            break;
-        case 17:
-            files.push_back("2P-Boton-0");
-            loadedImages.push_back(false);
-            loadingWindows = &wClickB;
-            break;
-        default:
-            break;
     }
 }
 void vhpGameCore::loadSingle(){
@@ -367,34 +277,34 @@ void vhpGameCore::drawWindows(){
     for (int i = 0; i<nWINDOWS; i++) {
         switch (windowState[0][i]) {
             case pendingW:
-                wIconRojoA[i].draw(0,0);
-                wFrameA[i].draw(0,0);
+                iconosR.drawSubsection(wX[0][i], wY, wWidth[0][i], wHeight, wX[0][i], wY, wWidth[0][i], wHeight);
+                marcos.drawSubsection(wX[0][i], wY, wWidth[0][i], wHeight, wX[0][i], wY, wWidth[0][i], wHeight);
                 break;
             case lostW:
-                wIconAzulA[i].draw(0,0);
+                iconosA.drawSubsection(wX[0][i], wY, wWidth[0][i], wHeight, wX[0][i], wY, wWidth[0][i], wHeight);
                 break;
             case wonW:
-                wIconRojoA[i].draw(0,0);
+                iconosR.drawSubsection(wX[0][i], wY, wWidth[0][i], wHeight, wX[0][i], wY, wWidth[0][i], wHeight);
                 break;
             case whiteW:
-                windowShowA[i].draw(0,0);
+                avisos.drawSubsection(wX[0][i], wY, wWidth[0][i], wHeight, wX[0][i], wY, wWidth[0][i], wHeight);
                 break;
             default:
                 break;
         }
         switch (windowState[1][i]) {
             case pendingW:
-                wIconAzulB[i].draw(0,0);
-                wFrameB[i].draw(0,0);
+                iconosA.drawSubsection(wX[1][i], wY, wWidth[1][i], wHeight, wX[1][i], wY, wWidth[1][i], wHeight);
+                marcos.drawSubsection(wX[1][i], wY, wWidth[1][i], wHeight, wX[1][i], wY, wWidth[1][i], wHeight);
                 break;
             case lostW:
-                wIconRojoB[i].draw(0,0);
+                iconosR.drawSubsection(wX[1][i], wY, wWidth[1][i], wHeight, wX[1][i], wY, wWidth[1][i], wHeight);
                 break;
             case wonW:
-                wIconAzulB[i].draw(0,0);
+                iconosA.drawSubsection(wX[1][i], wY, wWidth[1][i], wHeight, wX[1][i], wY, wWidth[1][i], wHeight);
                 break;
             case whiteW:
-                windowShowB[i].draw(0,0);
+                avisos.drawSubsection(wX[1][i], wY, wWidth[1][i], wHeight, wX[1][i], wY, wWidth[1][i], wHeight);
                 break;
             default:
                 break;
@@ -525,17 +435,17 @@ void vhpGameCore::showWindow(){
     ofPushStyle();
     ofEnableAlphaBlending();
     ofSetColor(255,255,255,alpha);
-    windowShowA[targetsShot].draw(0,0);
-    windowShowB[targetsShot].draw(0,0);
+    avisos.drawSubsection(wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight, wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight);
+    avisos.drawSubsection(wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight, wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight);
     if (clicked[0]!=0) {
         ofSetColor(255,255,255,alphaWindow[0]);
-        wClickA[clicked[0]].draw(0,0);
+        click.drawSubsection(wX[0][clicked[0]], wY, wWidth[0][clicked[0]], wHeight, wX[0][clicked[0]], wY, wWidth[0][clicked[0]], wHeight);
         alphaWindow[0] += 35;
         if (alphaWindow[0]>=255) alphaWindow[0] = 255;
     }
     if (clicked[1]!=0) {
         ofSetColor(255,255,255,alphaWindow[1]);
-        wClickB[clicked[1]].draw(0,0);
+        click.drawSubsection(wX[1][clicked[1]], wY, wWidth[1][clicked[1]], wHeight, wX[1][clicked[1]], wY, wWidth[1][clicked[1]], wHeight);
         alphaWindow[1] += 35;
         if (alphaWindow[1]>=255) alphaWindow[1] = 255;
     }
@@ -691,24 +601,20 @@ void vhpGameCore::setWindowPattern(){
     randomPattern();
     setTimeReference();
     currentUpdate = &vhpGameCore::showPattern;
-    pWindow[0].setWindows(&wPurpleA[targetsPattern[0]], &wYellowA[targetsPattern[1]], &wBlueA[targetsPattern[2]], &wGreenA[targetsPattern[3]]);
-    pWindow[1].setWindows(&wPurpleB[targetsPattern[0]], &wYellowB[targetsPattern[1]], &wBlueB[targetsPattern[2]], &wGreenB[targetsPattern[3]]);
-    pWindow[0].setFadeIn();
-    pWindow[1].setFadeIn();
+    pWindow.setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
+    pWindow.setFadeIn();
     currentTouchPressed = &vhpGameCore::touchPressedPattern;
 }
 void vhpGameCore::showPattern(){
     // pequeño delay antes de enseñar la ventana
     // Reproduce el video y lo dibuja en el FBO
     video[0].update();
-    pWindow[0].update();
-    pWindow[1].update();
+    pWindow.update();
     fbo.begin();
     drawGame();
     ofPushStyle();
     ofEnableAlphaBlending();
-    pWindow[0].draw();
-    pWindow[1].draw();
+    pWindow.draw();
     /*
     if (clicked[0]!=0) {
         ofSetColor(255,255,255,alphaWindow[0]);
@@ -855,21 +761,21 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                 time[1] = ofGetElapsedTimeMillis();
                 // Window 7
                 if (_x<=1088) {
-                    clicked[1] = 6;
-                    mensajeria.send("windowclick/b", 6);
-                    cout << "Window 6" << endl;
+                    clicked[1] = 0;
+                    mensajeria.send("windowclick/b", 0);
+                    cout << "Window 0" << endl;
                     
                     // Window 6
                 } else if (_x<=1210) {
-                    clicked[1] = 5;
-                    mensajeria.send("windowclick/b", 5);
-                    cout << "Window 5" << endl;
+                    clicked[1] = 1;
+                    mensajeria.send("windowclick/b", 1);
+                    cout << "Window 1" << endl;
                     
                     // Window 5
                 } else if (_x<=1334) {
-                    clicked[1] = 4;
-                    mensajeria.send("windowclick/b", 4);
-                    cout << "Window 4" << endl;
+                    clicked[1] = 2;
+                    mensajeria.send("windowclick/b", 2);
+                    cout << "Window 2" << endl;
                     
                     // Window 4
                 } else if (_x<=1466) {
@@ -879,21 +785,21 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                     
                     // Window 3
                 } else if (_x<=1603) {
-                    clicked[1] = 2;
-                    mensajeria.send("windowclick/b", 2);
-                    cout << "Window 2" << endl;
+                    clicked[1] = 4;
+                    mensajeria.send("windowclick/b", 4);
+                    cout << "Window 4" << endl;
                     
                     // Window 2
                 } else if (_x<=1748) {
-                    clicked[1] = 1;
-                    mensajeria.send("windowclick/b", 1);
-                    cout << "Window 1" << endl;
+                    clicked[1] = 5;
+                    mensajeria.send("windowclick/b", 5);
+                    cout << "Window 5" << endl;
                     
                     // Window 1
                 } else {
-                    clicked[1] = 0;
-                    mensajeria.send("windowclick/b", 0);
-                    cout << "Window 0" << endl;
+                    clicked[1] = 6;
+                    mensajeria.send("windowclick/b", 6);
+                    cout << "Window 6" << endl;
                     
                 }
                 if (clicked[1]==targetsShot) ok[1] = true;

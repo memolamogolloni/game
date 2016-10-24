@@ -11,8 +11,40 @@ void vhpWindow::setup(){
     visibleDuration = 600;
     hiddenDuration = 200;
     order = 0;
+    
+    wHeight = 223;
+    wY = 335;
+    wWidth[0][0] = 172;
+    wWidth[0][1] = 146;
+    wWidth[0][2] = 138;
+    wWidth[0][3] = 131;
+    wWidth[0][4] = 125;
+    wWidth[0][5] = 120;
+    wWidth[0][6] = 128;
+    wWidth[1][6] = 172;
+    wWidth[1][5] = 146;
+    wWidth[1][4] = 138;
+    wWidth[1][3] = 131;
+    wWidth[1][2] = 125;
+    wWidth[1][1] = 120;
+    wWidth[1][0] = 128;
+    
+    wX[0][0] = 0;
+    for (int i = 1; i < 7; i++) {
+        wX[0][i] = wX[0][i-1] + wWidth[0][i-1];
+    }
+    wX[1][0] = wX[0][6] + wWidth[0][6];
+    for (int i = 1; i < 7; i++) {
+        wX[1][i] = wX[1][i-1] + wWidth[1][i-1];
+    }
+
+    n = 0;
 }
-void vhpWindow::setWindows(ofImage* _purple, ofImage* _yellow, ofImage* _blue, ofImage* _green){
+void vhpWindow::setWindows(ofImage* _purple, int _nP, ofImage* _yellow, int _nY, ofImage* _blue, int _nB, ofImage* _green, int _nG){
+    nW[0] = _nP;
+    nW[1] = _nY;
+    nW[2] = _nB;
+    nW[3] = _nG;
     purple = _purple;
     yellow = _yellow;
     blue = _blue;
@@ -21,15 +53,19 @@ void vhpWindow::setWindows(ofImage* _purple, ofImage* _yellow, ofImage* _blue, o
 void vhpWindow::setActualWindow() {
     switch (order) {
         case 1:
+            n = nW[0];
             window = purple;
             break;
         case 2:
+            n = nW[1];
             window = yellow;
             break;
         case 3:
+            n = nW[2];
             window = blue;
             break;
         case 4:
+            n = nW[3];
             window = green;
             break;
         default:
@@ -63,15 +99,18 @@ void vhpWindow::draw(){
 }
 void vhpWindow::drawFadeIn(){
     ofSetColor(255,255,255,alpha);
-    window->draw(0, 0);
+    window->drawSubsection(wX[0][n], wY, wWidth[0][n], wHeight, wX[0][n], wY, wWidth[0][n], wHeight);
+    window->drawSubsection(wX[1][n], wY, wWidth[1][n], wHeight, wX[1][n], wY, wWidth[1][n], wHeight);
 }
 void vhpWindow::drawVisible(){
     ofSetColor(255,255,255,255);
-    window->draw(0, 0);
+    window->drawSubsection(wX[0][n], wY, wWidth[0][n], wHeight, wX[0][n], wY, wWidth[0][n], wHeight);
+    window->drawSubsection(wX[1][n], wY, wWidth[1][n], wHeight, wX[1][n], wY, wWidth[1][n], wHeight);
 }
 void vhpWindow::drawFadeOut(){
     ofSetColor(255,255,255,alpha);
-    window->draw(0, 0);
+    window->drawSubsection(wX[0][n], wY, wWidth[0][n], wHeight, wX[0][n], wY, wWidth[0][n], wHeight);
+    window->drawSubsection(wX[1][n], wY, wWidth[1][n], wHeight, wX[1][n], wY, wWidth[1][n], wHeight);
 }
 void vhpWindow::drawHidden(){
     
