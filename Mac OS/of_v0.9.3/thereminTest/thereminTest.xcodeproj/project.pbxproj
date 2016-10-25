@@ -29,15 +29,14 @@
 		C186600B80BA974304A12460 /* vhpOSC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E64253929EFD19F28DFB8E19 /* vhpOSC.cpp */; };
 		C4782ECC372420ACE0615B74 /* OscPrintReceivedElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC8881B3C8C0A1C45F042E7A /* OscPrintReceivedElements.cpp */; };
 		C4C430DB1DBCBC2600404842 /* vhpWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4C430DA1DBCBC2600404842 /* vhpWindow.cpp */; };
+		C4EE4B8E1DBFCC7700123BEA /* vhpLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4EE4B8D1DBFCC7700123BEA /* vhpLine.cpp */; };
 		C6CEC95328BF5374695CEDCD /* vhpLmThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CB51C0C9ECB5FF214AE55A25 /* vhpLmThread.cpp */; };
 		C7996D50E7184B3694F637BF /* vhpLevelMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A961BD155A868BB44C013D0C /* vhpLevelMenu.cpp */; };
 		C99FEE73831E528628F63FE6 /* vhpScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 805B3D941DC94BA6CEFFEE18 /* vhpScreenSaver.cpp */; };
 		D434E2BDC3B54B4109B68A6E /* vhpSbThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CB569799CCFB855655164D8C /* vhpSbThread.cpp */; };
-		D99405D55A7C41C6D50C163F /* vhpGcThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FF829E3A86189092D995282E /* vhpGcThread.cpp */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1D0A3A1BDC003C02F2 /* main.cpp */; };
 		E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */; };
-		F35B81D9110D68351747AE29 /* vhpPmThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF43DBE2058F6BCC3CD8A0C4 /* vhpPmThread.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,7 +76,6 @@
 		04EBA05D4678602A6240BDD8 /* vhpSbThread.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vhpSbThread.h; path = src/vhpSbThread.h; sourceTree = SOURCE_ROOT; };
 		0852C01CFE8D32CD4C5B3D5D /* vhpGame.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vhpGame.h; path = src/vhpGame.h; sourceTree = SOURCE_ROOT; };
 		0AED834CE4DEC5260AF302A2 /* ofxOscParameterSync.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxOscParameterSync.cpp; path = ../../../addons/ofxOsc/src/ofxOscParameterSync.cpp; sourceTree = SOURCE_ROOT; };
-		19401F86A548A651A5EEB5AF /* vhpGcThread.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vhpGcThread.h; path = src/vhpGcThread.h; sourceTree = SOURCE_ROOT; };
 		1951C5BC9E5D1C80580A3F1E /* vhpGameCore.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpGameCore.cpp; path = src/vhpGameCore.cpp; sourceTree = SOURCE_ROOT; };
 		20F35AFADAF0068B067E713F /* OscReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscReceivedElements.h; sourceTree = SOURCE_ROOT; };
 		23640F57DF6C4BB6BFC5DA4C /* PacketListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = PacketListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/PacketListener.h; sourceTree = SOURCE_ROOT; };
@@ -89,7 +87,6 @@
 		48974F980F51769171D0B2F5 /* IpEndpointName.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = IpEndpointName.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/IpEndpointName.h; sourceTree = SOURCE_ROOT; };
 		4E95FB446A9C9C6F0DE12D75 /* OscPrintReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscPrintReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscPrintReceivedElements.h; sourceTree = SOURCE_ROOT; };
 		50DF87D612C5AAE17AAFA6C0 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxXmlSettings.cpp; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.cpp; sourceTree = SOURCE_ROOT; };
-		5852C155F810CB7A6914B3E1 /* vhpPmThread.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vhpPmThread.h; path = src/vhpPmThread.h; sourceTree = SOURCE_ROOT; };
 		5BEAD265C965A1EA9C6180D4 /* vhpPlayerMenu.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpPlayerMenu.cpp; path = src/vhpPlayerMenu.cpp; sourceTree = SOURCE_ROOT; };
 		63A47AC60FFAFC3BF093EC0F /* OscOutboundPacketStream.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = OscOutboundPacketStream.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscOutboundPacketStream.cpp; sourceTree = SOURCE_ROOT; };
 		65EEFA3DA3526E9CDD9C21F9 /* ofxOscBundle.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxOscBundle.cpp; path = ../../../addons/ofxOsc/src/ofxOscBundle.cpp; sourceTree = SOURCE_ROOT; };
@@ -112,10 +109,11 @@
 		B21E7E5F548EEA92F368040B /* tinyxml.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = tinyxml.h; path = ../../../addons/ofxXmlSettings/libs/tinyxml.h; sourceTree = SOURCE_ROOT; };
 		B31C608870ECEB2490A93736 /* ofxOscParameterSync.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscParameterSync.h; path = ../../../addons/ofxOsc/src/ofxOscParameterSync.h; sourceTree = SOURCE_ROOT; };
 		BC8881B3C8C0A1C45F042E7A /* OscPrintReceivedElements.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = OscPrintReceivedElements.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscPrintReceivedElements.cpp; sourceTree = SOURCE_ROOT; };
-		BF43DBE2058F6BCC3CD8A0C4 /* vhpPmThread.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpPmThread.cpp; path = src/vhpPmThread.cpp; sourceTree = SOURCE_ROOT; };
 		C2FAC65C491D4231379F3298 /* ofxOscReceiver.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxOscReceiver.cpp; path = ../../../addons/ofxOsc/src/ofxOscReceiver.cpp; sourceTree = SOURCE_ROOT; };
 		C4C430D91DBCBC2600404842 /* vhpWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpWindow.h; sourceTree = "<group>"; };
 		C4C430DA1DBCBC2600404842 /* vhpWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpWindow.cpp; sourceTree = "<group>"; };
+		C4EE4B8C1DBFCC7700123BEA /* vhpLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpLine.h; sourceTree = "<group>"; };
+		C4EE4B8D1DBFCC7700123BEA /* vhpLine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpLine.cpp; sourceTree = "<group>"; };
 		C58862C6D212C8E8A83810F4 /* ofxOscMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscMessage.h; path = ../../../addons/ofxOsc/src/ofxOscMessage.h; sourceTree = SOURCE_ROOT; };
 		C6937888E126BADC8777423B /* OscTypes.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscTypes.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscTypes.h; sourceTree = SOURCE_ROOT; };
 		CB51C0C9ECB5FF214AE55A25 /* vhpLmThread.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpLmThread.cpp; path = src/vhpLmThread.cpp; sourceTree = SOURCE_ROOT; };
@@ -139,7 +137,6 @@
 		F4F5B6B8BA2BD52C646ED908 /* OscException.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscException.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscException.h; sourceTree = SOURCE_ROOT; };
 		F7FBC56859535E597B24BB91 /* NetworkingUtils.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = NetworkingUtils.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/NetworkingUtils.h; sourceTree = SOURCE_ROOT; };
 		FC5DA1C87211D4F6377DA719 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = tinyxmlparser.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxmlparser.cpp; sourceTree = SOURCE_ROOT; };
-		FF829E3A86189092D995282E /* vhpGcThread.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpGcThread.cpp; path = src/vhpGcThread.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -306,8 +303,6 @@
 				805B3D941DC94BA6CEFFEE18 /* vhpScreenSaver.cpp */,
 				045817836C256D6C2ED6E8AD /* vhpPlayerMenu.h */,
 				5BEAD265C965A1EA9C6180D4 /* vhpPlayerMenu.cpp */,
-				5852C155F810CB7A6914B3E1 /* vhpPmThread.h */,
-				BF43DBE2058F6BCC3CD8A0C4 /* vhpPmThread.cpp */,
 				7EE889A562FE54D59B5C6812 /* vhpStandby.h */,
 				CB860141CB6B1C88AB0316A1 /* vhpStandby.cpp */,
 				04EBA05D4678602A6240BDD8 /* vhpSbThread.h */,
@@ -320,8 +315,8 @@
 				1951C5BC9E5D1C80580A3F1E /* vhpGameCore.cpp */,
 				C4C430D91DBCBC2600404842 /* vhpWindow.h */,
 				C4C430DA1DBCBC2600404842 /* vhpWindow.cpp */,
-				19401F86A548A651A5EEB5AF /* vhpGcThread.h */,
-				FF829E3A86189092D995282E /* vhpGcThread.cpp */,
+				C4EE4B8C1DBFCC7700123BEA /* vhpLine.h */,
+				C4EE4B8D1DBFCC7700123BEA /* vhpLine.cpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -450,12 +445,10 @@
 				02DD662502ECDC87F64802FE /* vhpGame.cpp in Sources */,
 				C4C430DB1DBCBC2600404842 /* vhpWindow.cpp in Sources */,
 				64AD50168756EAC37AC65551 /* vhpGameCore.cpp in Sources */,
-				D99405D55A7C41C6D50C163F /* vhpGcThread.cpp in Sources */,
 				C7996D50E7184B3694F637BF /* vhpLevelMenu.cpp in Sources */,
 				C6CEC95328BF5374695CEDCD /* vhpLmThread.cpp in Sources */,
 				C186600B80BA974304A12460 /* vhpOSC.cpp in Sources */,
 				30195DFE5A7CE1510313E021 /* vhpPlayerMenu.cpp in Sources */,
-				F35B81D9110D68351747AE29 /* vhpPmThread.cpp in Sources */,
 				D434E2BDC3B54B4109B68A6E /* vhpSbThread.cpp in Sources */,
 				C99FEE73831E528628F63FE6 /* vhpScreenSaver.cpp in Sources */,
 				A3A8E6FBC894B4C4A5854D22 /* vhpStandby.cpp in Sources */,
@@ -471,6 +464,7 @@
 				C4782ECC372420ACE0615B74 /* OscPrintReceivedElements.cpp in Sources */,
 				0546D1A38E13BD319CC9755B /* OscReceivedElements.cpp in Sources */,
 				879A251454401BC0B6E4F238 /* OscTypes.cpp in Sources */,
+				C4EE4B8E1DBFCC7700123BEA /* vhpLine.cpp in Sources */,
 				63B57AC5BF4EF088491E0317 /* ofxXmlSettings.cpp in Sources */,
 				933A2227713C720CEFF80FD9 /* tinyxml.cpp in Sources */,
 				9D44DC88EF9E7991B4A09951 /* tinyxmlerror.cpp in Sources */,

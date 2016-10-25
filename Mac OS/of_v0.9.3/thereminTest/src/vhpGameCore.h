@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
-#include "vhpGcThread.h"
+#include "vhpOSC.h"
 #include "vhpWindow.h"
 
 #define nWINDOWS        7
@@ -25,7 +25,7 @@ class vhpGameCore {
 		/* funciones o métodos */
     
         // Inicializar variables y cargar los archivos
-        void setup(vhpGcThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
+        void setup(ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
         void initGame();
         void initRound();
         void initPattern();

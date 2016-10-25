@@ -8,13 +8,11 @@
 #include "vhpOSC.h"
 #include "vhpScreenSaver.h"
 #include "vhpPlayerMenu.h"
-#include "vhpPmThread.h"
 #include "vhpStandby.h"
 #include "vhpSbThread.h"
 #include "vhpLevelMenu.h"
 #include "vhpLmThread.h"
 #include "vhpGameCore.h"
-#include "vhpGcThread.h"
 
 #define SCREENSAVER         0
 #define PLAYERMENU          1
@@ -128,7 +126,6 @@ class vhpGame {
         bool                        logosLoaded;
         vhpPlayerMenu               xogadores;
         bool                        xogadoresLoaded;
-        vhpPmThread                 controlXogadores;
         vhpStandby                  espera;
         bool                        esperaLoaded;
         vhpSbThread                 controlEspera;
@@ -138,7 +135,6 @@ class vhpGame {
     
         vhpGameCore                 xogo;
         bool                        xogoLoaded;
-        vhpGcThread                 controlXogo;
     
         /*
          vector<vhpVid>            background;

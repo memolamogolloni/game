@@ -33,11 +33,10 @@ vhpGameCore::vhpGameCore(): scale(1.0), loaded(false), loading(false){
 }
 
 vhpGameCore::~vhpGameCore(){
-    stop();
 }
 
 // Inicializar variables y cargar los archivos -----------------
-void vhpGameCore::setup(vhpGcThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene){
+void vhpGameCore::setup(ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene){
     
     // Añadir los vídeos desde el documento xml de settings
     int n = _videoList.getNumTags(_videoTag +":VIDEO");
