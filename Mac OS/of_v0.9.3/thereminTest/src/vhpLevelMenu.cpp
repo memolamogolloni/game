@@ -145,7 +145,7 @@ void vhpLevelMenu::update(){
 }
 void vhpLevelMenu::updateElements(){
     count++;
-    cout << count << endl;
+    // cout << count << endl;
     updateTextLine();
 }
 void vhpLevelMenu::updateTextLine(){

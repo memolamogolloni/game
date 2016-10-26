@@ -9,7 +9,6 @@
 #include "vhpScreenSaver.h"
 #include "vhpPlayerMenu.h"
 #include "vhpStandby.h"
-#include "vhpSbThread.h"
 #include "vhpLevelMenu.h"
 #include "vhpGameCore.h"
 
@@ -35,7 +34,13 @@ class vhpGame {
         void draw();
         void (vhpGame::*currentDraw)();
         void drawFrameRate();
+    
         void set(int &_state);
+        void screenSaverOnClick(int &_s);
+        void playerMenuOnSelect(int &_s);
+        void playerLevelOnSelect(int &_s);
+        void standByOnCancel(int &_s);
+        void onPlayersReceived(int &_s);
         void toggleScale();
     
         // loading
@@ -86,6 +91,7 @@ class vhpGame {
         void updateDirectLevelMenuInOut();
         void drawLevelMenu();
         void drawLevelMenuIn();
+        void drawDirectLevelMenuIn();
         void drawLevelMenuOut();
     
         // GAME
@@ -127,7 +133,6 @@ class vhpGame {
         bool                        xogadoresLoaded;
         vhpStandby                  espera;
         bool                        esperaLoaded;
-        vhpSbThread                 controlEspera;
         vhpLevelMenu                niveis;
         bool                        niveisLoaded;
     

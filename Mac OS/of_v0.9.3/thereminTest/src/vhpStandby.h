@@ -3,7 +3,11 @@
 #include "ofMain.h"
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
-#include "vhpSbThread.h"
+#include "vhpLine.h"
+
+#define WAITING                 0
+#define CANCELED                1
+#define ACEPTED                 2
 
 class vhpStandby {
 
@@ -16,25 +20,44 @@ class vhpStandby {
 		/* funciones o métodos */
     
         // Inicializar variables y cargar los archivos
-        void setup(vhpSbThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
+        void setup(int _currentScene, int _targetScene);
+        void getText(string _file);
+    
+        // Precarga de todos los elementos
+        void load();
+        void (vhpStandby::*currentLoad)();
+        void loadSingle();
     
         // Comenzar e interrumpir los hilos y listeners de la escena
+        void setWaiting();
+        void setAcepted();
+        void setCancel();
+    
         void start();
         void stop();
     
         // Dibujado y actualización variables
         void update();
         void (vhpStandby::*currentUpdate)();
+        void updateElements();
+    
         void draw(int _x, int _y);
+    
+        // Dibujado de elementos gráficos
+        void drawWaiting();
+        void drawAcepted();
+        void drawCancel();
     
         // reproducir o detener la escena modificando currentUpdate
         void play();
-        void pause();
-    
+        
         // Procesado y actualización
-        void playScreenSaver();
-        void pauseScreenSaver();
-        void loopScreenSaver(float _pos);
+        void fadeInWaiting();
+        void fadeOutWaiting();
+        void fadeInAcepted();
+        void fadeOutAcepted();
+        void fadeInCancel();
+        //void fadeOutCancel();
     
         // Para recoger la pulsación del ratón en la pantalla
         void touchPressed();
@@ -42,19 +65,40 @@ class vhpStandby {
         /* Variables o propiedades */
     
         // Video de fondo
-        ofVideoPlayer   video;
-        ofFbo           fbo;
-        int             width;
-        int             height;
+        ofFbo                       fbo;
+        int                         width;
+        int                         height;
     
-        // Hilo de control
-        vhpSbThread *         controller;
+        // elementos gráficos
+        vector<string>              lines;
+        int                         count;
+        int                         countDown;
+
+        ofTrueTypeFont              TTF;
+        ofTrueTypeFont              TTFB;
+    
+        ofImage                     clock;
+        ofImage                     cancel;
+        ofImage                     bg;
+        ofImage                     balls;
+        ofImage                     bases;
+        ofImage                     shadow;
+        ofImage                     back;
+        int                         alpha;
+        int                         alpha_increment;
+    
+        //loader
+        vector<ofImage*>            loadingSilge;
+        vector<string>              filesSingle;
+        bool                        loaded;
+        bool                        loading;
     
         // Estado del juego
-        int             currentScene;
-        int             targetScene;
+        int                         currentScene;
+        int                         targetScene;
+        int                         state;
     
         // notificación de eventos
-        static ofEvent<int> onClick;
+        static ofEvent<int> onCancel;
     
 };

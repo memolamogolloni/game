@@ -107,6 +107,7 @@ void vhpGameCore::setup(ofxXmlSettings& _videoList, string _videoTag, int _curre
     alpha_increment = 5;
     
     pWindow.setup();
+    initGame();
     
 }
 void vhpGameCore::initGame(){

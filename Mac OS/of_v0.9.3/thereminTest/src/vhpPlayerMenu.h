@@ -21,7 +21,7 @@ class vhpPlayerMenu {
 		/* funciones o métodos */
     
         // Inicializar variables y cargar los archivos
-        void setup(int _currentScene, int _targetScene);
+        void setup(int _currentScene, int _targetScene1, int _targetScene2);
         void getText(string _file);
     
         // Precarga de todos los elementos
@@ -107,7 +107,7 @@ class vhpPlayerMenu {
     
         // Estado del juego
         int                 currentScene;
-        int                 targetScene;
+        int                 targetScene[2];
         int                 state;
         int                 target;
         int                 selected;

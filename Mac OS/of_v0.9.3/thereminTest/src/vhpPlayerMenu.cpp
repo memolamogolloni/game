@@ -9,11 +9,14 @@ vhpPlayerMenu::~vhpPlayerMenu(){
 }
 
 // Inicializar variables y cargar los archivos -----------------
-void vhpPlayerMenu::setup(int _currentScene, int _targetScene){
+void vhpPlayerMenu::setup(int _currentScene, int _targetScene1, int _targetScene2){
     
     // Inicializar las variables
-    currentScene = _currentScene;   // PLAYERMENU
-    targetScene = _targetScene;     // STANDBY
+    currentScene = _currentScene;       // PLAYERMENU
+    targetScene[0] = _targetScene1;     // LEVELMENU
+    targetScene[1] = _targetScene2;     // STANDBY
+    cout << "LEVELMENU " << targetScene[0] << endl;
+    cout << "STANDBY " << targetScene[1] << endl;
     
     // FBO alocation and cleaning
     width = 1920;
@@ -97,6 +100,7 @@ void vhpPlayerMenu::init(){
         lines[i].init();
     }
     count = 0;
+    state = MENU;
     target = MENU;
 }
 void vhpPlayerMenu::setOne(){
@@ -128,6 +132,8 @@ void vhpPlayerMenu::setTwo(){
 void vhpPlayerMenu::setFour(){
     lines.clear();
     getText("txt/pm-2vs2.txt");
+    
+    cout << "txt/pm-2vs2.txt" << endl;
     alpha = 0;
     alpha_increment = 5;
     for (int i = 0; i < lines.size(); i++) {
@@ -167,7 +173,7 @@ void vhpPlayerMenu::update(){
 }
 void vhpPlayerMenu::updateElements(){
     count++;
-    cout << count << endl;
+    // cout << count << endl;
     updateTextLine();
 }
 void vhpPlayerMenu::updateTextLine(){
@@ -432,8 +438,9 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                     case ONEPLAYER:
                         if ((_y>=840)&&(_y<=960)) {
                             selected = 1;
-                            ofNotifyEvent(playersNumber, targetScene);
-                            cout << "ONEPLAYER confirmed!" << endl;
+                            cout << "ONEPLAYER confirmed! target: " << targetScene[0] << endl;
+                            int val = 3; // LEVELMENU & targetScene[0] ?
+                            ofNotifyEvent(playersNumber, val);
                         }
                         break;
                     case TWOPLAYERS:
@@ -461,8 +468,9 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                     case TWOPLAYERS:
                         if ((_y>=840)&&(_y<=960)) {
                             selected = 2;
-                            ofNotifyEvent(playersNumber, targetScene);
-                            cout << "TWOPLAYERS confirmed!" << endl;
+                            cout << "TWOPLAYERS confirmed! target: " << targetScene[0] << endl;
+                            int val = 3; // LEVELMENU & targetScene[0] ?
+                            ofNotifyEvent(playersNumber, val);
                         }
                         break;
                     case FOURPLAYERS:
@@ -473,8 +481,10 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                 }
             } else {
                 cout << "4 xogadores" << endl;
+                cout << "state: " << state << endl;
                 switch (state) {
                     case MENU:
+                        cout << "setFour();" << endl;
                         setFour();
                         break;
                     case ONEPLAYER:
@@ -490,8 +500,9 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                     case FOURPLAYERS:
                         if ((_y>=840)&&(_y<=960)) {
                             selected = 4;
-                            ofNotifyEvent(playersNumber, targetScene);
-                            cout << "FOURPLAYERS confirmed!" << endl;
+                            cout << "FOURPLAYERS confirmed! target: " << targetScene[1] << endl;
+                            int val = 2; // STANDBY & targetScene[1] ?
+                            ofNotifyEvent(playersNumber, val);
                         }
                         break;
                 }
