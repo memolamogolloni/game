@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
-#include "vhpLmThread.h"
+#include "vhpLine.h"
 
 #define MENUNIVEL               0
 #define DESTREZA                1
@@ -21,48 +21,93 @@ class vhpLevelMenu {
 		/* funciones o métodos */
     
         // Inicializar variables y cargar los archivos
-        void setup(vhpLmThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
+        void setup(int _currentScene, int _targetScene);
+        void getText(string _file);
+    
+        // Precarga de todos los elementos
+        void load();
+        void (vhpLevelMenu::*currentLoad)();
+        void loadSingle();
     
         // Comenzar e interrumpir los hilos y listeners de la escena
+        void init();
+        void setDestreza();
+        void setEspiritualidad();
+        void setOratoria();
+        void setNext();
         void start();
         void stop();
     
         // Dibujado y actualización variables
         void update();
         void (vhpLevelMenu::*currentUpdate)();
+        void updateElements();
+        void updateTextLine();
+    
         void draw(int _x, int _y);
+    
+        // Dibujado de elementos gráficos
+        void drawTextLine(int _x, int _y, int _alpha);
+        void drawMenu();
+        void drawDestreza();
+        void drawEspiritualidad();
+        void drawOratoria();
     
         // reproducir o detener la escena modificando currentUpdate
         void play();
-        void pause();
     
         // Procesado y actualización
-        void playPlayerMenu();
-        void pausePlayerMenu();
-        void loopPlayerMenu(float _pos);
+        void emptyMenu();
+        void fadeInText();
+        void fadeOutText();
+        void fadeInDestreza();
+        void fadeOutDestreza();
+        void fadeInEspiritualidad();
+        void fadeOutEspiritualidad();
+        void fadeInOratoria();
+        void fadeOutOratoria();
     
         // Utilidades
         void alert(int _e);
-        float getPosition();
     
         // Para recoger la pulsación del ratón en la pantalla
         void touchPressed(float _x, float _y);
     
         /* Variables o propiedades */
     
-        // Video de fondo
-        ofVideoPlayer       video;
-        ofFbo               fbo;
-        int                 width;
-        int                 height;
+        // elementos gráficos
+        vector<vhpLine>             lines;
+        int                         count;
+        ofTrueTypeFont              TTF;
+        ofTrueTypeFont              TTFB;
     
-        // Hilo de control
-        vhpLmThread *         controller;
+        ofImage                     glow;
+        ofImage                     keko;
+        ofImage                     bg;
+        ofImage                     icons;
+        ofImage                     bases;
+        ofImage                     destreza;
+        ofImage                     espiritualidad;
+        ofImage                     oratoria;
+        int                         alpha;
+        int                         alpha_increment;
+    
+        // fbo
+        ofFbo                       fbo;
+        int                         width;
+        int                         height;
+    
+        //loader
+        vector<ofImage*>            loadingSilge;
+        vector<string>              filesSingle;
+        bool                        loaded;
+        bool                        loading;
     
         // Estado del juego
         int                 currentScene;
         int                 targetScene;
         int                 state;
+        int                 target;
         int                 selected;
     
         // notificación de eventos

@@ -14,10 +14,11 @@ void vhpPlayerMenu::setup(int _currentScene, int _targetScene){
     // Inicializar las variables
     currentScene = _currentScene;   // PLAYERMENU
     targetScene = _targetScene;     // STANDBY
-    width = 1980;
+    
+    // FBO alocation and cleaning
+    width = 1920;
     height = 1080;
     fbo.allocate(width, height, GL_RGBA);
-    // clean FBO
     fbo.begin();
     ofClear(255,255,255, 0);
     fbo.end();
@@ -30,21 +31,23 @@ void vhpPlayerMenu::setup(int _currentScene, int _targetScene){
     
     // Añadir las imágenes Sueltas
     loadingSilge.push_back(&glow);
-    filesSingle.push_back("glow-pm");
+    filesSingle.push_back("pm-glow");
     loadingSilge.push_back(&keko);
-    filesSingle.push_back("keko-pm");
+    filesSingle.push_back("pm-keko");
     loadingSilge.push_back(&bg);
-    filesSingle.push_back("bg-pm");
+    filesSingle.push_back("pm-bg");
     loadingSilge.push_back(&balls);
-    filesSingle.push_back("balls-pm");
+    filesSingle.push_back("pm-balls");
     loadingSilge.push_back(&bases);
-    filesSingle.push_back("bases-pm");
+    filesSingle.push_back("pm-bases");
     loadingSilge.push_back(&one);
-    filesSingle.push_back("one-pm");
+    filesSingle.push_back("pm-one");
     loadingSilge.push_back(&two);
-    filesSingle.push_back("two-pm");
+    filesSingle.push_back("pm-two");
     loadingSilge.push_back(&four);
-    filesSingle.push_back("four-pm");
+    filesSingle.push_back("pm-four");
+    loadingSilge.push_back(&elegir);
+    filesSingle.push_back("pm-elegir");
     
     currentLoad = &vhpPlayerMenu::loadSingle;
     
@@ -52,6 +55,7 @@ void vhpPlayerMenu::setup(int _currentScene, int _targetScene){
 void vhpPlayerMenu::getText(string _file) {
     ofBuffer buffer = ofBufferFromFile(_file);
     for (auto line : buffer.getLines()){
+        cout << line << endl;
         lines.push_back(vhpLine(line));
     }
 }
@@ -86,7 +90,7 @@ void vhpPlayerMenu::loadSingle(){
 // Comenzar e interrumpir los hilos y listeners de la escena ---
 void vhpPlayerMenu::init(){
     lines.clear();
-    getText("playermenu.txt");
+    getText("txt/pm-intro.txt");
     alpha = 0;
     alpha_increment = 5;
     for (int i = 0; i < lines.size(); i++) {
@@ -97,7 +101,7 @@ void vhpPlayerMenu::init(){
 }
 void vhpPlayerMenu::setOne(){
     lines.clear();
-    getText("1vsai.txt");
+    getText("txt/pm-1vsai.txt");
     alpha = 0;
     alpha_increment = 5;
     for (int i = 0; i < lines.size(); i++) {
@@ -110,7 +114,7 @@ void vhpPlayerMenu::setOne(){
 }
 void vhpPlayerMenu::setTwo(){
     lines.clear();
-    getText("1vs1.txt");
+    getText("txt/pm-1vs1.txt");
     alpha = 0;
     alpha_increment = 5;
     for (int i = 0; i < lines.size(); i++) {
@@ -123,7 +127,7 @@ void vhpPlayerMenu::setTwo(){
 }
 void vhpPlayerMenu::setFour(){
     lines.clear();
-    getText("2vs2.txt");
+    getText("txt/pm-2vs2.txt");
     alpha = 0;
     alpha_increment = 5;
     for (int i = 0; i < lines.size(); i++) {
@@ -212,6 +216,8 @@ void vhpPlayerMenu::drawOne(){
     bases.draw(0,0);
     balls.draw(0,0);
     keko.draw(0,0);
+    ofSetColor(255,255,255,alpha);
+    elegir.draw(249, 866);
 }
 void vhpPlayerMenu::drawTwo(){
     ofSetColor(255, 255, 255);
@@ -225,6 +231,8 @@ void vhpPlayerMenu::drawTwo(){
     bases.draw(0,0);
     balls.draw(0,0);
     keko.draw(0,0);
+    ofSetColor(255,255,255,alpha);
+    elegir.draw(716, 866);
 }
 void vhpPlayerMenu::drawFour(){
     ofSetColor(255, 255, 255);
@@ -238,16 +246,14 @@ void vhpPlayerMenu::drawFour(){
     bases.draw(0,0);
     balls.draw(0,0);
     keko.draw(0,0);
+    ofSetColor(255,255,255,alpha);
+    elegir.draw(1320, 866);
 }
 
 // Reproducir o detener la escena modificando currentUpdate ----
 void vhpPlayerMenu::play(){
     currentUpdate = &vhpPlayerMenu::fadeInText;
     init();
-}
-
-void vhpPlayerMenu::pause(){
-    currentUpdate = &vhpPlayerMenu::pausePlayerMenu;
 }
 
 // Procesado y actualización -----------------------------------
@@ -293,6 +299,7 @@ void vhpPlayerMenu::fadeOutText(){
     alpha -= alpha_increment;
     if (alpha<=0) {
         alpha = 0;
+        alpha_increment = 5;
         setNext();
     }
 }
@@ -327,6 +334,7 @@ void vhpPlayerMenu::fadeOutOne(){
     alpha -= alpha_increment;
     if (alpha<=0) {
         alpha = 0;
+        alpha_increment = 5;
         setNext();
     }
 }
@@ -361,6 +369,7 @@ void vhpPlayerMenu::fadeOutTwo(){
     alpha -= alpha_increment;
     if (alpha<=0) {
         alpha = 0;
+        alpha_increment = 5;
         setNext();
     }
 }
@@ -395,28 +404,14 @@ void vhpPlayerMenu::fadeOutFour(){
     alpha -= alpha_increment;
     if (alpha<=0) {
         alpha = 0;
+        alpha_increment = 5;
         setNext();
     }
 }
 
-
-void vhpPlayerMenu::pausePlayerMenu(){
-    // Al no hacer nada mantiene el FBO con el último fotograma reproducido
-    
-}
-
-void vhpPlayerMenu::loopPlayerMenu(float _pos){
-    // Envia la cabeza lectora del video a un punto determinado
-}
-
-
 // Utilidades ---------------------------------------------------
-
 void vhpPlayerMenu::alert(int _e){
     cout << " Event detected " << _e << endl;
-}
-
-float vhpPlayerMenu::getPosition(){
 }
 
 // Eventos ------------------------------------------------------
@@ -435,7 +430,7 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                         setOne();
                         break;
                     case ONEPLAYER:
-                        if (_y>=900) {
+                        if ((_y>=840)&&(_y<=960)) {
                             selected = 1;
                             ofNotifyEvent(playersNumber, targetScene);
                             cout << "ONEPLAYER confirmed!" << endl;
@@ -443,10 +438,12 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                         break;
                     case TWOPLAYERS:
                         target = ONEPLAYER;
+                        alpha_increment = 10;
                         count=500;
                         break;
                     case FOURPLAYERS:
                         target = ONEPLAYER;
+                        alpha_increment = 10;
                         count=500;
                         break;
                 }
@@ -458,10 +455,11 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                         break;
                     case ONEPLAYER:
                         target = TWOPLAYERS;
+                        alpha_increment = 10;
                         count=500;
                         break;
                     case TWOPLAYERS:
-                        if (_y>=900) {
+                        if ((_y>=840)&&(_y<=960)) {
                             selected = 2;
                             ofNotifyEvent(playersNumber, targetScene);
                             cout << "TWOPLAYERS confirmed!" << endl;
@@ -469,6 +467,7 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                         break;
                     case FOURPLAYERS:
                         target = TWOPLAYERS;
+                        alpha_increment = 10;
                         count=500;
                         break;
                 }
@@ -480,14 +479,16 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                         break;
                     case ONEPLAYER:
                         target = FOURPLAYERS;
+                        alpha_increment = 10;
                         count=500;
                         break;
                     case TWOPLAYERS:
                         target = FOURPLAYERS;
+                        alpha_increment = 10;
                         count=500;
                         break;
                     case FOURPLAYERS:
-                        if (_y>=900) {
+                        if ((_y>=840)&&(_y<=960)) {
                             selected = 4;
                             ofNotifyEvent(playersNumber, targetScene);
                             cout << "FOURPLAYERS confirmed!" << endl;

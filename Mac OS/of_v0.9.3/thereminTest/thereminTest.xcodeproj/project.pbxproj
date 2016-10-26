@@ -30,7 +30,6 @@
 		C4782ECC372420ACE0615B74 /* OscPrintReceivedElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC8881B3C8C0A1C45F042E7A /* OscPrintReceivedElements.cpp */; };
 		C4C430DB1DBCBC2600404842 /* vhpWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4C430DA1DBCBC2600404842 /* vhpWindow.cpp */; };
 		C4EE4B8E1DBFCC7700123BEA /* vhpLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4EE4B8D1DBFCC7700123BEA /* vhpLine.cpp */; };
-		C6CEC95328BF5374695CEDCD /* vhpLmThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CB51C0C9ECB5FF214AE55A25 /* vhpLmThread.cpp */; };
 		C7996D50E7184B3694F637BF /* vhpLevelMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A961BD155A868BB44C013D0C /* vhpLevelMenu.cpp */; };
 		C99FEE73831E528628F63FE6 /* vhpScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 805B3D941DC94BA6CEFFEE18 /* vhpScreenSaver.cpp */; };
 		D434E2BDC3B54B4109B68A6E /* vhpSbThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CB569799CCFB855655164D8C /* vhpSbThread.cpp */; };
@@ -116,7 +115,6 @@
 		C4EE4B8D1DBFCC7700123BEA /* vhpLine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpLine.cpp; sourceTree = "<group>"; };
 		C58862C6D212C8E8A83810F4 /* ofxOscMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscMessage.h; path = ../../../addons/ofxOsc/src/ofxOscMessage.h; sourceTree = SOURCE_ROOT; };
 		C6937888E126BADC8777423B /* OscTypes.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscTypes.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscTypes.h; sourceTree = SOURCE_ROOT; };
-		CB51C0C9ECB5FF214AE55A25 /* vhpLmThread.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpLmThread.cpp; path = src/vhpLmThread.cpp; sourceTree = SOURCE_ROOT; };
 		CB569799CCFB855655164D8C /* vhpSbThread.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpSbThread.cpp; path = src/vhpSbThread.cpp; sourceTree = SOURCE_ROOT; };
 		CB860141CB6B1C88AB0316A1 /* vhpStandby.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpStandby.cpp; path = src/vhpStandby.cpp; sourceTree = SOURCE_ROOT; };
 		CF3958F7EFFAFD4D03B99DF1 /* vhpGameCore.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vhpGameCore.h; path = src/vhpGameCore.h; sourceTree = SOURCE_ROOT; };
@@ -131,7 +129,6 @@
 		E4EB691F138AFCF100A09F29 /* CoreOF.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = CoreOF.xcconfig; path = ../../../libs/openFrameworksCompiled/project/osx/CoreOF.xcconfig; sourceTree = SOURCE_ROOT; };
 		E4EB6923138AFD0F00A09F29 /* Project.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
 		E64253929EFD19F28DFB8E19 /* vhpOSC.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = vhpOSC.cpp; path = src/vhpOSC.cpp; sourceTree = SOURCE_ROOT; };
-		E6C7D05D9B879E8405CBC2ED /* vhpLmThread.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vhpLmThread.h; path = src/vhpLmThread.h; sourceTree = SOURCE_ROOT; };
 		E6DEF695B88BA5FAACEAA937 /* UdpSocket.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = UdpSocket.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/posix/UdpSocket.cpp; sourceTree = SOURCE_ROOT; };
 		F42C833B43F675970473689C /* vhpOSC.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vhpOSC.h; path = src/vhpOSC.h; sourceTree = SOURCE_ROOT; };
 		F4F5B6B8BA2BD52C646ED908 /* OscException.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscException.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscException.h; sourceTree = SOURCE_ROOT; };
@@ -309,8 +306,6 @@
 				CB569799CCFB855655164D8C /* vhpSbThread.cpp */,
 				A95646F42DE03F9955A9D8A6 /* vhpLevelMenu.h */,
 				A961BD155A868BB44C013D0C /* vhpLevelMenu.cpp */,
-				E6C7D05D9B879E8405CBC2ED /* vhpLmThread.h */,
-				CB51C0C9ECB5FF214AE55A25 /* vhpLmThread.cpp */,
 				CF3958F7EFFAFD4D03B99DF1 /* vhpGameCore.h */,
 				1951C5BC9E5D1C80580A3F1E /* vhpGameCore.cpp */,
 				C4C430D91DBCBC2600404842 /* vhpWindow.h */,
@@ -446,7 +441,6 @@
 				C4C430DB1DBCBC2600404842 /* vhpWindow.cpp in Sources */,
 				64AD50168756EAC37AC65551 /* vhpGameCore.cpp in Sources */,
 				C7996D50E7184B3694F637BF /* vhpLevelMenu.cpp in Sources */,
-				C6CEC95328BF5374695CEDCD /* vhpLmThread.cpp in Sources */,
 				C186600B80BA974304A12460 /* vhpOSC.cpp in Sources */,
 				30195DFE5A7CE1510313E021 /* vhpPlayerMenu.cpp in Sources */,
 				D434E2BDC3B54B4109B68A6E /* vhpSbThread.cpp in Sources */,

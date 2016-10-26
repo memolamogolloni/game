@@ -67,12 +67,9 @@ class vhpPlayerMenu {
         void fadeOutTwo();
         void fadeInFour();
         void fadeOutFour();
-        void pausePlayerMenu();
-        void loopPlayerMenu(float _pos);
     
         // Utilidades
         void alert(int _e);
-        float getPosition();
     
         // Para recoger la pulsación del ratón en la pantalla
         void touchPressed(float _x, float _y);
@@ -85,6 +82,7 @@ class vhpPlayerMenu {
         ofTrueTypeFont              TTF;
         ofTrueTypeFont              TTFB;
     
+        ofImage                     elegir;
         ofImage                     glow;
         ofImage                     keko;
         ofImage                     bg;

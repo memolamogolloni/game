@@ -11,7 +11,6 @@
 #include "vhpStandby.h"
 #include "vhpSbThread.h"
 #include "vhpLevelMenu.h"
-#include "vhpLmThread.h"
 #include "vhpGameCore.h"
 
 #define SCREENSAVER         0
@@ -131,7 +130,6 @@ class vhpGame {
         vhpSbThread                 controlEspera;
         vhpLevelMenu                niveis;
         bool                        niveisLoaded;
-        vhpLmThread                 controlNiveis;
     
         vhpGameCore                 xogo;
         bool                        xogoLoaded;
