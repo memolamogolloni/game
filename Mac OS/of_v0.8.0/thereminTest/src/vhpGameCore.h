@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
-#include "vhpGcThread.h"
+#include "vhpOSC.h"
 #include "vhpWindow.h"
 
 #define nWINDOWS        7
@@ -25,7 +25,8 @@ class vhpGameCore {
 		/* funciones o métodos */
     
         // Inicializar variables y cargar los archivos
-        void setup(vhpGcThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
+        void setup(ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
+        void getText(string _file);
         void initGame();
         void initRound();
         void initPattern();
@@ -47,8 +48,12 @@ class vhpGameCore {
     
         // Dibujado de elementos
         void drawScore();
+        void drawBackground();
         void drawGame();
         void drawWindows();
+        void drawRound();
+        void drawRoundWiner();
+        void drawClickedWindow();
     
         // reproducir o detener la escena modificando currentUpdate
         void play();
@@ -76,6 +81,8 @@ class vhpGameCore {
         void touchPressedPattern(float & _x, float & _y);
         void touchPressedPatternWinner(float & _x, float & _y);
     
+        void checkIsGo(int _p);
+    
         int randomWindow();
         void randomPattern();
         void setTimeReference();
@@ -93,14 +100,16 @@ class vhpGameCore {
         int                         height;
     
         // Elementos gráficos
-        int                 alpha;
-        int                 alphaWindow[4];
-        int                 alpha_increment;
-        ofImage             ready;
-        ofImage             steady;
-        ofImage             go;
-        ofImage             tie;
-        ofImage             building;
+        vector<string>              lines;
+        int                         count;
+        ofTrueTypeFont              TTF;
+        ofTrueTypeFont              TTFB;
+    
+        int                         alpha;
+        int                         alphaWindow[4];
+        int                         alpha_increment;
+        ofImage                     tie;
+        ofImage                     building;
     
     
         vector<ofImage*>            loadingSilge;
@@ -110,41 +119,45 @@ class vhpGameCore {
     
         vhpWindow                   pWindow;
     
-        int                 windowState[2][7];
-        ofImage             winnerBackground[2];
-        ofImage             winnerButton[2];
-        ofImage             score[2];
-        ofImage             purple;
-        ofImage             yellow;
-        ofImage             blue;
-        ofImage             green;
-        ofImage             iconosR;
-        ofImage             iconosA;
-        ofImage             marcos;
-        ofImage             avisos;
-        ofImage             click;
-    
-        ofTrueTypeFont      TTF;
+        int                         windowState[2][7];
+        ofImage                     winnerBackground[2];
+        ofImage                     winnerButton[2];
+        ofImage                     score[2];
+        ofImage                     purple;
+        ofImage                     yellow;
+        ofImage                     blue;
+        ofImage                     green;
+        ofImage                     iconosR;
+        ofImage                     iconosA;
+        ofImage                     marcos;
+        ofImage                     avisos;
+        ofImage                     click;
+        ofImage                     bg;
+        ofImage                     balls;
+        ofImage                     shadow;
+        ofImage                     wrong;
     
         // Estado del juego
-        int             currentScene;
-        int             targetScene;
-        float           scale;
-        bool            hold[2];
-        int             clicked[2];
-        int             points[2];
-        int             time[2];
-        bool            ok[2];
-        bool            next[2];
-        int             winner;
-        int             holdSteady;
-        int             targetsShot;
-        int             targetsPattern[4];
-        int             registeredPattern[2][4];
-        int             currentRound;
-        int             delay;
+        int                         currentScene;
+        int                         targetScene;
+        float                       scale;
+        bool                        hold[2];
+        bool                        isGo;
+        int                         clicked[2];
+        int                         points[2];
+        int                         time[2];
+        bool                        ok[2];
+        bool                        soon[2];
+        bool                        next[2];
+        int                         winner;
+        int                         holdSteady;
+        int                         targetsShot;
+        int                         targetsPattern[4];
+        int                         registeredPattern[2][4];
+        int                         currentRound;
+        int                         delay;
     
-        float           tRef;
+        float                       tRef;
     
         // Recorte de las ventanas
         int             wHeight;

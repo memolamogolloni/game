@@ -8,13 +8,9 @@
 #include "vhpOSC.h"
 #include "vhpScreenSaver.h"
 #include "vhpPlayerMenu.h"
-#include "vhpPmThread.h"
 #include "vhpStandby.h"
-#include "vhpSbThread.h"
 #include "vhpLevelMenu.h"
-#include "vhpLmThread.h"
 #include "vhpGameCore.h"
-#include "vhpGcThread.h"
 
 #define SCREENSAVER         0
 #define PLAYERMENU          1
@@ -38,7 +34,13 @@ class vhpGame {
         void draw();
         void (vhpGame::*currentDraw)();
         void drawFrameRate();
+    
         void set(int &_state);
+        void screenSaverOnClick(int &_s);
+        void playerMenuOnSelect(int &_s);
+        void playerLevelOnSelect(int &_s);
+        void standByOnCancel(int &_s);
+        void onPlayersReceived(int &_s);
         void toggleScale();
     
         // loading
@@ -89,6 +91,7 @@ class vhpGame {
         void updateDirectLevelMenuInOut();
         void drawLevelMenu();
         void drawLevelMenuIn();
+        void drawDirectLevelMenuIn();
         void drawLevelMenuOut();
     
         // GAME
@@ -128,17 +131,13 @@ class vhpGame {
         bool                        logosLoaded;
         vhpPlayerMenu               xogadores;
         bool                        xogadoresLoaded;
-        vhpPmThread                 controlXogadores;
         vhpStandby                  espera;
         bool                        esperaLoaded;
-        vhpSbThread                 controlEspera;
         vhpLevelMenu                niveis;
         bool                        niveisLoaded;
-        vhpLmThread                 controlNiveis;
     
         vhpGameCore                 xogo;
         bool                        xogoLoaded;
-        vhpGcThread                 controlXogo;
     
         /*
          vector<vhpVid>            background;

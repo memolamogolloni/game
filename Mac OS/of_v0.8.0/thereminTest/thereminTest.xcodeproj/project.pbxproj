@@ -7,16 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02D54DB61DC12EE30030CB9F /* vhpLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02D54DB41DC12EE30030CB9F /* vhpLine.cpp */; };
 		02DBF00F1DBE888A007B3465 /* vhpWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02DBF00D1DBE888A007B3465 /* vhpWindow.cpp */; };
 		02E7D73B1DB5419400F0CE97 /* vhpGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02E7D7221DB5419400F0CE97 /* vhpGame.cpp */; };
 		02E7D73C1DB5419400F0CE97 /* vhpGameCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02E7D7241DB5419400F0CE97 /* vhpGameCore.cpp */; };
-		02E7D73D1DB5419400F0CE97 /* vhpGcThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02E7D7261DB5419400F0CE97 /* vhpGcThread.cpp */; };
 		02E7D73E1DB5419400F0CE97 /* vhpLevelMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02E7D7281DB5419400F0CE97 /* vhpLevelMenu.cpp */; };
-		02E7D73F1DB5419400F0CE97 /* vhpLmThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02E7D72A1DB5419400F0CE97 /* vhpLmThread.cpp */; };
 		02E7D7401DB5419400F0CE97 /* vhpOSC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02E7D72C1DB5419400F0CE97 /* vhpOSC.cpp */; };
 		02E7D7411DB5419400F0CE97 /* vhpPlayerMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02E7D72E1DB5419400F0CE97 /* vhpPlayerMenu.cpp */; };
-		02E7D7421DB5419400F0CE97 /* vhpPmThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02E7D7301DB5419400F0CE97 /* vhpPmThread.cpp */; };
-		02E7D7431DB5419400F0CE97 /* vhpSbThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02E7D7321DB5419400F0CE97 /* vhpSbThread.cpp */; };
 		02E7D7441DB5419400F0CE97 /* vhpScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02E7D7341DB5419400F0CE97 /* vhpScreenSaver.cpp */; };
 		02E7D7451DB5419400F0CE97 /* vhpStandby.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02E7D7361DB5419400F0CE97 /* vhpStandby.cpp */; };
 		0546D1A38E13BD319CC9755B /* OscReceivedElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9BF3AA0D4FAA89D0F8A0E545 /* OscReceivedElements.cpp */; };
@@ -93,26 +90,20 @@
 		00D6D32B84B099226431108C /* ofxOsc.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOsc.h; path = ../../../addons/ofxOsc/src/ofxOsc.h; sourceTree = SOURCE_ROOT; };
 		01DCC0911400F9ACF5B65578 /* ofxXmlSettings.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxXmlSettings.h; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.h; sourceTree = SOURCE_ROOT; };
 		029684CF678F70F6D3537A29 /* OscOutboundPacketStream.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscOutboundPacketStream.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscOutboundPacketStream.h; sourceTree = SOURCE_ROOT; };
+		02D54DB41DC12EE30030CB9F /* vhpLine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpLine.cpp; sourceTree = "<group>"; };
+		02D54DB51DC12EE30030CB9F /* vhpLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpLine.h; sourceTree = "<group>"; };
 		02DBF00D1DBE888A007B3465 /* vhpWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpWindow.cpp; sourceTree = "<group>"; };
 		02DBF00E1DBE888A007B3465 /* vhpWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpWindow.h; sourceTree = "<group>"; };
 		02E7D7221DB5419400F0CE97 /* vhpGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpGame.cpp; sourceTree = "<group>"; };
 		02E7D7231DB5419400F0CE97 /* vhpGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpGame.h; sourceTree = "<group>"; };
 		02E7D7241DB5419400F0CE97 /* vhpGameCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpGameCore.cpp; sourceTree = "<group>"; };
 		02E7D7251DB5419400F0CE97 /* vhpGameCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpGameCore.h; sourceTree = "<group>"; };
-		02E7D7261DB5419400F0CE97 /* vhpGcThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpGcThread.cpp; sourceTree = "<group>"; };
-		02E7D7271DB5419400F0CE97 /* vhpGcThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpGcThread.h; sourceTree = "<group>"; };
 		02E7D7281DB5419400F0CE97 /* vhpLevelMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpLevelMenu.cpp; sourceTree = "<group>"; };
 		02E7D7291DB5419400F0CE97 /* vhpLevelMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpLevelMenu.h; sourceTree = "<group>"; };
-		02E7D72A1DB5419400F0CE97 /* vhpLmThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpLmThread.cpp; sourceTree = "<group>"; };
-		02E7D72B1DB5419400F0CE97 /* vhpLmThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpLmThread.h; sourceTree = "<group>"; };
 		02E7D72C1DB5419400F0CE97 /* vhpOSC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpOSC.cpp; sourceTree = "<group>"; };
 		02E7D72D1DB5419400F0CE97 /* vhpOSC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpOSC.h; sourceTree = "<group>"; };
 		02E7D72E1DB5419400F0CE97 /* vhpPlayerMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpPlayerMenu.cpp; sourceTree = "<group>"; };
 		02E7D72F1DB5419400F0CE97 /* vhpPlayerMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpPlayerMenu.h; sourceTree = "<group>"; };
-		02E7D7301DB5419400F0CE97 /* vhpPmThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpPmThread.cpp; sourceTree = "<group>"; };
-		02E7D7311DB5419400F0CE97 /* vhpPmThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpPmThread.h; sourceTree = "<group>"; };
-		02E7D7321DB5419400F0CE97 /* vhpSbThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpSbThread.cpp; sourceTree = "<group>"; };
-		02E7D7331DB5419400F0CE97 /* vhpSbThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpSbThread.h; sourceTree = "<group>"; };
 		02E7D7341DB5419400F0CE97 /* vhpScreenSaver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpScreenSaver.cpp; sourceTree = "<group>"; };
 		02E7D7351DB5419400F0CE97 /* vhpScreenSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpScreenSaver.h; sourceTree = "<group>"; };
 		02E7D7361DB5419400F0CE97 /* vhpStandby.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpStandby.cpp; sourceTree = "<group>"; };
@@ -401,22 +392,16 @@
 				02E7D7341DB5419400F0CE97 /* vhpScreenSaver.cpp */,
 				02E7D72F1DB5419400F0CE97 /* vhpPlayerMenu.h */,
 				02E7D72E1DB5419400F0CE97 /* vhpPlayerMenu.cpp */,
-				02E7D7311DB5419400F0CE97 /* vhpPmThread.h */,
-				02E7D7301DB5419400F0CE97 /* vhpPmThread.cpp */,
 				02E7D7371DB5419400F0CE97 /* vhpStandby.h */,
 				02E7D7361DB5419400F0CE97 /* vhpStandby.cpp */,
-				02E7D7331DB5419400F0CE97 /* vhpSbThread.h */,
-				02E7D7321DB5419400F0CE97 /* vhpSbThread.cpp */,
 				02E7D7291DB5419400F0CE97 /* vhpLevelMenu.h */,
 				02E7D7281DB5419400F0CE97 /* vhpLevelMenu.cpp */,
-				02E7D72B1DB5419400F0CE97 /* vhpLmThread.h */,
-				02E7D72A1DB5419400F0CE97 /* vhpLmThread.cpp */,
 				02E7D7251DB5419400F0CE97 /* vhpGameCore.h */,
 				02E7D7241DB5419400F0CE97 /* vhpGameCore.cpp */,
-				02E7D7271DB5419400F0CE97 /* vhpGcThread.h */,
-				02E7D7261DB5419400F0CE97 /* vhpGcThread.cpp */,
 				02DBF00D1DBE888A007B3465 /* vhpWindow.cpp */,
 				02DBF00E1DBE888A007B3465 /* vhpWindow.h */,
+				02D54DB41DC12EE30030CB9F /* vhpLine.cpp */,
+				02D54DB51DC12EE30030CB9F /* vhpLine.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -563,16 +548,13 @@
 				5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */,
 				02E7D73B1DB5419400F0CE97 /* vhpGame.cpp in Sources */,
 				02E7D73C1DB5419400F0CE97 /* vhpGameCore.cpp in Sources */,
-				02E7D73D1DB5419400F0CE97 /* vhpGcThread.cpp in Sources */,
 				02E7D73E1DB5419400F0CE97 /* vhpLevelMenu.cpp in Sources */,
-				02E7D73F1DB5419400F0CE97 /* vhpLmThread.cpp in Sources */,
 				02E7D7401DB5419400F0CE97 /* vhpOSC.cpp in Sources */,
 				02E7D7411DB5419400F0CE97 /* vhpPlayerMenu.cpp in Sources */,
-				02E7D7421DB5419400F0CE97 /* vhpPmThread.cpp in Sources */,
-				02E7D7431DB5419400F0CE97 /* vhpSbThread.cpp in Sources */,
 				02E7D7441DB5419400F0CE97 /* vhpScreenSaver.cpp in Sources */,
 				02E7D7451DB5419400F0CE97 /* vhpStandby.cpp in Sources */,
 				02DBF00F1DBE888A007B3465 /* vhpWindow.cpp in Sources */,
+				02D54DB61DC12EE30030CB9F /* vhpLine.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
