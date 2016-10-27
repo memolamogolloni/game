@@ -4,6 +4,7 @@
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
 #include "vhpLine.h"
+#include "ofxTrueTypeFontUC.h"
 
 #define MENUNIVEL               0
 #define DESTREZA                1
@@ -78,8 +79,8 @@ class vhpLevelMenu {
         // elementos gráficos
         vector<vhpLine>             lines;
         int                         count;
-        ofTrueTypeFont              TTF;
-        ofTrueTypeFont              TTFB;
+        ofxTrueTypeFontUC              TTF;
+        ofxTrueTypeFontUC              TTFB;
     
         ofImage                     glow;
         ofImage                     keko;

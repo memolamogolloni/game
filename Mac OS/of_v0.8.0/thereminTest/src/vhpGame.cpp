@@ -47,7 +47,7 @@ void vhpGame::setup(){
     alpha = 0;
     alpha_increment = 15;
     
-    TTF.loadFont("fonts/mono.ttf", 7);
+    TTF.loadFont("fonts/mono.ttf", 7, true, true);
     
     cout << "loading videoList.xml" << endl;
     if( videoList.loadFile("videoList.xml") ){

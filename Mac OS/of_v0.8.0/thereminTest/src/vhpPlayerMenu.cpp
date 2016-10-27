@@ -27,8 +27,8 @@ void vhpPlayerMenu::setup(int _currentScene, int _targetScene1, int _targetScene
     fbo.end();
     
     // Añadir las fuentes
-    TTF.loadFont("fonts/titilliumweblight.ttf", 22);
-    TTFB.loadFont("fonts/titilliumweblight.ttf", 70);
+    TTF.loadFont("fonts/titilliumweblight.ttf", 22, true, true);
+    TTFB.loadFont("fonts/titilliumweblight.ttf", 70, true, true);
 
     // elementos gráficos
     

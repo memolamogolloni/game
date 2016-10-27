@@ -11,6 +11,7 @@
 #include "vhpStandby.h"
 #include "vhpLevelMenu.h"
 #include "vhpGameCore.h"
+#include "ofxTrueTypeFontUC.h"
 
 #define SCREENSAVER         0
 #define PLAYERMENU          1
@@ -112,7 +113,7 @@ class vhpGame {
         void mouseReleased(int x, int y, int button);
     
         // Variables ou propiedades
-        ofTrueTypeFont              TTF;
+        ofxTrueTypeFontUC              TTF;
         float                       scale;
         int                         state;
         int                         width;

@@ -4,6 +4,7 @@
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
 #include "vhpLine.h"
+#include "ofxTrueTypeFontUC.h"
 
 #define WAITING                 0
 #define CANCELED                1
@@ -74,8 +75,8 @@ class vhpStandby {
         int                         count;
         int                         countDown;
 
-        ofTrueTypeFont              TTF;
-        ofTrueTypeFont              TTFB;
+        ofxTrueTypeFontUC              TTF;
+        ofxTrueTypeFontUC              TTFB;
     
         ofImage                     clock;
         ofImage                     cancel;

@@ -5,6 +5,7 @@
 #include "ofEvents.h"
 #include "vhpOSC.h"
 #include "vhpWindow.h"
+#include "ofxTrueTypeFontUC.h"
 
 #define nWINDOWS        7
 #define nROUNDS         4
@@ -102,8 +103,8 @@ class vhpGameCore {
         // Elementos gráficos
         vector<string>              lines;
         int                         count;
-        ofTrueTypeFont              TTF;
-        ofTrueTypeFont              TTFB;
+        ofxTrueTypeFontUC              TTF;
+        ofxTrueTypeFontUC              TTFB;
     
         int                         alpha;
         int                         alphaWindow[4];

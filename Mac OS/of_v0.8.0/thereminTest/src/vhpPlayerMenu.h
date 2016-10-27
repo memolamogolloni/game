@@ -4,6 +4,7 @@
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
 #include "vhpLine.h"
+#include "ofxTrueTypeFontUC.h"
 
 #define MENU                0
 #define ONEPLAYER           1
@@ -79,8 +80,8 @@ class vhpPlayerMenu {
         // elementos gráficos
         vector<vhpLine>             lines;
         int                         count;
-        ofTrueTypeFont              TTF;
-        ofTrueTypeFont              TTFB;
+        ofxTrueTypeFontUC              TTF;
+        ofxTrueTypeFontUC              TTFB;
     
         ofImage                     elegir;
         ofImage                     glow;

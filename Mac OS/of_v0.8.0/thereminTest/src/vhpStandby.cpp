@@ -26,8 +26,8 @@ void vhpStandby::setup(int _currentScene, int _targetScene){
     fbo.end();
     
     // Añadir las fuentes
-    TTF.loadFont("fonts/titilliumweblight.ttf", 22);
-    TTFB.loadFont("fonts/titilliumweblight.ttf", 70);
+    TTF.loadFont("fonts/titilliumweblight.ttf", 22, true, true);
+    TTFB.loadFont("fonts/titilliumweblight.ttf", 70, true, true);
     
     // elementos gráficos
     
@@ -54,7 +54,7 @@ void vhpStandby::getText(string _file) {
     ofBuffer buffer = ofBufferFromFile(_file);
     for (int i = 0; i < buffer.size(); i++) {
         lines.push_back(buffer.getNextLine());
-        // cout << lines[lines.size()-1] << endl;
+        cout << lines[lines.size()-1] << endl;
     }
 }
 
