@@ -12,16 +12,9 @@
 <LOGOS>
     <VIDEO>HD_logos.mov</VIDEO>
 </LOGOS>
-<XOGADORES>
-    <VIDEO>HD_seleccion_jugadores.mov</VIDEO>
-</XOGADORES>
-<ESPERA>
-    <VIDEO>HD_espera.mov</VIDEO>
-</ESPERA>
-<NIVEIS>
-    <VIDEO>HD_seleccion_niveles.mov</VIDEO>
-</NIVEIS>
 <XOGO>
-    <VIDEO>HD_fondo_juego.mov</VIDEO>
     <VIDEO>HD_gana_juego.mov</VIDEO>
 </XOGO>
+<TEXTO>
+    \u044!\n hola!
+</TEXTO>

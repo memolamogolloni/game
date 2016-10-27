@@ -3,7 +3,8 @@
 // Constructor -------------------------------------------------
 
 vhpLevelMenu::vhpLevelMenu():state(MENUNIVEL),selected(0){
-
+	loaded = false;
+	loading = false;
 }
 
 vhpLevelMenu::~vhpLevelMenu(){

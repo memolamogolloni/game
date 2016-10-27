@@ -3,7 +3,8 @@
 // Constructor -------------------------------------------------
 
 vhpStandby::vhpStandby(){
-
+	loaded = false;
+	loading = false;
 }
 
 vhpStandby::~vhpStandby(){
@@ -226,7 +227,12 @@ void vhpStandby::fadeInCancel(){
     alpha += alpha_increment;
     if (alpha>=255) alpha = 255;
 }
-
+void vhpStandby::fadeInAcepted(){
+    
+}
+void vhpStandby::fadeOutAcepted(){
+    
+}
 // Eventos ------------------------------------------------------
 void vhpStandby::touchPressed(){
     cout << "Button active in Standby!" << endl;

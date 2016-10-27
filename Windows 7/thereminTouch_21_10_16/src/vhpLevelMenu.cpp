@@ -3,61 +3,161 @@
 // Constructor -------------------------------------------------
 
 vhpLevelMenu::vhpLevelMenu():state(MENUNIVEL),selected(0){
-
+	loaded = false;
+	loading = false;
 }
 
 vhpLevelMenu::~vhpLevelMenu(){
-    stop();
 }
 
 // Inicializar variables y cargar los archivos -----------------
-
-void vhpLevelMenu::setup(vhpLmThread* _controller, ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene){
-    
-    // Inicializar el hilo de control
-    controller = _controller;
-    controller->setup(&video, 0.0, 9.0/57.0);
-    
-    // A–adir los v’deos desde el documento xml de settings
-    int n = _videoList.getNumTags(_videoTag +":VIDEO");
-    if(n > 0){
-        _videoList.pushTag(_videoTag, n-1);
-        int num = _videoList.getNumTags("VIDEO");
-        cout << num << " videos in " << _videoTag << " " << _videoList.getValue("VIDEO", "", 0) << endl;
-        if(num > 0) video.loadMovie(_videoList.getValue("VIDEO", "", 0));
-        _videoList.popTag();
-    }
+void vhpLevelMenu::setup(int _currentScene, int _targetScene){
     
     // Inicializar las variables
     currentScene = _currentScene;   // PLAYERMENU
     targetScene = _targetScene;     // GAME
-    width = video.getWidth();
-    height = video.getHeight();
     
-    cout << " video width: " << width << " height: " << height << endl;
-    
+    // FBO alocation and cleaning
+    width = 1920;
+    height = 1080;
     fbo.allocate(width, height, GL_RGBA);
-    
-    // clean FBO
     fbo.begin();
     ofClear(255,255,255, 0);
     fbo.end();
     
+    // A–adir las fuentes
+    TTF.loadFont("fonts/titilliumweblight.ttf", 22, true, true);
+    TTFB.loadFont("fonts/titilliumweblight.ttf", 70, true, true);
+    
+    // elementos gr‡ficos
+    
+    // A–adir las im‡genes Sueltas
+    loadingSilge.push_back(&glow);
+    filesSingle.push_back("lm-glow");
+    loadingSilge.push_back(&keko);
+    filesSingle.push_back("lm-keko");
+    loadingSilge.push_back(&bg);
+    filesSingle.push_back("lm-bg");
+    loadingSilge.push_back(&icons);
+    filesSingle.push_back("lm-icons");
+    loadingSilge.push_back(&bases);
+    filesSingle.push_back("lm-bases");
+    loadingSilge.push_back(&destreza);
+    filesSingle.push_back("lm-destreza");
+    loadingSilge.push_back(&espiritualidad);
+    filesSingle.push_back("lm-espiritualidad");
+    loadingSilge.push_back(&oratoria);
+    filesSingle.push_back("lm-oratoria");
+    
+    currentLoad = &vhpLevelMenu::loadSingle;
+    
+}
+void vhpLevelMenu::getText(string _file) {
+    ofBuffer buffer = ofBufferFromFile(_file);
+    for (int i = 0; i < buffer.size(); i++) {
+        lines.push_back(buffer.getNextLine());
+        cout << lines[lines.size()-1] << endl;
+    }
+}
+
+// Precarga de todos los elementos -----------------------------
+void vhpLevelMenu::load(){
+    (*this.*currentLoad)();
+}
+void vhpLevelMenu::loadSingle(){
+    if (!loaded) {
+        int actual = filesSingle.size() -1;
+        if (actual>=0) {
+            if(loadingSilge[actual]->isAllocated()) {
+                loadingSilge.pop_back();
+                filesSingle.pop_back();
+                loading = false;
+            } else {
+                if (!loading) {
+                    loadingSilge[actual]->loadImage("images/"+ filesSingle[actual] +".png");
+                    cout << "images/"+ filesSingle[actual] +".png" << endl;
+                    loading = true;
+                }
+            }
+            
+        } else {
+            cout << "loading single images in Level Menu finished!" << endl;
+            loaded = true;
+        }
+    }
 }
 
 // Comenzar e interrumpir los hilos y listeners de la escena ---
-
-void vhpLevelMenu::start(){
-    controller->start();
+void vhpLevelMenu::init(){
+    lines.clear();
+    getText("txt/lm-intro.txt");
+    alpha = 0;
+    alpha_increment = 5;
+    for (int i = 0; i < lines.size(); i++) {
+        lines[i].init();
+    }
+    count = 0;
+    target = MENUNIVEL;
 }
-
+void vhpLevelMenu::setDestreza(){
+    count = 0;
+    currentUpdate = &vhpLevelMenu::fadeInDestreza;
+    state = DESTREZA;
+    target = MENUNIVEL;
+}
+void vhpLevelMenu::setEspiritualidad(){
+    count = 0;
+    currentUpdate = &vhpLevelMenu::fadeInEspiritualidad;
+    state = ESPIRITUALIDAD;
+    target = MENUNIVEL;
+}
+void vhpLevelMenu::setOratoria(){
+    count = 0;
+    currentUpdate = &vhpLevelMenu::fadeInOratoria;
+    state = ORATORIA;
+    target = MENUNIVEL;
+}
+void vhpLevelMenu::setNext(){
+    switch (target) {
+        case MENUNIVEL:
+            currentUpdate = &vhpLevelMenu::emptyMenu;
+            state = MENUNIVEL;
+            target = MENUNIVEL;
+            break;
+        case DESTREZA:
+            setDestreza();
+            break;
+        case ESPIRITUALIDAD:
+            setEspiritualidad();
+            break;
+        case ORATORIA:
+            setOratoria();
+            break;
+    }
+}
+void vhpLevelMenu::start(){
+}
 void vhpLevelMenu::stop(){
-    controller->stop();
 }
 
 // Dibujado y actualizaci—n variables --------------------------
 void vhpLevelMenu::update(){
     (*this.*currentUpdate)();
+}
+void vhpLevelMenu::updateElements(){
+    count++;
+    // cout << count << endl;
+    updateTextLine();
+}
+void vhpLevelMenu::updateTextLine(){
+    if (count%6==0){
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines[i].isNotLast()) {
+                lines[i].add();
+                break;
+            }
+        }
+    }
 }
 
 //--------------------------------------------------------------
@@ -65,50 +165,223 @@ void vhpLevelMenu::draw(int _x, int _y){
     fbo.draw(_x, _y, width, height);
 }
 
+// Dibujado de elementos gr‡ficos ------------------------------
+void vhpLevelMenu::drawTextLine(int _x, int _y, int _alpha){
+    ofSetColor(255, 255, 255, _alpha);
+    for (int i = 0; i < lines.size(); i++) {
+        TTF.drawString(lines[i].visible, _x, _y +(40*i));
+    }
+}
+void vhpLevelMenu::drawMenu(){
+    ofSetColor(255, 255, 255);
+    bg.draw(0,0);
+    bases.draw(0,0);
+    icons.draw(0,0);
+    ofSetColor(255,255,255,alpha);
+    glow.draw(0,0);
+    drawTextLine(425, 200, alpha);
+    ofSetColor(255, 255, 255);
+    keko.draw(0,0);
+}
+void vhpLevelMenu::drawDestreza(){
+    ofSetColor(255, 255, 255);
+    bg.draw(0,0);
+    ofSetColor(255,255,255,alpha);
+    glow.draw(0,0,width*0.8,height);
+    destreza.draw(0,0);
+    drawTextLine(425, 200, alpha);
+    ofSetColor(255, 255, 255);
+    bases.draw(0,0);
+    icons.draw(0,0);
+    keko.draw(0,0);
+}
+void vhpLevelMenu::drawEspiritualidad(){
+    ofSetColor(255, 255, 255);
+    bg.draw(0,0);
+    ofSetColor(255,255,255,alpha);
+    glow.draw(0,0,width*0.8,height);
+    espiritualidad.draw(0,0);
+    drawTextLine(425, 200, alpha);
+    ofSetColor(255, 255, 255);
+    bases.draw(0,0);
+    icons.draw(0,0);
+    keko.draw(0,0);
+}
+void vhpLevelMenu::drawOratoria(){
+    ofSetColor(255, 255, 255);
+    bg.draw(0,0);
+    ofSetColor(255,255,255,alpha);
+    glow.draw(0,0,width*0.8,height);
+    oratoria.draw(0,0);
+    drawTextLine(425, 200, alpha);
+    ofSetColor(255, 255, 255);
+    bases.draw(0,0);
+    icons.draw(0,0);
+    keko.draw(0,0);
+}
+
 // Reproducir o detener la escena modificando currentUpdate ----
 
 void vhpLevelMenu::play(){
-    currentUpdate = &vhpLevelMenu::playPlayerMenu;
-    video.play();
-}
-
-void vhpLevelMenu::pause(){
-    currentUpdate = &vhpLevelMenu::pausePlayerMenu;
-    video.stop();
+    currentUpdate = &vhpLevelMenu::fadeInText;
+    init();
 }
 
 // Procesado y actualizaci—n -----------------------------------
-
-void vhpLevelMenu::playPlayerMenu(){
-    // Reproduce el video y lo dibuja en el FBO
-    video.update();
+void vhpLevelMenu::emptyMenu(){
+    count++;
+    
     ofPushStyle();
-    ofSetColor(255, 255, 255);
+    ofEnableAlphaBlending();
     fbo.begin();
-    video.draw(0, 0);
+    drawMenu();
     fbo.end();
+    ofDisableAlphaBlending();
     ofPopStyle();
 }
-
-void vhpLevelMenu::pausePlayerMenu(){
-    // Al no hacer nada mantiene el FBO con el œltimo fotograma reproducido
+void vhpLevelMenu::fadeInText(){
+    updateElements();
     
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    fbo.begin();
+    drawMenu();
+    fbo.end();
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    
+    alpha += alpha_increment;
+    if (alpha>=255) {
+        alpha = 255;
+        if (count>=500) currentUpdate = &vhpLevelMenu::fadeOutText;
+    }
 }
-
-void vhpLevelMenu::loopPlayerMenu(float _pos){
-    // Envia la cabeza lectora del video a un punto determinado
-    video.setPosition(_pos);
+void vhpLevelMenu::fadeOutText(){
+    updateElements();
+    
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    fbo.begin();
+    drawMenu();
+    fbo.end();
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    
+    alpha -= alpha_increment;
+    if (alpha<=0) {
+        alpha = 0;
+        alpha_increment = 5;
+        setNext();
+    }
 }
-
+void vhpLevelMenu::fadeInDestreza(){
+    updateElements();
+    
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    fbo.begin();
+    drawDestreza();
+    fbo.end();
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    
+    alpha += alpha_increment;
+    if (alpha>=255) {
+        alpha = 255;
+        if (count>=500) currentUpdate = &vhpLevelMenu::fadeOutDestreza;
+    }
+}
+void vhpLevelMenu::fadeOutDestreza(){
+    updateElements();
+    
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    fbo.begin();
+    drawDestreza();
+    fbo.end();
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    
+    alpha -= alpha_increment;
+    if (alpha<=0) {
+        alpha = 0;
+        alpha_increment = 5;
+        setNext();
+    }
+}
+void vhpLevelMenu::fadeInEspiritualidad(){
+    updateElements();
+    
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    fbo.begin();
+    drawEspiritualidad();
+    fbo.end();
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    
+    alpha += alpha_increment;
+    if (alpha>=255) {
+        alpha = 255;
+        if (count>=500) currentUpdate = &vhpLevelMenu::fadeOutEspiritualidad;
+    }
+}
+void vhpLevelMenu::fadeOutEspiritualidad(){
+    updateElements();
+    
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    fbo.begin();
+    drawEspiritualidad();
+    fbo.end();
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    
+    alpha -= alpha_increment;
+    if (alpha<=0) {
+        alpha = 0;
+        alpha_increment = 5;
+        setNext();
+    }
+}
+void vhpLevelMenu::fadeInOratoria(){
+    updateElements();
+    
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    fbo.begin();
+    drawOratoria();
+    fbo.end();
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    
+    alpha += alpha_increment;
+    if (alpha>=255) {
+        alpha = 255;
+        if (count>=500) currentUpdate = &vhpLevelMenu::fadeOutOratoria;
+    }
+}
+void vhpLevelMenu::fadeOutOratoria(){
+    updateElements();
+    
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    fbo.begin();
+    drawOratoria();
+    fbo.end();
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    
+    alpha -= alpha_increment;
+    if (alpha<=0) {
+        alpha = 0;
+        setNext();
+    }
+}
 
 // Utilidades ---------------------------------------------------
-
 void vhpLevelMenu::alert(int _e){
     cout << " Event detected " << _e << endl;
-}
-
-float vhpLevelMenu::getPosition(){
-    return video.getPosition();
 }
 
 // Eventos ------------------------------------------------------
@@ -118,117 +391,97 @@ void vhpLevelMenu::touchPressed(float _x, float _y){
     //ofNotifyEvent(onClick, gameTarget);
     // min x: 520, min y: 182 408 538 630 160
     cout << "mouse x: " << _x << " mouse y: " << _y << endl;
-    if (_y>=520) {
+    
+    if ((_y>=540)&&(_y<=740)&&(_x>=740)&&(_x<=1180)) {
+        switch (state) {
+            case MENUNIVEL:
+                break;
+            case DESTREZA:
+                selected = DESTREZA;
+                ofNotifyEvent(levelSelection, selected);
+                cout << "DESTREZA confirmed!" << endl;
+                break;
+            case ESPIRITUALIDAD:
+                selected = ESPIRITUALIDAD;
+                ofNotifyEvent(levelSelection, selected);
+                cout << "ESPIRITUALIDAD confirmed!" << endl;
+                break;
+            case ORATORIA:
+                selected = ORATORIA;
+                ofNotifyEvent(levelSelection, selected);
+                cout << "ORATORIA confirmed!" << endl;
+                break;
+        }
+    } else if (_y>=520) {
         if ((_x>=182)&&(_x<=1760)) {
             if (_x<=592) {
                 cout << "DESTREZA" << endl;
                 switch (state) {
                     case MENUNIVEL:
-                        video.setPosition(10.0/57.0);
-                        controller->reset(12.0/57.0, 16.0/57.0);
+                        setDestreza();
                         break;
                     case DESTREZA:
-                        if (_y>=900) {
-                            selected = 1;
-                            ofNotifyEvent(levelSelection, targetScene);
-                            cout << "DESTREZA confirmed!" << endl;
-                        }
                         break;
                     case ESPIRITUALIDAD:
-                        video.setPosition(29.0/57.0);
-                        controller->fadeReset(10.0/57.0, 30.0/57.0, 12.0/57.0, 16.0/57.0);
+                        target = DESTREZA;
+                        alpha_increment = 10;
+                        count=500;
                         break;
                     case ORATORIA:
-                        video.setPosition(41.0/57.0);
-                        controller->fadeReset(10.0/57.0, 42.0/57.0, 12.0/57.0, 16.0/57.0);
+                        target = DESTREZA;
+                        alpha_increment = 10;
+                        count=500;
                         break;
                 }
-                state = DESTREZA;
             } else if (_x<=1130) {
                 cout << "ESPIRITUALIDAD" << endl;
                 switch (state) {
                     case MENUNIVEL:
-                        video.setPosition(22.0/57.0);
-                        controller->reset(24.0/57.0, 28.0/57.0);
+                        setEspiritualidad();
                         break;
                     case DESTREZA:
-                        video.setPosition(17.0/57.0);
-                        controller->fadeReset(22.0/57.0, 18.0/57.0, 24.0/57.0, 28.0/57.0);
+                        target = ESPIRITUALIDAD;
+                        alpha_increment = 10;
+                        count=500;
                         break;
                     case ESPIRITUALIDAD:
-                        if (_y>=900) {
-                            selected = 2;
-                            ofNotifyEvent(levelSelection, targetScene);
-                            cout << "ESPIRITUALIDAD confirmed!" << endl;
-                        }
                         break;
                     case ORATORIA:
-                        video.setPosition(41.0/57.0);
-                        controller->fadeReset(22.0/57.0, 42.0/57.0, 24.0/57.0, 28.0/57.0);
+                        target = ESPIRITUALIDAD;
+                        alpha_increment = 10;
+                        count=500;
                         break;
                 }
-                state = ESPIRITUALIDAD;
             } else {
                 cout << "ORATORIA" << endl;
                 switch (state) {
                     case MENUNIVEL:
-                        video.setPosition(34.0/57.0);
-                        controller->reset(36.0/57.0, 40.0/57.0);
+                        setOratoria();
                         break;
                     case DESTREZA:
-                        video.setPosition(17.0/57.0);
-                        controller->fadeReset(34.0/57.0, 18.0/57.0, 36.0/57.0, 40.0/57.0);
+                        target = ORATORIA;
+                        alpha_increment = 10;
+                        count=500;
                         break;
                     case ESPIRITUALIDAD:
-                        video.setPosition(29.0/57.0);
-                        controller->fadeReset(34.0/57.0, 30.0/57.0, 36.0/57.0, 40.0/57.0);
+                        target = ORATORIA;
+                        alpha_increment = 10;
+                        count=500;
                         break;
                     case ORATORIA:
-                        if (_y>=900) {
-                            selected = 4;
-                            ofNotifyEvent(levelSelection, targetScene);
-                            cout << "ORATORIA confirmed!" << endl;
-                        }
                         break;
                 }
-                state = ORATORIA;
             }
         } else {
             cout << "fora" << endl;
-            switch (state) {
-                case DESTREZA:
-                    video.setPosition(17.0/57.0);
-                    controller->fadeReset(0.0, 18.0/57.0, 0.0, 9.0/57.0);
-                    break;
-                case ESPIRITUALIDAD:
-                    video.setPosition(29.0/57.0);
-                    controller->fadeReset(0.0, 30.0/57.0, 0.0, 9.0/57.0);
-                    break;
-                case ORATORIA:
-                    video.setPosition(41.0/57.0);
-                    controller->fadeReset(0.0, 42.0/57.0, 0.0, 9.0/57.0);
-                    break;
-            }
-            state = MENUNIVEL;
+            target = MENUNIVEL;
+            count=500;
         }
     } else {
         if (state != MENUNIVEL) {
             cout << "fora" << endl;
-            switch (state) {
-                case DESTREZA:
-                    video.setPosition(17.0/57.0);
-                    controller->fadeReset(0.0, 18.0/57.0, 0.0, 9.0/57.0);
-                    break;
-                case ESPIRITUALIDAD:
-                    video.setPosition(29.0/57.0);
-                    controller->fadeReset(0.0, 30.0/57.0, 0.0, 9.0/57.0);
-                    break;
-                case ORATORIA:
-                    video.setPosition(41.0/57.0);
-                    controller->fadeReset(0.0, 42.0/57.0, 0.0, 9.0/57.0);
-                    break;
-            }
-            state = MENUNIVEL;
+            target = MENUNIVEL;
+            count=500;
         }
     }
 }

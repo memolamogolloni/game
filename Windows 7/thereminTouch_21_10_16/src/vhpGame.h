@@ -8,13 +8,10 @@
 #include "vhpOSC.h"
 #include "vhpScreenSaver.h"
 #include "vhpPlayerMenu.h"
-#include "vhpPmThread.h"
 #include "vhpStandby.h"
-#include "vhpSbThread.h"
 #include "vhpLevelMenu.h"
-#include "vhpLmThread.h"
 #include "vhpGameCore.h"
-#include "vhpGcThread.h"
+#include "ofxTrueTypeFontUC.h"
 
 #define SCREENSAVER         0
 #define PLAYERMENU          1
@@ -22,9 +19,6 @@
 #define LEVELMENU           3
 #define GAME                4
 #define RANKING             5
-#define OFLINE				6
-
-
 
 class vhpGame {
 
@@ -41,7 +35,13 @@ class vhpGame {
         void draw();
         void (vhpGame::*currentDraw)();
         void drawFrameRate();
+    
         void set(int &_state);
+        void screenSaverOnClick(int &_s);
+        void playerMenuOnSelect(int &_s);
+        void playerLevelOnSelect(int &_s);
+        void standByOnCancel(int &_s);
+        void onPlayersReceived(int &_s);
         void toggleScale();
     
         // loading
@@ -92,6 +92,7 @@ class vhpGame {
         void updateDirectLevelMenuInOut();
         void drawLevelMenu();
         void drawLevelMenuIn();
+        void drawDirectLevelMenuIn();
         void drawLevelMenuOut();
     
         // GAME
@@ -108,12 +109,12 @@ class vhpGame {
     
         // Events
         void keyReleased(int _key);
-        void touchPressed(bool _t);
+		void touchPressed(bool _t);
         void setTouchPosition(ofPoint _p);
         void touchReleased(float x, float y);
     
         // Variables ou propiedades
-        ofTrueTypeFont              TTF;
+        ofxTrueTypeFontUC              TTF;
         float                       scale;
         int                         state;
         int                         width;
@@ -132,17 +133,13 @@ class vhpGame {
         bool                        logosLoaded;
         vhpPlayerMenu               xogadores;
         bool                        xogadoresLoaded;
-        vhpPmThread                 controlXogadores;
         vhpStandby                  espera;
         bool                        esperaLoaded;
-        vhpSbThread                 controlEspera;
         vhpLevelMenu                niveis;
         bool                        niveisLoaded;
-        vhpLmThread                 controlNiveis;
     
         vhpGameCore                 xogo;
         bool                        xogoLoaded;
-        vhpGcThread                 controlXogo;
     
         /*
          vector<vhpVid>            background;
@@ -150,7 +147,6 @@ class vhpGame {
          vector<ofVideoPlayer> 		windowB;
          vhpButton                   start;
          */
-
+		
 		ofPoint touchP;
-    
 };

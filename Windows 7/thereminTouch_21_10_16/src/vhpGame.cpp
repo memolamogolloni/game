@@ -2,14 +2,13 @@
 
 // Constructor --------------------------------------------------
 
-vhpGame::vhpGame(): state(OFLINE){
+vhpGame::vhpGame(){
 
 }
 
 // Destructor ---------------------------------------------------
 
 vhpGame::~vhpGame(){
-	cout << "adios" << endl;
     if (state==SCREENSAVER) ofRemoveListener(vhpScreenSaver::onClick, this, &vhpGame::set);
     /*{
         ofRemoveListener(vhpButton::onActive, this, &vhpGame::set);
@@ -48,7 +47,7 @@ void vhpGame::setup(){
     alpha = 0;
     alpha_increment = 15;
     
-    TTF.loadFont("fonts/mono.ttf", 7);
+    TTF.loadFont("fonts/mono.ttf", 7, true, true);
     
     cout << "loading videoList.xml" << endl;
     if( videoList.loadFile("videoList.xml") ){
@@ -58,10 +57,10 @@ void vhpGame::setup(){
     }
     
     logos.setup(videoList, "LOGOS", SCREENSAVER, PLAYERMENU);
-    xogadores.setup(&controlXogadores, videoList, "XOGADORES",PLAYERMENU, STANDBY);
-    espera.setup(&controlEspera, videoList, "ESPERA", STANDBY, LEVELMENU);
-    niveis.setup(&controlNiveis, videoList, "NIVEIS", LEVELMENU, GAME);
-    xogo.setup(&controlXogo, videoList, "XOGO", GAME, RANKING);
+    xogadores.setup(PLAYERMENU, LEVELMENU, STANDBY);
+    espera.setup(STANDBY, LEVELMENU);
+    niveis.setup(LEVELMENU, GAME);
+    xogo.setup(videoList, "XOGO", GAME, RANKING);
     
     logosLoaded = false;
     xogadoresLoaded = false;
@@ -93,7 +92,6 @@ void vhpGame::drawFrameRate(){
     ofPushStyle();
     ofSetColor(255, 255, 255);
     TTF.drawString("Framerate: "+ ofToString(ofGetFrameRate()), 20, 20);
-	TTF.drawString("Touch " + ofToString(touchP.x) + " " + ofToString(touchP.y), 20, 40);
     ofPopStyle();
 }
 
@@ -121,6 +119,7 @@ void vhpGame::set(int &_state){
             
         case STANDBY:
             if (state == PLAYERMENU) {
+                /*
                 // Neste punto hay duas opcións que o xogador escollera 4
                 // polo que habería que esperar á resposta do outro equipo,
                 // ou que escollera 1 ou 2 polo que habería que ir directamente
@@ -130,6 +129,8 @@ void vhpGame::set(int &_state){
                 } else {
                     fadeInDirectLevelMenu();
                 }
+                 
+                 */
             } else {
                 goToStandby();
             }
@@ -183,6 +184,32 @@ void vhpGame::set(int &_state){
         */
     }
 }
+void vhpGame::screenSaverOnClick(int &_s){
+    cout << "screensaver clicked! state: " << _s << endl;
+    fadeInPlayerMenu();
+}
+void vhpGame::playerMenuOnSelect(int &_s){
+    cout << "players selected! state: " << _s << endl;
+    if (_s == LEVELMENU) {
+        cout << "LEVELMENU: " << LEVELMENU << endl;
+        fadeInDirectLevelMenu();
+    } else if (_s == STANDBY){
+        cout << "STANDBY: " << STANDBY << endl;
+        fadeInStandby();
+    }
+}
+void vhpGame::playerLevelOnSelect(int &_s){
+    cout << "level selected! state: " << _s << endl;
+    
+    fadeInGame();
+}
+void vhpGame::standByOnCancel(int &_s){
+    cout << "standBy clicked! state: " << _s << endl;
+    fadeInPlayerMenu();
+}
+void vhpGame::onPlayersReceived(int &_s){
+    cout << "Players from the other team received: " << _s << endl;
+}
 
 //--------------------------------------------------------------
 
@@ -210,26 +237,32 @@ void vhpGame::loadScreenSaver(){
 
 void vhpGame::loadGame(){
     if (!xogadoresLoaded) {
-        if (xogadores.video.isLoaded()) {
+        if(!xogadores.loaded) {
+            xogadores.load();
+        } else {
             xogadoresLoaded = true;
-            cout << "xogadores video is loaded" << endl;
+            cout << "xogadores is loaded" << endl;
         }
     } else if (!esperaLoaded) {
-        if (espera.video.isLoaded()) {
+        if(!espera.loaded) {
+            espera.load();
+        } else {
             esperaLoaded = true;
-            cout << "espera video is loaded" << endl;
+            cout << "espera is loaded" << endl;
         }
     } else if (!niveisLoaded) {
-        if (niveis.video.isLoaded()) {
+        if(!niveis.loaded) {
+            niveis.load();
+        } else {
             niveisLoaded = true;
-            cout << "niveis video is loaded" << endl;
+            cout << "niveis is loaded" << endl;
         }
     }  else if (!xogoLoaded) {
         if(!xogo.loaded) {
             xogo.load();
         } else {
             xogoLoaded = true;
-            ofAddListener(vhpScreenSaver::onClick, this, &vhpGame::set);
+            ofAddListener(vhpScreenSaver::onClick, this, &vhpGame::screenSaverOnClick);
             cout << "xogo is loaded" << endl;
         }
     }
@@ -247,12 +280,13 @@ void vhpGame::initScreenSaver(){
     cout << "SCREENSAVER" << endl;
     state = SCREENSAVER;
     logos.start();
-    if (xogoLoaded) ofAddListener(vhpScreenSaver::onClick, this, &vhpGame::set);
+    /// ???? if (xogoLoaded) ofAddListener(vhpScreenSaver::onClick, this, &vhpGame::set);
 }
 
 void vhpGame::stopScreenSaver(){
     logos.stop();
-    ofRemoveListener(vhpScreenSaver::onClick, this, &vhpGame::set);
+    cout << "ofRemoveListener onClick" << endl;
+    ofRemoveListener(vhpScreenSaver::onClick, this, &vhpGame::screenSaverOnClick);
 }
 
 void vhpGame::goToScreenSaver(){
@@ -285,7 +319,7 @@ void vhpGame::drawScreenSaver(){
     if (!xogoLoaded) {
         ofPushStyle();
         ofSetColor(255, 255, 255);
-        TTF.drawString("Loading", 20, 60);
+        TTF.drawString("Loading", 20, 40);
         ofPopStyle();
     }
     
@@ -294,17 +328,19 @@ void vhpGame::drawScreenSaver(){
 // PlayerMenu --------------------------------------------------
 
 void vhpGame::initPlayerMenu(){
-    cout << "PLAYERMENU" << endl;
+    cout << "PLAYERMENU INIT" << endl;
     state = PLAYERMENU;
-    xogadores.start();
-    ofAddListener(vhpPmThread::timeOut, this, &vhpGame::set);
-    ofAddListener(vhpPlayerMenu::playersNumber, this, &vhpGame::set);
+    //xogadores.start();
+    //ofAddListener(vhpPmThread::timeOut, this, &vhpGame::set);
+    cout << "ofAddListener playersNumber" << endl;
+    ofAddListener(vhpPlayerMenu::playersNumber, this, &vhpGame::playerMenuOnSelect);
 }
 
 void vhpGame::stopPlayerMenu(){
     xogadores.stop();
-    ofRemoveListener(vhpPmThread::timeOut, this, &vhpGame::set);
-    ofRemoveListener(vhpPlayerMenu::playersNumber, this, &vhpGame::set);
+    //ofRemoveListener(vhpPmThread::timeOut, this, &vhpGame::set);
+    cout << "ofRemoveListener playersNumber" << endl;
+    ofRemoveListener(vhpPlayerMenu::playersNumber, this, &vhpGame::playerMenuOnSelect);
 }
 
 void vhpGame::goToPlayerMenu(){
@@ -419,7 +455,7 @@ void vhpGame::drawPlayerMenuOut(){
         initScreenSaver();
         currentUpdate = &vhpGame::updateScreenSaver;
         currentDraw = &vhpGame::drawScreenSaver;
-        xogadores.pause();
+        //xogadores.pause();
     }
 }
 
@@ -429,14 +465,16 @@ void vhpGame::initStandby(){
     cout << "STANDBY" << endl;
     state = STANDBY;
     espera.start();
-    // PENDING! ofAddListener(vhpThread::timeOut, this, &vhpGame::set);
     cout << "ofAddListener vhpOSC::playersReceived" << endl;
-    ofAddListener(vhpOSC::playersReceived, this, &vhpGame::set);
+    ofAddListener(vhpOSC::playersReceived, this, &vhpGame::onPlayersReceived);
+    cout << "ofAddListener vhpStandby::onClick" << endl;
+    ofAddListener(vhpStandby::onCancel, this, &vhpGame::standByOnCancel);
 }
 
 void vhpGame::stopStandby(){
     espera.stop();
-    // PENDING! ofRemoveListener(vhpThread::timeOut, this, &vhpGame::set);
+    ofRemoveListener(vhpOSC::playersReceived, this, &vhpGame::onPlayersReceived);
+    ofRemoveListener(vhpStandby::onCancel, this, &vhpGame::standByOnCancel);
 }
 
 void vhpGame::goToStandby(){
@@ -450,7 +488,7 @@ void vhpGame::goToStandby(){
 void vhpGame::fadeInStandby(){
     cout << "fadeInStandby()" << endl;
     stopPlayerMenu();
-    xogadores.pause();
+    //xogadores.pause();
     espera.play();
     alpha = 0;
     mensajeria.send(xogadores.selected);
@@ -520,7 +558,7 @@ void vhpGame::drawStandbyIn(){
         currentUpdate = &vhpGame::updateStandby;
         currentDraw = &vhpGame::drawStandby;
         xogadores.stop();
-        xogadores.pause();
+        //xogadores.pause();
     }
     
     mensajeria.update();
@@ -551,7 +589,7 @@ void vhpGame::drawStandbyOut(){
         cout << "alpha: 0" << endl;
         alpha = 0;
         xogadores.start();
-        ofAddListener(vhpPmThread::timeOut, this, &vhpGame::set);
+        //ofAddListener(vhpPmThread::timeOut, this, &vhpGame::set);
         currentUpdate = &vhpGame::updatePlayerMenu;
         currentDraw = &vhpGame::drawPlayerMenu;
     }
@@ -560,17 +598,17 @@ void vhpGame::drawStandbyOut(){
 // PlayerMenu --------------------------------------------------
 
 void vhpGame::initLevelMenu(){
-    cout << "LEVELMENU" << endl;
+    cout << "LEVELMENU INIT" << endl;
     state = LEVELMENU;
     niveis.start();
-    ofAddListener(vhpLmThread::timeOut, this, &vhpGame::set);
-    ofAddListener(vhpLevelMenu::levelSelection, this, &vhpGame::set);
+    //ofAddListener(vhpLmThread::timeOut, this, &vhpGame::set);
+    ofAddListener(vhpLevelMenu::levelSelection, this, &vhpGame::playerLevelOnSelect);
 }
 
 void vhpGame::stopLevelMenu(){
     xogadores.stop();
-    ofRemoveListener(vhpLmThread::timeOut, this, &vhpGame::set);
-    ofRemoveListener(vhpLevelMenu::levelSelection, this, &vhpGame::set);
+    //ofRemoveListener(vhpLmThread::timeOut, this, &vhpGame::set);
+    ofRemoveListener(vhpLevelMenu::levelSelection, this, &vhpGame::playerLevelOnSelect);
 }
 
 void vhpGame::goToLevelMenu(){
@@ -664,9 +702,40 @@ void vhpGame::drawLevelMenuIn(){
         initLevelMenu();
         currentUpdate = &vhpGame::updateLevelMenu;
         currentDraw = &vhpGame::drawLevelMenu;
-        espera.pause();
     }
 }
+
+void vhpGame::drawDirectLevelMenuIn(){
+    //bufferTex.loadData(espera.video.getPixels(), width, height, GL_RGB);
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    ofSetColor(255, 255, 255);
+    fullScreen.begin();
+    //shaderMixture.begin();
+    //shaderMixture.setUniformTexture("tex1", bufferTex, 1);
+    //shaderMixture.setUniform1f("mixture", alpha/255.0);
+    xogadores.draw(0, 0);
+    ofSetColor(255,255,255,alpha);
+    niveis.draw(0, 0);
+    ofSetColor(255, 255, 255);
+    //shaderMixture.end();
+    fullScreen.end();
+    fullScreen.draw(0, 0, width * scale, height * scale/3);
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    
+    drawFrameRate();
+    
+    alpha += alpha_increment;
+    if (alpha>=255) {
+        cout << "alpha: 255" << endl;
+        alpha = 255;
+        initLevelMenu();
+        currentUpdate = &vhpGame::updateLevelMenu;
+        currentDraw = &vhpGame::drawLevelMenu;
+    }
+}
+
 
 void vhpGame::drawLevelMenuOut(){
     //bufferTex.loadData(espera.video.getPixels(), width, height, GL_RGB);
@@ -696,7 +765,7 @@ void vhpGame::drawLevelMenuOut(){
         initStandby();
         currentUpdate = &vhpGame::updateStandby;
         currentDraw = &vhpGame::drawStandby;
-        niveis.pause();
+        //niveis.pause();
     }
 }
 
@@ -727,7 +796,7 @@ void vhpGame::goToGame(){
 void vhpGame::fadeInGame(){
     cout << "fadeInGame()" << endl;
     stopLevelMenu();
-    niveis.pause();
+    //niveis.pause();
     xogo.play();
     alpha = 0;
     //mensajeria.send(xogadores.selected);
@@ -797,7 +866,7 @@ void vhpGame::drawGameIn(){
         currentUpdate = &vhpGame::updateGame;
         currentDraw = &vhpGame::drawGame;
         niveis.stop();
-        niveis.pause();
+        //niveis.pause();
     }
     
     //mensajeria.update();
