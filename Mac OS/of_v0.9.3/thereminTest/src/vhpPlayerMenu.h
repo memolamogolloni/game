@@ -101,17 +101,17 @@ class vhpPlayerMenu {
         bool                        loading;
 
         // Video de fondo
-        ofFbo               fbo;
-        int                 width;
-        int                 height;
+        ofFbo                       fbo;
+        int                         width;
+        int                         height;
     
         // Estado del juego
-        int                 currentScene;
-        int                 targetScene[2];
-        int                 state;
-        int                 target;
-        int                 selected;
+        int                         currentScene;
+        int                         targetScene[2];
+        int                         state;
+        int                         target;
+        int                         selected;
     
         // notificación de eventos
-        static ofEvent<int> playersNumber;
+        static ofEvent<int>         playersNumber;
 };

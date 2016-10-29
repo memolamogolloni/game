@@ -36,3 +36,6 @@ void vhpLine::draw(){
 bool vhpLine::isNotLast(){
     return p < texto.size();
 }
+string vhpLine::getVisibleLine(){
+    return visible;
+}

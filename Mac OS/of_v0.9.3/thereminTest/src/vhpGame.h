@@ -41,6 +41,7 @@ class vhpGame {
         void playerLevelOnSelect(int &_s);
         void standByOnCancel(int &_s);
         void onPlayersReceived(int &_s);
+        void gameOnRestart(int &_s);
         void toggleScale();
     
         // loading
@@ -117,7 +118,7 @@ class vhpGame {
         int                         state;
         int                         width;
         int                         height;
-        ofxXmlSettings              videoList;
+        ofxXmlSettings              settings;
         ofFbo                       fullScreen;
         /*
         ofShader                    shaderMixture;

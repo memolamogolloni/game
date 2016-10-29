@@ -2,7 +2,7 @@
 
 // Constructor -------------------------------------------------
 
-vhpStandby::vhpStandby(){
+vhpStandby::vhpStandby():loaded(false),loading(false){
 
 }
 

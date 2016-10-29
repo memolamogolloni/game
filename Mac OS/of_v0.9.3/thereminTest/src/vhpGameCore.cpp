@@ -2,7 +2,7 @@
 
 // Constructor -------------------------------------------------
 
-vhpGameCore::vhpGameCore(): scale(1.0), loaded(false), loading(false){
+vhpGameCore::vhpGameCore(): scale(1.0),loaded(false),loading(false),angle(0){
 
     wHeight = 223;
     wY = 335;
@@ -36,8 +36,11 @@ vhpGameCore::~vhpGameCore(){
 }
 
 // Inicializar variables y cargar los archivos -----------------
-void vhpGameCore::setup(ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene){
+void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene){
     
+    mensajeria = _mensajeria;
+    
+    /*
     // Añadir los vídeos desde el documento xml de settings
     int n = _videoList.getNumTags(_videoTag +":VIDEO");
     if(n > 0){
@@ -52,6 +55,15 @@ void vhpGameCore::setup(ofxXmlSettings& _videoList, string _videoTag, int _curre
         }
         _videoList.popTag();
     }
+    */
+    // FBO alocation and cleaning
+    width = 1920;
+    height = 1080;
+    fbo.allocate(width, height, GL_RGBA);
+    fbo.begin();
+    ofClear(255,255,255, 0);
+    fbo.end();
+
     
     // Añadir las imágenes Sueltas
     loadingSilge.push_back(&building);
@@ -96,12 +108,26 @@ void vhpGameCore::setup(ofxXmlSettings& _videoList, string _videoTag, int _curre
     filesSingle.push_back("g-shadow");
     loadingSilge.push_back(&wrong);
     filesSingle.push_back("g-wrong");
-    
+    loadingSilge.push_back(&keko);
+    filesSingle.push_back("g-keko");
+    loadingSilge.push_back(&glow);
+    filesSingle.push_back("g-glow");
+    loadingSilge.push_back(&shadowblue);
+    filesSingle.push_back("g-shadow-blue");
+    loadingSilge.push_back(&shadowred);
+    filesSingle.push_back("g-shadow-red");
+    loadingSilge.push_back(&buttonblue);
+    filesSingle.push_back("g-button-blue");
+    loadingSilge.push_back(&buttonred);
+    filesSingle.push_back("g-button-red");
+    loadingSilge.push_back(&trofeo);
+    filesSingle.push_back("g-trofeo");
+
     // Añadir las fuentes
     TTF.load("fonts/titilliumweblight.ttf", 22);
     TTFB.load("fonts/titilliumweblight.ttf", 70);
     
-    currentLoad = &vhpGameCore::loadVideo;
+    currentLoad = &vhpGameCore::loadSingle;
     
     // Inicializar las variables
     currentScene = _currentScene;   // SCREENSAVER
@@ -111,18 +137,28 @@ void vhpGameCore::setup(ofxXmlSettings& _videoList, string _videoTag, int _curre
     count = 0;
     
     pWindow.setup();
+    aWindowClick.setup();
+    bWindowClick.setup();
     initGame();
     
 }
-void vhpGameCore::getText(string _file) {
-    ofBuffer buffer = ofBufferFromFile(_file);
-    for (auto line : buffer.getLines()){
-        cout << line << endl;
-        lines.push_back(line);
+void vhpGameCore::getText(string _file, bool _string) {
+    if (_string) {
+        ofBuffer buffer = ofBufferFromFile(_file);
+        for (auto line : buffer.getLines()){
+            cout << line << endl;
+            lines.push_back(line);
+        }
+    } else {
+        ofBuffer buffer = ofBufferFromFile(_file);
+        for (auto line : buffer.getLines()){
+            cout << line << endl;
+            fLines.push_back(vhpLine(line));
+        }
     }
 }
 void vhpGameCore::initGame(){
-    getText("txt/g-text.txt");
+    getText("txt/g-text.txt", true);
     points[0] = 0;
     points[1] = 0;
     currentRound = 0;
@@ -132,14 +168,13 @@ void vhpGameCore::initGame(){
             windowState[i][u] = pendingW;
         }
     }
-    
 }
 void vhpGameCore::initRound(){
     cout << "initRound()" << endl;
     isGo = false;
     holdSteady = ceil(ofRandom(3));
     targetsShot = randomWindow();
-    mensajeria.send("targetsShot", targetsShot);
+    mensajeria->send("targetsShot", targetsShot);
     alpha = 0;
     for (int i=0; i<4; i++) {
         alphaWindow[i] = 0;
@@ -159,6 +194,7 @@ void vhpGameCore::initRound(){
     delay = 90;
 }
 void vhpGameCore::initPattern(){
+    currentWindow = 0;
     holdSteady = ceil(ofRandom(3));
     targetsShot = randomWindow();
     alpha = 0;
@@ -194,6 +230,8 @@ void vhpGameCore::load(){
     (*this.*currentLoad)();
 }
 void vhpGameCore::loadVideo(){
+    
+    /*
     if (!loaded) {
         int actual = videoFile.size() - 1;
         cout << "actual: " <<actual << " video.size(): " << video.size() << endl;
@@ -223,6 +261,7 @@ void vhpGameCore::loadVideo(){
             currentLoad = &vhpGameCore::loadSingle;
         }
     }
+     */
 }
 void vhpGameCore::loadSingle(){
     if (!loaded) {
@@ -261,6 +300,17 @@ void vhpGameCore::stop(){
 void vhpGameCore::update(){
     (*this.*currentUpdate)();
     count++;
+}
+void vhpGameCore::updateTextLine(){
+    // cout << count << endl;
+    if (count%6==0){
+        for (int i = 0; i < fLines.size(); i++) {
+            if (fLines[i].isNotLast()) {
+                fLines[i].add();
+                break;
+            }
+        }
+    }
 }
 
 void vhpGameCore::draw(int _x, int _y){
@@ -389,6 +439,12 @@ void vhpGameCore::drawClickedWindow(){
         if (alphaWindow[1]>=255) alphaWindow[1] = 255;
     }
 }
+void vhpGameCore::drawTextLine(int _x, int _y, int _alpha){
+    ofSetColor(255, 255, 255, _alpha);
+    for (int i = 0; i < fLines.size(); i++) {
+        TTF.drawString(fLines[i].getVisibleLine(), _x, _y +(40*i));
+    }
+}
 
 // Reproducir o detener la escena modificando currentUpdate ----
 
@@ -396,7 +452,12 @@ void vhpGameCore::play(){
     initRound();
     currentUpdate = &vhpGameCore::playReady;
     currentTouchPressed = &vhpGameCore::touchPressedGame;
-    mensajeria.send("gamestate", 0);
+    
+    /*  OSC  */
+    /* ----- */
+    mensajeria->send("gamestate", 0);
+    /* ----- */
+    
 }
 
 void vhpGameCore::pause(){
@@ -443,7 +504,7 @@ void vhpGameCore::playReady(){
         alpha = 0;
         alpha_increment = -1 * alpha_increment;
         currentUpdate = &vhpGameCore::playSteady;
-        mensajeria.send("gamestate", 1);
+        mensajeria->send("gamestate", 1);
     }
 }
 
@@ -472,7 +533,7 @@ void vhpGameCore::playSteady(){
         alpha_increment = -1 * alpha_increment;
         if (holdSteady<=0) {
             currentUpdate = &vhpGameCore::playGo;
-            mensajeria.send("gamestate", 2);
+            mensajeria->send("gamestate", 2);
         }
         holdSteady --;
     }
@@ -502,7 +563,7 @@ void vhpGameCore::playGo(){
         alpha = 0;
         alpha_increment = -1 * alpha_increment;
         currentUpdate = &vhpGameCore::showWindow;
-        mensajeria.send("gamestate", 3);
+        mensajeria->send("gamestate", 3);
         setTimeReference();
         isGo = true;
     }
@@ -576,14 +637,14 @@ void vhpGameCore::showWindow(){
                     hold[1] = false;
                     currentUpdate = &vhpGameCore::showTie;
                     currentTouchPressed = &vhpGameCore::touchPressedWinner;
-                    mensajeria.send("gamestate", 5);
+                    mensajeria->send("gamestate", 5);
                 } else {
                     hold[0] = false;
                     hold[1] = false;
                     points[winner]++;
                     currentUpdate = &vhpGameCore::showWinner;
                     currentTouchPressed = &vhpGameCore::touchPressedWinner;
-                    mensajeria.send("gamestate", 4);
+                    mensajeria->send("gamestate", 4);
                 }
                 
             }
@@ -615,30 +676,6 @@ void vhpGameCore::showWinner(){
     }
 }
 
-// Show Winner -----------------------------------
-void vhpGameCore::showFinalWinner(){
-    // Reproduce el video y lo dibuja en el FBO
-    video[0].update();
-    fbo.begin();
-    ofPushStyle();
-    ofEnableAlphaBlending();
-    ofSetColor(255, 255, 255);
-    video[0].draw(0, 0);
-    ofSetColor(255,255,255,alpha);
-    winnerBackground[winner].draw(0,0);
-    ofSetColor(255, 255, 255);
-    drawRoundWiner();
-    ofDisableAlphaBlending();
-    ofPopStyle();
-    fbo.end();
-    alpha += alpha_increment;
-    if (alpha>=255) {
-        alpha = 255;
-        //currentUpdate = &vhpGameCore::playScreenSaver;
-    }
-}
-
-
 // Show Tie -----------------------------------
 void vhpGameCore::showTie(){
     // Reproduce el video y lo dibuja en el FBO
@@ -664,89 +701,62 @@ void vhpGameCore::showTie(){
 void vhpGameCore::setWindowPattern(){
     initPattern();
     randomPattern();
-    setTimeReference();
-    currentUpdate = &vhpGameCore::showPattern;
+    setTimeReference(3.0);
     pWindow.setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
+    aWindowClick.setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
+    bWindowClick.setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
     pWindow.setFadeIn();
+    aWindowClick.setHiddenOne();
+    bWindowClick.setHiddenOne();
+    currentUpdate = &vhpGameCore::sendWindowPattern;
     currentTouchPressed = &vhpGameCore::touchPressedPattern;
+}
+void vhpGameCore::sendWindowPattern(){
+    
+    // Update
+    aWindowClick.update();
+    bWindowClick.update();
+    // send patern using OSC
+    if (getElapsedtime()>=3.0) {
+        if (currentWindow<4) {
+            /*  OSC  */
+            /* ----- */
+            cout << "sending window/patern " << currentWindow << " is " << targetsPattern[currentWindow] << endl;
+            mensajeria->send("window/patern", targetsPattern[currentWindow]);
+            /* ----- */
+            currentWindow++;
+            setTimeReference();
+        } else if (currentWindow==4) {
+            currentUpdate = &vhpGameCore::showPattern;
+        }
+    }
+    // Draw
+    fbo.begin();
+    drawGame();
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    aWindowClick.draw();
+    bWindowClick.draw();
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    fbo.end();
+    
 }
 void vhpGameCore::showPattern(){
     // pequeño delay antes de enseñar la ventana
     // Reproduce el video y lo dibuja en el FBO
     pWindow.update();
+    aWindowClick.update();
+    bWindowClick.update();
     fbo.begin();
     drawGame();
     ofPushStyle();
     ofEnableAlphaBlending();
     pWindow.draw();
-    /*
-    if (clicked[0]!=0) {
-        ofSetColor(255,255,255,alphaWindow[0]);
-        wClickA[clicked[0]].draw(0,0);
-        alphaWindow[0] += 35;
-        if (alphaWindow[0]>=255) alphaWindow[0] = 255;
-    }
-    if (clicked[1]!=0) {
-        ofSetColor(255,255,255,alphaWindow[1]);
-        wClickB[clicked[1]].draw(0,0);
-        alphaWindow[1] += 35;
-        if (alphaWindow[1]>=255) alphaWindow[1] = 255;
-    }
-     */
+    aWindowClick.draw();
+    bWindowClick.draw();
     
-    
-    if (hold[0]&&hold[1]) {
-        delay--;
-        if (delay<=0) {
-            alpha = 0;
-            bool tie = false;
-            if (ok[0]&&ok[1]) {
-                cout << "Both user have trigered a correct pattern" << endl;
-                cout << "Time A: " << time[0] << endl;
-                cout << "Time B: " << time[1] << endl;
-                // gaña o mais rápido
-                if (time[0]<=time[1]) {
-                    cout << "Player 0 was faster!" << endl;
-                    winner = 0;
-                } else {
-                    cout << "Player 1 was faster!" << endl;
-                    winner = 1;
-                }
-                
-            } else {
-                // acertou só 0
-                if (ok[0]) {
-                    cout << "Only 0 was succesful" << endl;
-                    winner = 0;
-                    // acertou só 1
-                } else if (ok[1]) {
-                    cout << "Only 1 was succesful" << endl;
-                    winner = 1;
-                    // no acertou ninguén
-                } else {
-                    cout << "Both players failed" << endl;
-                    tie = true;
-                }
-            }
-            if (tie) {
-                currentUpdate = &vhpGameCore::showTie;
-                currentTouchPressed = &vhpGameCore::touchPressedWinner;
-                
-                mensajeria.send("gamestate", 5);
-            } else {
-                points[winner] += 3;
-                if (points[0]>points[1]) {
-                    winner = 0;
-                } else {
-                    winner = 1;
-                }
-                currentUpdate = &vhpGameCore::showFinalWinner;
-                currentTouchPressed = &vhpGameCore::touchPressedPatternWinner;
-                mensajeria.send("gamestate", 4);
-            }
-        }
-        
-    }
+    checkPatternWinner();
     
     ofDisableAlphaBlending();
     ofPopStyle();
@@ -754,12 +764,72 @@ void vhpGameCore::showPattern(){
     
 }
 
+
+// Show Winner -----------------------------------
+void vhpGameCore::setFinalWinner(){
+    currentUpdate = &vhpGameCore::showFinalWinner;
+    currentTouchPressed = &vhpGameCore::touchPressedPatternWinner;
+    mensajeria->send("gamestate", 4);
+    fLines.clear();
+    getText("txt/g-final.txt", false);
+    for (int i = 0; i < fLines.size(); i++) {
+        fLines[i].init();
+    }
+}
+void vhpGameCore::showFinalWinner(){
+    // Reproduce el video y lo dibuja en el FBO
+    //video[0].update();
+    
+    updateTextLine();
+    
+    fbo.begin();
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    ofSetColor(255, 255, 255);
+    bg.draw(0, 0);
+    keko.draw(0, 0);
+    if (winner==0) {
+        shadowred.draw(0,0);
+        buttonred.draw(75,915);
+    } else {
+        shadowblue.draw(0,0);
+        buttonblue.draw(1575,915);
+    }
+    ofSetColor(255,255,255);
+    glPushMatrix();
+    glTranslatef(width/2,140+height/2,0);
+    glRotatef(angle,0,1,0);
+    trofeo.draw(0,0);
+    trofeo.setAnchorPercent(0.5f, 0.5f);
+    glPopMatrix();
+    angle++;
+    if (angle == 360) {
+        angle = 0;
+    }
+    //trofeo.draw(0,0);
+    //video[0].draw(0, 0);
+    ofSetColor(255,255,255,alpha);
+    //winnerBackground[winner].draw(0,0);
+    ofSetColor(255, 255, 255);
+    //drawRoundWiner();
+    drawTextLine(425, 200, 255);
+    
+    
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    fbo.end();
+    alpha += alpha_increment;
+    if (alpha>=255) {
+        alpha = 255;
+        //currentUpdate = &vhpGameCore::playScreenSaver;
+    }
+}
+
 // Eventos ------------------------------------------------------
 
 void vhpGameCore::touchPressed(float & _x, float & _y){
     (*this.*currentTouchPressed)(_x, _y);
 }
-
 void vhpGameCore::touchPressedGame(float & _x, float & _y){
     cout << "MousePressed in game!" << endl;
     //ofNotifyEvent(onClick, gameTarget);
@@ -775,43 +845,43 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                 // Window 1
                 if (_x<=171) {
                     clicked[0] = 0;
-                    mensajeria.send("windowclick/a", 0);
+                    mensajeria->send("windowclick/a", 0);
                     cout << "Window 0" << endl;
                     
                     // Window 2
                 } else if (_x<=316) {
                     clicked[0] = 1;
-                    mensajeria.send("windowclick/a", 1);
+                    mensajeria->send("windowclick/a", 1);
                     cout << "Window 1" << endl;
                     
                     // Window 3
                 } else if (_x<=455) {
                     clicked[0] = 2;
-                    mensajeria.send("windowclick/a", 2);
+                    mensajeria->send("windowclick/a", 2);
                     cout << "Window 2" << endl;
                     
                     // Window 4
                 } else if (_x<=587) {
                     clicked[0] = 3;
-                    mensajeria.send("windowclick/a", 3);
+                    mensajeria->send("windowclick/a", 3);
                     cout << "Window 3" << endl;
                     
                     // Window 5
                 } else if (_x<=711) {
                     clicked[0] = 4;
-                    mensajeria.send("windowclick/a", 4);
+                    mensajeria->send("windowclick/a", 4);
                     cout << "Window 4" << endl;
                     
                     // Window 6
                 } else if (_x<=832) {
                     clicked[0] = 5;
-                    mensajeria.send("windowclick/a", 5);
+                    mensajeria->send("windowclick/a", 5);
                     cout << "Window 5" << endl;
                     
                     // Window 7
                 } else {
                     clicked[0] = 6;
-                    mensajeria.send("windowclick/a", 6);
+                    mensajeria->send("windowclick/a", 6);
                     cout << "Window 6" << endl;
                     
                 }
@@ -827,43 +897,43 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                 // Window 7
                 if (_x<=1088) {
                     clicked[1] = 0;
-                    mensajeria.send("windowclick/b", 0);
+                    mensajeria->send("windowclick/b", 0);
                     cout << "Window 0" << endl;
                     
                     // Window 6
                 } else if (_x<=1210) {
                     clicked[1] = 1;
-                    mensajeria.send("windowclick/b", 1);
+                    mensajeria->send("windowclick/b", 1);
                     cout << "Window 1" << endl;
                     
                     // Window 5
                 } else if (_x<=1334) {
                     clicked[1] = 2;
-                    mensajeria.send("windowclick/b", 2);
+                    mensajeria->send("windowclick/b", 2);
                     cout << "Window 2" << endl;
                     
                     // Window 4
                 } else if (_x<=1466) {
                     clicked[1] = 3;
-                    mensajeria.send("windowclick/b", 3);
+                    mensajeria->send("windowclick/b", 3);
                     cout << "Window 3" << endl;
                     
                     // Window 3
                 } else if (_x<=1603) {
                     clicked[1] = 4;
-                    mensajeria.send("windowclick/b", 4);
+                    mensajeria->send("windowclick/b", 4);
                     cout << "Window 4" << endl;
                     
                     // Window 2
                 } else if (_x<=1748) {
                     clicked[1] = 5;
-                    mensajeria.send("windowclick/b", 5);
+                    mensajeria->send("windowclick/b", 5);
                     cout << "Window 5" << endl;
                     
                     // Window 1
                 } else {
                     clicked[1] = 6;
-                    mensajeria.send("windowclick/b", 6);
+                    mensajeria->send("windowclick/b", 6);
                     cout << "Window 6" << endl;
                     
                 }
@@ -957,45 +1027,46 @@ void vhpGameCore::touchPressedPattern(float & _x, float & _y){
                 // Window 1
                 if (_x<=171) {
                     registeredPattern[0][n[0]] = 0;
-                    mensajeria.send("windowclick/a", 0);
+                    mensajeria->send("windowclick/a", 0);
                     cout << "Window 0" << endl;
                     
                     // Window 2
                 } else if (_x<=316) {
                     registeredPattern[0][n[0]] = 1;
-                    mensajeria.send("windowclick/a", 1);
+                    mensajeria->send("windowclick/a", 1);
                     cout << "Window 1" << endl;
                     
                     // Window 3
                 } else if (_x<=455) {
                     registeredPattern[0][n[0]] = 2;
-                    mensajeria.send("windowclick/a", 2);
+                    mensajeria->send("windowclick/a", 2);
                     cout << "Window 2" << endl;
                     
                     // Window 4
                 } else if (_x<=587) {
                     registeredPattern[0][n[0]] = 3;
-                    mensajeria.send("windowclick/a", 3);
+                    mensajeria->send("windowclick/a", 3);
                     cout << "Window 3" << endl;
                     
                     // Window 5
                 } else if (_x<=711) {
                     registeredPattern[0][n[0]] = 4;
-                    mensajeria.send("windowclick/a", 4);
+                    mensajeria->send("windowclick/a", 4);
                     cout << "Window 4" << endl;
                     
                     // Window 6
                 } else if (_x<=832) {
                     registeredPattern[0][n[0]] = 5;
-                    mensajeria.send("windowclick/a", 5);
+                    mensajeria->send("windowclick/a", 5);
                     cout << "Window 5" << endl;
                     
                     // Window 7
                 } else {
                     registeredPattern[0][n[0]] = 6;
-                    mensajeria.send("windowclick/a", 6);
+                    mensajeria->send("windowclick/a", 6);
                     cout << "Window 6" << endl;
                 }
+                aWindowClick.setOneWindow(n[0], registeredPattern[0][n[0]], 0);
                 if ((n[0]==3)&&(registeredPattern[0][3]!=7)) {
                     cout << "Lets check" << endl;
                     time[0] = ofGetElapsedTimeMillis();
@@ -1015,47 +1086,48 @@ void vhpGameCore::touchPressedPattern(float & _x, float & _y){
                 // Window 7
                 if (_x<=1088) {
                     registeredPattern[1][n[1]] = 6;
-                    mensajeria.send("windowclick/b", 6);
+                    mensajeria->send("windowclick/b", 6);
                     cout << "Window 6" << endl;
                     
                     // Window 6
                 } else if (_x<=1210) {
                     registeredPattern[1][n[1]] = 5;
-                    mensajeria.send("windowclick/b", 5);
+                    mensajeria->send("windowclick/b", 5);
                     cout << "Window 5" << endl;
                     
                     // Window 5
                 } else if (_x<=1334) {
                     registeredPattern[1][n[1]] = 4;
-                    mensajeria.send("windowclick/b", 4);
+                    mensajeria->send("windowclick/b", 4);
                     cout << "Window 4" << endl;
                     
                     // Window 4
                 } else if (_x<=1466) {
                     registeredPattern[1][n[1]] = 3;
-                    mensajeria.send("windowclick/b", 3);
+                    mensajeria->send("windowclick/b", 3);
                     cout << "Window 3" << endl;
                     
                     // Window 3
                 } else if (_x<=1603) {
                     registeredPattern[1][n[1]] = 2;
-                    mensajeria.send("windowclick/b", 2);
+                    mensajeria->send("windowclick/b", 2);
                     cout << "Window 2" << endl;
                     
                     // Window 2
                 } else if (_x<=1748) {
                     registeredPattern[1][n[1]] = 1;
-                    mensajeria.send("windowclick/b", 1);
+                    mensajeria->send("windowclick/b", 1);
                     cout << "Window 1" << endl;
                     
                     // Window 1
                 } else {
                     registeredPattern[1][n[1]] = 0;
-                    mensajeria.send("windowclick/b", 0);
+                    mensajeria->send("windowclick/b", 0);
                     cout << "Window 0" << endl;
                     
                 }
-                
+                // hay discordancias entre el orden de las ventanas, si es igual o en espejo corregir para arreglar este apaño
+                aWindowClick.setOneWindow(n[1], 6-registeredPattern[1][n[1]], 1);
                 if ((n[1]==3)&&(registeredPattern[1][3]!=7)) {
                     cout << "Lets check" << endl;
                     time[1] = ofGetElapsedTimeMillis();
@@ -1073,31 +1145,67 @@ void vhpGameCore::touchPressedPattern(float & _x, float & _y){
 void vhpGameCore::touchPressedPatternWinner(float & _x, float & _y){
     //
     cout << "MousePressed after Pattern!" << endl;
-    //ofNotifyEvent(onClick, gameTarget);
+    //
     
     // min y: 690, max y: 860
     cout << "mouse x: " << _y << " mouse y: " << _x << endl;
-    if ((_y>=690)&&(_y<=860)) {
-        // Player A
-        if (_x<=960) {
-            next[0] = true;
-            if (next[1]==true) {
-                            }
-            // Player B
-        } else {
-            next[1] = true;
-            if (next[0]==true) {
-                
-            }
-        }
+    // Player A
+    if ((winner==0)&&(_y>=894)&&(_y<=1036)&&(_x>=10)&&(_x<=410)) {
+        ofNotifyEvent(onRestart, targetScene);
+    // Player B
+    } else if ((winner==1)&&(_y>=894)&&(_y<=1036)&&(_x>=1510)&&(_x<=1910)) {
+        ofNotifyEvent(onRestart, targetScene);
     }
 }
+
 void vhpGameCore::checkIsGo(int _p){
     if (!isGo) {
         cout << "Player " << _p << " clicked to soon!" << endl;
         hold[_p] = true;
         ok[_p] = false;
         soon[_p] = true;
+    }
+}
+void vhpGameCore::checkPatternWinner(){
+    if (hold[0]&&hold[1]) {
+        delay--;
+        if (delay<=0) {
+            alpha = 0;
+            bool tie = false;
+            if (ok[0]&&ok[1]) {
+                cout << "Both user have trigered a correct pattern" << endl;
+                cout << "Time A: " << time[0] << endl;
+                cout << "Time B: " << time[1] << endl;
+                // foron igual de rápidos
+                if (time[0]==time[1]) {
+                    cout << "Both players where right!" << endl;
+                    tie = true;
+                } if (time[0]<time[1]) {
+                    cout << "Player 0 was faster!" << endl;
+                    winner = 0;
+                } else {
+                    cout << "Player 1 was faster!" << endl;
+                    winner = 1;
+                }
+            } else {
+                // acertou só 0
+                if (ok[0]) {
+                    cout << "Only 0 was succesful" << endl;
+                    winner = 0;
+                // acertou só 1
+                } else if (ok[1]) {
+                    cout << "Only 1 was succesful" << endl;
+                    winner = 1;
+                // no acertou ninguén
+                } else {
+                    cout << "Both players failed" << endl;
+                    tie = true;
+                }
+            }
+            if (!tie) points[winner] += 2;
+            (points[0]>points[1]) ? winner = 0 : winner = 1;
+            setFinalWinner();
+        }
     }
 }
 
@@ -1158,6 +1266,10 @@ void vhpGameCore::randomPattern(){
 void vhpGameCore::setTimeReference(){
     tRef = ofGetElapsedTimef();
 }
+void vhpGameCore::setTimeReference(float _ago){
+    tRef = ofGetElapsedTimef();
+    tRef -= _ago;
+}
 
 float vhpGameCore::getElapsedtime(){
     return ofGetElapsedTimef() - tRef;
@@ -1165,3 +1277,4 @@ float vhpGameCore::getElapsedtime(){
 
 
 ofEvent <int> vhpGameCore::onClick;
+ofEvent <int> vhpGameCore::onRestart;

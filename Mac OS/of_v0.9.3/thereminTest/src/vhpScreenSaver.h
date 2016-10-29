@@ -15,7 +15,13 @@ class vhpScreenSaver {
 		/* funciones o métodos */
     
         // Inicializar variables y cargar los archivos
-        void setup(ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
+        void setup(int _currentScene, int _targetScene);
+    
+        // Precarga de todos los elementos
+        void load();
+        void (vhpScreenSaver::*currentLoad)();
+        void loadSingle();
+
     
         // Comenzar e interrumpir los hilos y listeners de la escena
         void start();
@@ -41,16 +47,31 @@ class vhpScreenSaver {
         /* Variables o propiedades */
     
         // Video de fondo
-        ofVideoPlayer   video;
-        ofFbo           fbo;
-        int             width;
-        int             height;
+        ofFbo                       fbo;
+        int                         width;
+        int                         height;
+    
+        ofImage                     bg;
+        ofImage                     theremin;
+        ofImage                     loadingtxt;
+        float                       alpha;
+        float                       alpha_increment;
+        float                       salpha;
+        float                       salpha_increment;
+        bool                        finishLoading;
+    
+        //loader
+        vector<ofImage*>            loadingSilge;
+        vector<string>              filesSingle;
+        bool                        loaded;
+        bool                        loading;
+    
     
         // Estado del juego
-        int             currentScene;
-        int             targetScene;
+        int                         currentScene;
+        int                         targetScene;
     
         // notificación de eventos
-        static ofEvent<int> onClick;
+        static ofEvent<int>         onClick;
     
 };

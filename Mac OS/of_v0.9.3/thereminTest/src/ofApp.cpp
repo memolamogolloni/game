@@ -2,6 +2,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    ofSetFullscreen(true);
+
     thereminTourette.setup();
 }
 

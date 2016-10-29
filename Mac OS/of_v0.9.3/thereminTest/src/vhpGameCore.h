@@ -4,10 +4,11 @@
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
 #include "vhpOSC.h"
+#include "vhpLine.h"
 #include "vhpWindow.h"
 
 #define nWINDOWS        7
-#define nROUNDS         4
+#define nROUNDS         3
 
 #define lostW           0
 #define wonW            1
@@ -25,8 +26,8 @@ class vhpGameCore {
 		/* funciones o métodos */
     
         // Inicializar variables y cargar los archivos
-        void setup(ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
-        void getText(string _file);
+        void setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene);
+        void getText(string _file, bool _string);
         void initGame();
         void initRound();
         void initPattern();
@@ -44,6 +45,8 @@ class vhpGameCore {
         // Dibujado y actualización variables
         void update();
         void (vhpGameCore::*currentUpdate)();
+        void updateTextLine();
+    
         void draw(int _x, int _y);
     
         // Dibujado de elementos
@@ -54,6 +57,7 @@ class vhpGameCore {
         void drawRound();
         void drawRoundWiner();
         void drawClickedWindow();
+        void drawTextLine(int _x, int _y, int _alpha);
     
         // reproducir o detener la escena modificando currentUpdate
         void play();
@@ -68,10 +72,12 @@ class vhpGameCore {
         void playGo();
         void showWindow();
         void showWinner();
-        void showFinalWinner();
         void showTie();
         void setWindowPattern();
+        void sendWindowPattern();
         void showPattern();
+        void setFinalWinner();
+        void showFinalWinner();
     
         // Para recoger la pulsación del ratón en la pantalla
         void touchPressed(float & _x, float & _y);
@@ -82,15 +88,18 @@ class vhpGameCore {
         void touchPressedPatternWinner(float & _x, float & _y);
     
         void checkIsGo(int _p);
+        void checkPatternWinner();
     
         int randomWindow();
         void randomPattern();
         void setTimeReference();
+        void setTimeReference(float _ago);
         float getElapsedtime();
+    
     
         /* Variables o propiedades */
     
-        vhpOSC                      mensajeria;
+        vhpOSC*                      mensajeria;
     
         // Video de fondo
         vector<ofVideoPlayer>       video;
@@ -101,6 +110,7 @@ class vhpGameCore {
     
         // Elementos gráficos
         vector<string>              lines;
+        vector<vhpLine>             fLines;
         int                         count;
         ofTrueTypeFont              TTF;
         ofTrueTypeFont              TTFB;
@@ -118,6 +128,8 @@ class vhpGameCore {
         bool                        loading;
     
         vhpWindow                   pWindow;
+        vhpWindow                   aWindowClick;
+        vhpWindow                   bWindowClick;
     
         int                         windowState[2][7];
         ofImage                     winnerBackground[2];
@@ -136,6 +148,13 @@ class vhpGameCore {
         ofImage                     balls;
         ofImage                     shadow;
         ofImage                     wrong;
+        ofImage                     keko;
+        ofImage                     glow;
+        ofImage                     shadowblue;
+        ofImage                     shadowred;
+        ofImage                     buttonblue;
+        ofImage                     buttonred;
+        ofImage                     trofeo;
     
         // Estado del juego
         int                         currentScene;
@@ -155,6 +174,7 @@ class vhpGameCore {
         int                         targetsPattern[4];
         int                         registeredPattern[2][4];
         int                         currentRound;
+        int                         currentWindow;
         int                         delay;
     
         float                       tRef;
@@ -165,7 +185,10 @@ class vhpGameCore {
         int             wY;
         int             wX[2][nWINDOWS];
     
+        float           angle;
+    
         // notificación de eventos
         static ofEvent<int> onClick;
+        static ofEvent<int> onRestart;
     
 };

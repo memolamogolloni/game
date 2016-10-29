@@ -13,13 +13,14 @@ class vhpLine {
 		void setLine(string _line);
         void init();
         void add();
-		void draw();
+        void draw();
+        string getVisibleLine();
     
         bool isNotLast();
 		
 		// Variables ou propiedades
         vector<string>              texto;
-        string                      visible;
         int                         p;
+        string                      visible;
     
 };

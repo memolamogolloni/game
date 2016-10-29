@@ -1,7 +1,7 @@
 #include "vhpPlayerMenu.h"
 
 // Constructor -------------------------------------------------
-vhpPlayerMenu::vhpPlayerMenu():state(MENU),selected(0){
+vhpPlayerMenu::vhpPlayerMenu():state(MENU),selected(0),loaded(false),loading(false){
 
 }
 vhpPlayerMenu::~vhpPlayerMenu(){
