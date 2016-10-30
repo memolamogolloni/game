@@ -1,4 +1,4 @@
-Ronda
+Ronda 
 ¡Sé más rápido que tu oponente en presionar la ventana indicada!
 Ready
 Steady
@@ -8,3 +8,4 @@ Rojo
 Azul
  gana la ronda 
  !
+¡Estoy listo!

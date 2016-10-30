@@ -8,7 +8,7 @@
 #include "vhpWindow.h"
 
 #define nWINDOWS        7
-#define nROUNDS         3
+#define nROUNDS         1
 
 #define lostW           0
 #define wonW            1
@@ -64,15 +64,14 @@ class vhpGameCore {
         void pause();
     
         // Procesado y actualización
-        void playScreenSaver();
-        void pauseScreenSaver();
-        void loopScreenSaver(float _pos);
         void playReady();
         void playSteady();
         void playGo();
         void showWindow();
         void showWinner();
         void showTie();
+        void setPatternTutorial();
+        void showPatternTutorial();
         void setWindowPattern();
         void sendWindowPattern();
         void showPattern();
@@ -84,6 +83,7 @@ class vhpGameCore {
         void (vhpGameCore::*currentTouchPressed)(float & _x, float & _y);
         void touchPressedGame(float & _x, float & _y);
         void touchPressedWinner(float & _x, float & _y);
+        void touchPressedPatternTutorial(float & _x, float & _y);
         void touchPressedPattern(float & _x, float & _y);
         void touchPressedPatternWinner(float & _x, float & _y);
     
@@ -114,6 +114,7 @@ class vhpGameCore {
         int                         count;
         ofTrueTypeFont              TTF;
         ofTrueTypeFont              TTFB;
+        ofTrueTypeFont              TTFM;
     
         int                         alpha;
         int                         alphaWindow[4];
@@ -154,7 +155,9 @@ class vhpGameCore {
         ofImage                     shadowred;
         ofImage                     buttonblue;
         ofImage                     buttonred;
+        ofImage                     colorBar[2];
         ofImage                     trofeo;
+        ofImage                     bandera;
     
         // Estado del juego
         int                         currentScene;
@@ -172,6 +175,7 @@ class vhpGameCore {
         int                         holdSteady;
         int                         targetsShot;
         int                         targetsPattern[4];
+        vector<int>                 nums;
         int                         registeredPattern[2][4];
         int                         currentRound;
         int                         currentWindow;
@@ -180,12 +184,12 @@ class vhpGameCore {
         float                       tRef;
     
         // Recorte de las ventanas
-        int             wHeight;
-        int             wWidth[2][nWINDOWS];
-        int             wY;
-        int             wX[2][nWINDOWS];
+        int                         wHeight;
+        int                         wWidth[2][nWINDOWS];
+        int                         wY;
+        int                         wX[2][nWINDOWS];
     
-        float           angle;
+        float                       angle;
     
         // notificación de eventos
         static ofEvent<int> onClick;

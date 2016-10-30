@@ -120,12 +120,23 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     filesSingle.push_back("g-button-blue");
     loadingSilge.push_back(&buttonred);
     filesSingle.push_back("g-button-red");
+    loadingSilge.push_back(&colorBar[0]);
+    filesSingle.push_back("g-red-b");
+    loadingSilge.push_back(&colorBar[1]);
+    filesSingle.push_back("g-blue-b");
     loadingSilge.push_back(&trofeo);
     filesSingle.push_back("g-trofeo");
+    loadingSilge.push_back(&bandera);
+    filesSingle.push_back("g-bandera");
 
     // Añadir las fuentes
     TTF.load("fonts/titilliumweblight.ttf", 22);
+    TTF.setGlobalDpi(72);
     TTFB.load("fonts/titilliumweblight.ttf", 70);
+    TTFB.setGlobalDpi(72);
+    TTFM.load("fonts/titilliumweblight.ttf", 45);
+    TTFM.setGlobalDpi(72);
+    
     
     currentLoad = &vhpGameCore::loadSingle;
     
@@ -287,16 +298,13 @@ void vhpGameCore::loadSingle(){
 }
 
 // Comenzar e interrumpir los hilos y listeners de la escena ---
-
 void vhpGameCore::start(){
     initGame();
 }
-
 void vhpGameCore::stop(){
 }
 
 // Dibujado y actualización variables --------------------------
-
 void vhpGameCore::update(){
     (*this.*currentUpdate)();
     count++;
@@ -318,7 +326,6 @@ void vhpGameCore::draw(int _x, int _y){
 }
 
 // Dibujado de elementos ---------------------------------------
-
 void vhpGameCore::drawScore(){
     ofPushStyle();
     int diff = points[0] - points[1];
@@ -384,8 +391,10 @@ void vhpGameCore::drawBackground(){
 }
 void vhpGameCore::drawRound(){
     ofSetColor(255, 255, 255);
+    ofRectangle box;
+    box = TTFB.getStringBoundingBox(lines[0], 0, 0);
     TTFB.drawString(lines[0], 795, 140);
-    TTFB.drawString(ofToString(currentRound), 1060, 140);
+    TTFB.drawString(ofToString(currentRound+1), 795 + box.width + 10, 140);
     TTF.drawString(lines[1], 580, 210);
 }
 void vhpGameCore::drawRoundWiner(){
@@ -466,22 +475,7 @@ void vhpGameCore::pause(){
 
 // Procesado y actualización -----------------------------------
 
-void vhpGameCore::playScreenSaver(){
-    // Reproduce el video y lo dibuja en el FBO
-    fbo.begin();
-    drawGame();
-    fbo.end();
-}
-
-void vhpGameCore::pauseScreenSaver(){
-    // Al no hacer nada mantiene el FBO con el último fotograma reproducido
-}
-
-void vhpGameCore::loopScreenSaver(float _pos){
-    // Envia la cabeza lectora del video a un punto determinado
-}
-
-// Ready -----------------------------------
+// Ready -------------------------------------------------------
 void vhpGameCore::playReady(){
     // Reproduce el video y lo dibuja en el FBO
     fbo.begin();
@@ -508,7 +502,7 @@ void vhpGameCore::playReady(){
     }
 }
 
-// Steady -----------------------------------
+// Steady ------------------------------------------------------
 void vhpGameCore::playSteady(){
     // Reproduce el video y lo dibuja en el FBO
     fbo.begin();
@@ -539,7 +533,7 @@ void vhpGameCore::playSteady(){
     }
 }
 
-// Go -----------------------------------
+// Go ----------------------------------------------------------
 void vhpGameCore::playGo(){
     // Reproduce el video y lo dibuja en el FBO
     fbo.begin();
@@ -569,7 +563,7 @@ void vhpGameCore::playGo(){
     }
 }
 
-// Show Window -----------------------------------
+// Show Window -------------------------------------------------
 void vhpGameCore::showWindow(){
     // pequeño delay antes de enseñar la ventana
     // Reproduce el video y lo dibuja en el FBO
@@ -589,7 +583,6 @@ void vhpGameCore::showWindow(){
         alpha += alpha_increment;
         if (alpha>=255) {
             alpha = 255;
-            //currentUpdate = &vhpGameCore::playScreenSaver;
         }
         if ((alphaWindow[0]==255)&&(alphaWindow[1]==255)) {
             delay--;
@@ -653,7 +646,7 @@ void vhpGameCore::showWindow(){
     }
 }
 
-// Show Winner -----------------------------------
+// Show Winner -------------------------------------------------
 void vhpGameCore::showWinner(){
     // Reproduce el video y lo dibuja en el FBO
     fbo.begin();
@@ -672,11 +665,10 @@ void vhpGameCore::showWinner(){
     alpha += alpha_increment;
     if (alpha>=255) {
         alpha = 255;
-        //currentUpdate = &vhpGameCore::playScreenSaver;
     }
 }
 
-// Show Tie -----------------------------------
+// Show Tie ----------------------------------------------------
 void vhpGameCore::showTie(){
     // Reproduce el video y lo dibuja en el FBO
     fbo.begin();
@@ -693,11 +685,74 @@ void vhpGameCore::showTie(){
     alpha += alpha_increment;
     if (alpha>=255) {
         alpha = 255;
-        //currentUpdate = &vhpGameCore::playScreenSaver;
     }
 }
 
-// Show Window Pattern -----------------------------------
+// Pattern Tutorial --------------------------------------------
+void vhpGameCore::setPatternTutorial(){
+    currentUpdate = &vhpGameCore::showPatternTutorial;
+    currentTouchPressed = &vhpGameCore::touchPressedPatternTutorial;
+    mensajeria->send("gamestate", 4);
+    fLines.clear();
+    getText("txt/g-pattern-tutorial.txt", false);
+    for (int i = 0; i < fLines.size(); i++) {
+        fLines[i].init();
+    }
+    initPattern();
+    randomPattern();
+    pWindow.setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
+    pWindow.setFadeIn();
+    setTimeReference();
+    
+}
+void vhpGameCore::showPatternTutorial(){
+    
+    // Update
+    updateTextLine();
+    if (getElapsedtime()>8.0) pWindow.update();
+    
+    //Draw
+    fbo.begin();
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    
+    
+    drawBackground();
+    
+    glPushMatrix();
+    glTranslatef(0,100,0);
+    building.draw(0, 0);
+    drawWindows();
+    if (getElapsedtime()>8.0) pWindow.draw();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0,-20,0);
+    ofSetColor(255, 255, 255);
+    keko.draw(0, 0);
+    drawTextLine(425, 200, 255);
+    bandera.draw(1435, 140);
+    glPopMatrix();
+    
+    ofRectangle box;
+    box = TTFM.getStringBoundingBox("EE", 0, 0);
+    int margin = box.width;
+    ofSetRectMode(OF_RECTMODE_CORNER);
+    box = TTFM.getStringBoundingBox(lines[10], 0, 0);
+    colorBar[0].draw(340 - margin, 900, box.width + margin*2 + 12, TTFM.getLineHeight() + 12);
+    TTFM.drawString(lines[10], 340, 900 + TTFM.getAscenderHeight());
+    colorBar[1].draw(1580 - box.width - margin, 900, box.width + margin*2 + 12, TTFM.getLineHeight() + 12);
+    TTFM.drawString(lines[10], 1580 - box.width, 900 + TTFM.getAscenderHeight());
+    
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    fbo.end();
+    
+    
+    //cout << "box.width " << box.width << endl;
+}
+
+// Show Window Pattern -----------------------------------------
 void vhpGameCore::setWindowPattern(){
     initPattern();
     randomPattern();
@@ -705,6 +760,7 @@ void vhpGameCore::setWindowPattern(){
     pWindow.setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
     aWindowClick.setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
     bWindowClick.setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
+    pWindow.order = 0;
     pWindow.setFadeIn();
     aWindowClick.setHiddenOne();
     bWindowClick.setHiddenOne();
@@ -743,11 +799,13 @@ void vhpGameCore::sendWindowPattern(){
     
 }
 void vhpGameCore::showPattern(){
-    // pequeño delay antes de enseñar la ventana
-    // Reproduce el video y lo dibuja en el FBO
+    
+    // Update
     pWindow.update();
     aWindowClick.update();
     bWindowClick.update();
+    
+    // Draw
     fbo.begin();
     drawGame();
     ofPushStyle();
@@ -764,8 +822,7 @@ void vhpGameCore::showPattern(){
     
 }
 
-
-// Show Winner -----------------------------------
+// Show Winner -------------------------------------------------
 void vhpGameCore::setFinalWinner(){
     currentUpdate = &vhpGameCore::showFinalWinner;
     currentTouchPressed = &vhpGameCore::touchPressedPatternWinner;
@@ -821,11 +878,10 @@ void vhpGameCore::showFinalWinner(){
     alpha += alpha_increment;
     if (alpha>=255) {
         alpha = 255;
-        //currentUpdate = &vhpGameCore::playScreenSaver;
     }
 }
 
-// Eventos ------------------------------------------------------
+// Eventos -----------------------------------------------------
 
 void vhpGameCore::touchPressed(float & _x, float & _y){
     (*this.*currentTouchPressed)(_x, _y);
@@ -945,9 +1001,8 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
     }
 }
 void vhpGameCore::touchPressedWinner(float & _x, float & _y){
- //
+    
     cout << "MousePressed after game!" << endl;
-    //ofNotifyEvent(onClick, gameTarget);
     
     // min y: 690, max y: 860
     cout << "mouse x: " << _y << " mouse y: " << _x << endl;
@@ -971,7 +1026,7 @@ void vhpGameCore::touchPressedWinner(float & _x, float & _y){
                         // última ronda
                     } else {
                         cout << "Last Round!" << endl;
-                        setWindowPattern();
+                        setPatternTutorial();
                     }
                 }
             }
@@ -994,10 +1049,39 @@ void vhpGameCore::touchPressedWinner(float & _x, float & _y){
                         // última ronda
                     } else {
                         cout << "Last Round!" << endl;
-                        setWindowPattern();
+                        setPatternTutorial();
                     }
                 }
             }
+        }
+    }
+}
+void vhpGameCore::touchPressedPatternTutorial(float & _x, float & _y){
+    
+    cout << "MousePressed during tutorial!" << endl;
+    // min y: 870, max y: 870 + 60 + 88
+    
+    cout << "mouse x: " << _y << " mouse y: " << _x << endl;
+    if ((_y>=840)&&(_y<=1020)) {
+        // Player A
+        if ((_x>=240)&(_x<=650)) {
+            cout << "Is player A" << endl;
+            if (!hold[0]) {
+                cout << "Set next[0] true" << endl;
+                next[0] = true;
+                hold[0] = true;
+                if (next[1]==true) setWindowPattern();
+            }
+        // Player B
+        } else if ((_x>=1270)&(_x<=1680)) {
+            cout << "Is player B" << endl;
+            if (!hold[1]) {
+                cout << "Set next[1] true" << endl;
+                next[1] = true;
+                hold[1] = true;
+                if (next[0]==true) setWindowPattern();
+            }
+
         }
     }
 }
@@ -1210,10 +1294,11 @@ void vhpGameCore::checkPatternWinner(){
 }
 
 int vhpGameCore::randomWindow(){
-    vector<int> nums;
-    for (int i=0; i<nWINDOWS; i++) {
-        if (windowState[0][i]==pendingW) {
-            nums.push_back(i);
+    if (nums.size()==0) {
+        for (int i=0; i<nWINDOWS; i++) {
+            if (windowState[0][i]==pendingW) {
+                nums.push_back(i);
+            }
         }
     }
     return nums[ceil(ofRandom(nums.size()-1))];
