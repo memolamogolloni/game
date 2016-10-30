@@ -55,7 +55,9 @@ class vhpGameCore {
         void drawGame();
         void drawWindows();
         void drawRound();
+        void drawPatternText();
         void drawRoundWiner();
+        void drawReadyButton();
         void drawClickedWindow();
         void drawTextLine(int _x, int _y, int _alpha);
     
@@ -64,6 +66,9 @@ class vhpGameCore {
         void pause();
     
         // Procesado y actualización
+        void setRoundTutorial();
+        void showRoundTutorial();
+        void setRound();
         void playReady();
         void playSteady();
         void playGo();
@@ -81,6 +86,7 @@ class vhpGameCore {
         // Para recoger la pulsación del ratón en la pantalla
         void touchPressed(float & _x, float & _y);
         void (vhpGameCore::*currentTouchPressed)(float & _x, float & _y);
+        void touchPressedRoundTutorial(float & _x, float & _y);
         void touchPressedGame(float & _x, float & _y);
         void touchPressedWinner(float & _x, float & _y);
         void touchPressedPatternTutorial(float & _x, float & _y);
@@ -158,6 +164,7 @@ class vhpGameCore {
         ofImage                     colorBar[2];
         ofImage                     trofeo;
         ofImage                     bandera;
+        ofImage                     ventana;
     
         // Estado del juego
         int                         currentScene;

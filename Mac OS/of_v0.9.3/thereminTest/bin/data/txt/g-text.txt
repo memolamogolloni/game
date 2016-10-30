@@ -9,3 +9,5 @@ Azul
  gana la ronda 
  !
 ¡Estoy listo!
+Ronda final
+¡Repite el patrón en el orden correcto!

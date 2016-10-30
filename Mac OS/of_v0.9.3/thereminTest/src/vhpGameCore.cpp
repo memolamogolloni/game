@@ -40,22 +40,6 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     
     mensajeria = _mensajeria;
     
-    /*
-    // Añadir los vídeos desde el documento xml de settings
-    int n = _videoList.getNumTags(_videoTag +":VIDEO");
-    if(n > 0){
-        _videoList.pushTag(_videoTag, n-1);
-        int num = _videoList.getNumTags("VIDEO");
-        cout << num << " videos in " << _videoTag << " " << _videoList.getValue("VIDEO", "", 0) << endl;
-        if(num > 0) {
-            for (int i = 0; i<num; i++) {
-                videoFile.push_back(_videoList.getValue("VIDEO", "", i));
-                video.push_back(ofVideoPlayer());
-            }
-        }
-        _videoList.popTag();
-    }
-    */
     // FBO alocation and cleaning
     width = 1920;
     height = 1080;
@@ -64,7 +48,6 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     ofClear(255,255,255, 0);
     fbo.end();
 
-    
     // Añadir las imágenes Sueltas
     loadingSilge.push_back(&building);
     filesSingle.push_back("g-fondo-edificio");
@@ -128,6 +111,8 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     filesSingle.push_back("g-trofeo");
     loadingSilge.push_back(&bandera);
     filesSingle.push_back("g-bandera");
+    loadingSilge.push_back(&ventana);
+    filesSingle.push_back("g-ventana");
 
     // Añadir las fuentes
     TTF.load("fonts/titilliumweblight.ttf", 22);
@@ -136,7 +121,6 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     TTFB.setGlobalDpi(72);
     TTFM.load("fonts/titilliumweblight.ttf", 45);
     TTFM.setGlobalDpi(72);
-    
     
     currentLoad = &vhpGameCore::loadSingle;
     
@@ -234,7 +218,6 @@ void vhpGameCore::initPattern(){
         windowState[1][i]= whiteW;
     }
 }
-
 
 // Precarga de todos los elementos -----------------------------
 void vhpGameCore::load(){
@@ -397,6 +380,14 @@ void vhpGameCore::drawRound(){
     TTFB.drawString(ofToString(currentRound+1), 795 + box.width + 10, 140);
     TTF.drawString(lines[1], 580, 210);
 }
+void vhpGameCore::drawPatternText(){
+    ofSetColor(255, 255, 255);
+    ofRectangle box;
+    box = TTFB.getStringBoundingBox(lines[11], 0, 0);
+    TTFB.drawString(lines[11], (1920 - box.width)/2, 140);
+    box = TTF.getStringBoundingBox(lines[12], 0, 0);
+    TTF.drawString(lines[12], (1920 - box.width)/2, 210);
+}
 void vhpGameCore::drawRoundWiner(){
     int x = 580;
     int y = 180;
@@ -425,6 +416,17 @@ void vhpGameCore::drawRoundWiner(){
     box = TTFB.getStringBoundingBox(ofToString(currentRound), x, y);
     x += box.width + margin;
     TTFB.drawString(lines[9], x, y);
+}
+void vhpGameCore::drawReadyButton(){
+    ofRectangle box;
+    box = TTFM.getStringBoundingBox("EE", 0, 0);
+    int margin = box.width;
+    ofSetRectMode(OF_RECTMODE_CORNER);
+    box = TTFM.getStringBoundingBox(lines[10], 0, 0);
+    colorBar[0].draw(340 - margin, 900, box.width + margin*2 + 12, TTFM.getLineHeight() + 12);
+    TTFM.drawString(lines[10], 340, 900 + TTFM.getAscenderHeight());
+    colorBar[1].draw(1580 - box.width - margin, 900, box.width + margin*2 + 12, TTFM.getLineHeight() + 12);
+    TTFM.drawString(lines[10], 1580 - box.width, 900 + TTFM.getAscenderHeight());
 }
 void vhpGameCore::drawClickedWindow(){
     if (clicked[0]!=7) {
@@ -456,24 +458,85 @@ void vhpGameCore::drawTextLine(int _x, int _y, int _alpha){
 }
 
 // Reproducir o detener la escena modificando currentUpdate ----
-
 void vhpGameCore::play(){
-    initRound();
-    currentUpdate = &vhpGameCore::playReady;
-    currentTouchPressed = &vhpGameCore::touchPressedGame;
-    
-    /*  OSC  */
-    /* ----- */
-    mensajeria->send("gamestate", 0);
-    /* ----- */
-    
+    setRoundTutorial();
 }
-
 void vhpGameCore::pause(){
     currentUpdate = &vhpGameCore::pause;
 }
 
 // Procesado y actualización -----------------------------------
+
+
+// Round Tutorial ----------------------------------------------
+void vhpGameCore::setRoundTutorial(){
+    initRound();
+    fLines.clear();
+    getText("txt/g-round-tutorial.txt", false);
+    for (int i = 0; i < fLines.size(); i++) {
+        fLines[i].init();
+    }
+    setTimeReference();
+    currentUpdate = &vhpGameCore::showRoundTutorial;
+    currentTouchPressed = &vhpGameCore::touchPressedRoundTutorial;
+    /*  OSC  */
+    /* ----- */
+    mensajeria->send("gamestate", 0);
+    /* ----- */
+}
+void vhpGameCore::showRoundTutorial(){
+    
+    // Update
+    updateTextLine();
+    if (getElapsedtime()>=6.0) {
+        alpha += alpha_increment;
+        if (alpha>=255) {
+            alpha = 255;
+        }
+    }
+    
+    //Draw
+    fbo.begin();
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    
+    drawBackground();
+    
+    glPushMatrix();
+    glTranslatef(0,100,0);
+    building.draw(0, 0);
+    drawWindows();
+    ofSetColor(255,255,255,alpha);
+    avisos.drawSubsection(wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight, wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight);
+    avisos.drawSubsection(wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight, wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight);
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(0,-20,0);
+    ofSetColor(255, 255, 255);
+    keko.draw(0, 0);
+    drawTextLine(425, 200, 255);
+    ventana.draw(1435, 140);
+    glPopMatrix();
+    
+    drawReadyButton();
+    
+    ofDisableAlphaBlending();
+    ofPopStyle();
+    fbo.end();
+    
+}
+
+// Ready -------------------------------------------------------
+void vhpGameCore::setRound(){
+    initRound();
+    currentUpdate = &vhpGameCore::playReady;
+    currentTouchPressed = &vhpGameCore::touchPressedGame;
+    /*  OSC  */
+    /* ----- */
+    mensajeria->send("gamestate", 0);
+    /* ----- */
+}
 
 // Ready -------------------------------------------------------
 void vhpGameCore::playReady(){
@@ -703,7 +766,6 @@ void vhpGameCore::setPatternTutorial(){
     pWindow.setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
     pWindow.setFadeIn();
     setTimeReference();
-    
 }
 void vhpGameCore::showPatternTutorial(){
     
@@ -715,7 +777,6 @@ void vhpGameCore::showPatternTutorial(){
     fbo.begin();
     ofPushStyle();
     ofEnableAlphaBlending();
-    
     
     drawBackground();
     
@@ -734,22 +795,12 @@ void vhpGameCore::showPatternTutorial(){
     bandera.draw(1435, 140);
     glPopMatrix();
     
-    ofRectangle box;
-    box = TTFM.getStringBoundingBox("EE", 0, 0);
-    int margin = box.width;
-    ofSetRectMode(OF_RECTMODE_CORNER);
-    box = TTFM.getStringBoundingBox(lines[10], 0, 0);
-    colorBar[0].draw(340 - margin, 900, box.width + margin*2 + 12, TTFM.getLineHeight() + 12);
-    TTFM.drawString(lines[10], 340, 900 + TTFM.getAscenderHeight());
-    colorBar[1].draw(1580 - box.width - margin, 900, box.width + margin*2 + 12, TTFM.getLineHeight() + 12);
-    TTFM.drawString(lines[10], 1580 - box.width, 900 + TTFM.getAscenderHeight());
+    drawReadyButton();
     
     ofDisableAlphaBlending();
     ofPopStyle();
     fbo.end();
     
-    
-    //cout << "box.width " << box.width << endl;
 }
 
 // Show Window Pattern -----------------------------------------
@@ -788,9 +839,10 @@ void vhpGameCore::sendWindowPattern(){
     }
     // Draw
     fbo.begin();
-    drawGame();
     ofPushStyle();
     ofEnableAlphaBlending();
+    drawGame();
+    drawPatternText();
     aWindowClick.draw();
     bWindowClick.draw();
     ofDisableAlphaBlending();
@@ -807,9 +859,10 @@ void vhpGameCore::showPattern(){
     
     // Draw
     fbo.begin();
-    drawGame();
     ofPushStyle();
     ofEnableAlphaBlending();
+    drawGame();
+    drawPatternText();
     pWindow.draw();
     aWindowClick.draw();
     bWindowClick.draw();
@@ -885,6 +938,35 @@ void vhpGameCore::showFinalWinner(){
 
 void vhpGameCore::touchPressed(float & _x, float & _y){
     (*this.*currentTouchPressed)(_x, _y);
+}
+void vhpGameCore::touchPressedRoundTutorial(float & _x, float & _y){
+    
+    cout << "MousePressed during round tutorial!" << endl;
+    // min y: 870, max y: 870 + 60 + 88
+    
+    cout << "mouse x: " << _y << " mouse y: " << _x << endl;
+    if ((_y>=840)&&(_y<=1020)) {
+        // Player A
+        if ((_x>=240)&(_x<=650)) {
+            cout << "Is player A" << endl;
+            if (!hold[0]) {
+                cout << "Set next[0] true" << endl;
+                next[0] = true;
+                hold[0] = true;
+                if (next[1]==true) setRound();
+            }
+            // Player B
+        } else if ((_x>=1270)&(_x<=1680)) {
+            cout << "Is player B" << endl;
+            if (!hold[1]) {
+                cout << "Set next[1] true" << endl;
+                next[1] = true;
+                hold[1] = true;
+                if (next[0]==true) setRound();
+            }
+            
+        }
+    }
 }
 void vhpGameCore::touchPressedGame(float & _x, float & _y){
     cout << "MousePressed in game!" << endl;
