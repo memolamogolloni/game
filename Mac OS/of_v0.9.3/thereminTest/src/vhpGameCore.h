@@ -95,6 +95,7 @@ class vhpGameCore {
     
         void checkIsGo(int _p);
         void checkPatternWinner();
+        void checkRoundWinner();
     
         int randomWindow();
         void randomPattern();
