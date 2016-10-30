@@ -534,10 +534,6 @@ void vhpGameCore::setRound(){
     initRound();
     currentUpdate = &vhpGameCore::playReady;
     currentTouchPressed = &vhpGameCore::touchPressedGame;
-    /*  OSC  */
-    /* ----- */
-    mensajeria->send("gamestate", 0);
-    /* ----- */
 }
 void vhpGameCore::playReady(){
     // Reproduce el video y lo dibuja en el FBO
@@ -561,7 +557,16 @@ void vhpGameCore::playReady(){
         alpha = 0;
         alpha_increment = -1 * alpha_increment;
         currentUpdate = &vhpGameCore::playSteady;
-        mensajeria->send("gamestate", 1);
+        /*  OSC  */
+        /* ----- */
+        int clip = ceil(ofRandom(6)) + 1;
+        mensajeria->send("/layer2/clip"+ ofToString(clip) +"/connect", 1);
+        cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+        clip = ceil(ofRandom(6)) + 1;
+        mensajeria->send("/layer3/clip"+ ofToString(clip) +"/connect", 1);
+        cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+        /* ----- */
+
     }
 }
 void vhpGameCore::playSteady(){
@@ -588,7 +593,16 @@ void vhpGameCore::playSteady(){
         alpha_increment = -1 * alpha_increment;
         if (holdSteady<=0) {
             currentUpdate = &vhpGameCore::playGo;
-            mensajeria->send("gamestate", 2);
+        } else {
+            /*  OSC  */
+            /* ----- */
+            int clip = ceil(ofRandom(6)) + 1;
+            mensajeria->send("/layer2/clip"+ ofToString(clip) +"/connect", 1);
+            cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+            clip = ceil(ofRandom(6)) + 1;
+            mensajeria->send("/layer3/clip"+ ofToString(clip) +"/connect", 1);
+            cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+            /* ----- */
         }
         holdSteady --;
     }
@@ -620,8 +634,12 @@ void vhpGameCore::playGo(){
         currentUpdate = &vhpGameCore::showWindow;
         /*  OSC  */
         /* ----- */
-        cout << "sending window/round is " << targetsShot << endl;
-        mensajeria->send("window/round", targetsShot);
+        int clip = targetsShot + 8;
+        mensajeria->send("/layer2/clip"+ ofToString(clip) +"/connect", 1);
+        cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+        clip = targetsShot + 8;
+        mensajeria->send("/layer3/clip"+ ofToString(clip) +"/connect", 1);
+        cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << 1 << endl;
         /* ----- */
     }
 }
@@ -760,8 +778,12 @@ void vhpGameCore::sendWindowPattern(){
         if (currentWindow<4) {
             /*  OSC  */
             /* ----- */
-            cout << "sending window/patern " << currentWindow << " is " << targetsPattern[currentWindow] << endl;
-            mensajeria->send("window/patern", targetsPattern[currentWindow]);
+            int clip = targetsPattern[currentWindow] + 15;
+            mensajeria->send("/layer2/clip"+ ofToString(clip) +"/connect", currentWindow);
+            cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << currentWindow << endl;
+            clip = targetsPattern[currentWindow] + 15;
+            mensajeria->send("/layer3/clip"+ ofToString(clip) +"/connect", currentWindow);
+            cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << currentWindow << endl;
             /* ----- */
             currentWindow++;
             setTimeReference();
