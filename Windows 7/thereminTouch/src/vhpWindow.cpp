@@ -50,6 +50,12 @@ void vhpWindow::setWindows(ofImage* _purple, int _nP, ofImage* _yellow, int _nY,
     blue = _blue;
     green = _green;
 }
+void vhpWindow::setAfterWindows(ofImage* _apurple, ofImage* _ayellow, ofImage* _ablue, ofImage* _agreen){
+    aPurple = _apurple;
+    aYellow = _ayellow;
+    aBlue = _ablue;
+    aGreen = _agreen;
+}
 void vhpWindow::setActualWindow() {
     switch (order) {
         case 1:
@@ -79,15 +85,19 @@ void vhpWindow::setOneWindow(int _order, int _n, int _player) {
     switch (_order+1) {
         case 1:
             window = purple;
+            aWindow = aPurple;
             break;
         case 2:
             window = yellow;
+            aWindow = aYellow;
             break;
         case 3:
             window = blue;
+            aWindow = aBlue;
             break;
         case 4:
             window = green;
+            aWindow = aGreen;
             break;
         default:
             break;
@@ -119,7 +129,7 @@ void vhpWindow::updateFadeOut(){
     setAlpha();
 }
 void vhpWindow::updateFadeOutOne(){
-    if (alpha==0) setHiddenOne();
+    if (alpha==0) setHiddenOneAfter();
     setAlpha();
 }
 void vhpWindow::updateHidden(){
@@ -158,11 +168,17 @@ void vhpWindow::drawFadeOut(){
     window->drawSubsection(wX[1][n], wY, wWidth[1][n], wHeight, wX[1][n], wY, wWidth[1][n], wHeight);
 }
 void vhpWindow::drawFadeOutOne(){
+    ofSetColor(255,255,255,255);
+    aWindow->drawSubsection(wX[player][n], wY, wWidth[player][n], wHeight, wX[player][n], wY, wWidth[player][n], wHeight);
     ofSetColor(255,255,255,alpha);
     window->drawSubsection(wX[player][n], wY, wWidth[player][n], wHeight, wX[player][n], wY, wWidth[player][n], wHeight);
 }
 void vhpWindow::drawHidden(){
     
+}
+void vhpWindow::drawHiddenOne(){
+    ofSetColor(255,255,255,255);
+    aWindow->drawSubsection(wX[player][n], wY, wWidth[player][n], wHeight, wX[player][n], wY, wWidth[player][n], wHeight);
 }
 
 //--------------------------------------------------------------
@@ -216,7 +232,12 @@ void vhpWindow::setHiddenOne(){
     setStart();
     state = hidden;
 }
-
+void vhpWindow::setHiddenOneAfter(){
+    currentUpdate = &vhpWindow::updateHiddenOne;
+    currentDraw = &vhpWindow::drawHiddenOne;
+    setStart();
+    state = hidden;
+}
 
 //--------------------------------------------------------------
 void vhpWindow::setStart(){

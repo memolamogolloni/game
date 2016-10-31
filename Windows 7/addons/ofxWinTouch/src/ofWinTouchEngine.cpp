@@ -11,6 +11,7 @@ LRESULT ofWinTouchEngine::processTouch(HWND hWnd, WPARAM wParam, LPARAM lParam) 
 
 	BOOL bHandled = FALSE;
     UINT cInputs = LOWORD(wParam);
+	//cout << "WPARAM:" << " "<<  wParam << endl;
     PTOUCHINPUT pInputs = new TOUCHINPUT[cInputs];
     if (pInputs){
         if (GetTouchInputInfo((HTOUCHINPUT)lParam, cInputs, pInputs, sizeof(TOUCHINPUT))){
@@ -18,8 +19,8 @@ LRESULT ofWinTouchEngine::processTouch(HWND hWnd, WPARAM wParam, LPARAM lParam) 
                 TOUCHINPUT ti = pInputs[i];
                 //do something with each touch input entry
 				if (ti.dwFlags & TOUCHEVENTF_DOWN){
-					
-					OnTouchDown(ti.dwID, TOUCH_COORD_TO_PIXEL(ti.x)*100-ofGetWindowPositionX(), TOUCH_COORD_TO_PIXEL(ti.y)-ofGetWindowPositionY());
+					// *100?
+					OnTouchDown(ti.dwID, TOUCH_COORD_TO_PIXEL(ti.x)-ofGetWindowPositionX(), TOUCH_COORD_TO_PIXEL(ti.y)-ofGetWindowPositionY());
 				}
 				else if (ti.dwFlags & TOUCHEVENTF_MOVE){
 					
