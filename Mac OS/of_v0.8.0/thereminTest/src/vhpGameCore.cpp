@@ -115,11 +115,11 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     filesSingle.push_back("g-ventana");
 
     // Añadir las fuentes
-    TTF.load("fonts/titilliumweblight.ttf", 22, true, true);
+    TTF.loadFont("fonts/titilliumweblight.ttf", 22, true, true);
     TTF.setGlobalDpi(72);
-    TTFB.load("fonts/titilliumweblight.ttf", 70, true, true);
+    TTFB.loadFont("fonts/titilliumweblight.ttf", 70, true, true);
     TTFB.setGlobalDpi(72);
-    TTFM.load("fonts/titilliumweblight.ttf", 45, true, true);
+    TTFM.loadFont("fonts/titilliumweblight.ttf", 45, true, true);
     TTFM.setGlobalDpi(72);
     
     currentLoad = &vhpGameCore::loadSingle;

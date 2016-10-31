@@ -1,0 +1,13 @@
+Ronda 
+¡Sé más rápido que tu oponente en presionar la ventana indicada!
+Ready
+Steady
+go
+¡  
+Rojo
+Azul
+ gana la ronda 
+ !
+¡Estoy listo!
+Ronda final
+¡Repite el patrón en el orden correcto!

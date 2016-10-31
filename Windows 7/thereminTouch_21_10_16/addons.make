@@ -1,4 +1,0 @@
-ofxOsc
-ofxThreadedImageLoader
-ofxXmlSettings
-ofxWinTouch

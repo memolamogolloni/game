@@ -1,0 +1,7 @@
+<SENDER>
+    <PORT>12344</PORT>
+    <HOST>localhost</HOST>
+</SENDER>
+<RECEIVER>
+    <PORT>12346</PORT>
+</RECEIVER>

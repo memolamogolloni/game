@@ -1,0 +1,4 @@
+ofxOsc
+ofxXmlSettings
+ofxTrueTypeFontUC
+ofxWinTouch

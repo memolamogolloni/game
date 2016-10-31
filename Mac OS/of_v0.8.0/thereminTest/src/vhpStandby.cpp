@@ -26,8 +26,8 @@ void vhpStandby::setup(int _currentScene, int _targetScene){
     fbo.end();
     
     // Añadir las fuentes
-    TTF.load("fonts/titilliumweblight.ttf", 22, true, true);
-    TTFB.load("fonts/titilliumweblight.ttf", 70, true, true);
+    TTF.loadFont("fonts/titilliumweblight.ttf", 22, true, true);
+    TTFB.loadFont("fonts/titilliumweblight.ttf", 70, true, true);
     
     // elementos gráficos
     
