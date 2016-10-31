@@ -169,7 +169,6 @@ void vhpGameCore::initRound(){
     isGo = false;
     holdSteady = ceil(ofRandom(3));
     targetsShot = randomWindow();
-    mensajeria->send("targetsShot", targetsShot);
     alpha = 0;
     for (int i=0; i<4; i++) {
         alphaWindow[i] = 0;
@@ -481,10 +480,6 @@ void vhpGameCore::setRoundTutorial(){
     setTimeReference();
     currentUpdate = &vhpGameCore::showRoundTutorial;
     currentTouchPressed = &vhpGameCore::touchPressedRoundTutorial;
-    /*  OSC  */
-    /* ----- */
-    mensajeria->send("gamestate", 0);
-    /* ----- */
 }
 void vhpGameCore::showRoundTutorial(){
     
@@ -559,10 +554,10 @@ void vhpGameCore::playReady(){
         currentUpdate = &vhpGameCore::playSteady;
         /*  OSC  */
         /* ----- */
-        int clip = ceil(ofRandom(6)) + 1;
+        int clip = ceil(ofRandom(7));
         mensajeria->send("/layer2/clip"+ ofToString(clip) +"/connect", 1);
         cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << 1 << endl;
-        clip = ceil(ofRandom(6)) + 1;
+        clip = ceil(ofRandom(7));
         mensajeria->send("/layer3/clip"+ ofToString(clip) +"/connect", 1);
         cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << 1 << endl;
         /* ----- */
@@ -596,10 +591,10 @@ void vhpGameCore::playSteady(){
         } else {
             /*  OSC  */
             /* ----- */
-            int clip = ceil(ofRandom(6)) + 1;
+            int clip = ceil(ofRandom(7));
             mensajeria->send("/layer2/clip"+ ofToString(clip) +"/connect", 1);
             cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << 1 << endl;
-            clip = ceil(ofRandom(6)) + 1;
+            clip = ceil(ofRandom(7));
             mensajeria->send("/layer3/clip"+ ofToString(clip) +"/connect", 1);
             cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << 1 << endl;
             /* ----- */
@@ -705,7 +700,6 @@ void vhpGameCore::showTie(){
 void vhpGameCore::setPatternTutorial(){
     currentUpdate = &vhpGameCore::showPatternTutorial;
     currentTouchPressed = &vhpGameCore::touchPressedPatternTutorial;
-    mensajeria->send("gamestate", 4);
     fLines.clear();
     getText("txt/g-pattern-tutorial.txt", false);
     for (int i = 0; i < fLines.size(); i++) {
@@ -834,7 +828,6 @@ void vhpGameCore::showPattern(){
 void vhpGameCore::setFinalWinner(){
     currentUpdate = &vhpGameCore::showFinalWinner;
     currentTouchPressed = &vhpGameCore::touchPressedPatternWinner;
-    mensajeria->send("gamestate", 4);
     fLines.clear();
     getText("txt/g-final.txt", false);
     for (int i = 0; i < fLines.size(); i++) {
@@ -937,45 +930,39 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                 // Window 1
                 if (_x<=171) {
                     clicked[0] = 0;
-                    mensajeria->send("windowclick/a", 0);
                     cout << "Window 0" << endl;
-                    
-                    // Window 2
+                // Window 2
                 } else if (_x<=316) {
                     clicked[0] = 1;
-                    mensajeria->send("windowclick/a", 1);
                     cout << "Window 1" << endl;
-                    
-                    // Window 3
+                // Window 3
                 } else if (_x<=455) {
                     clicked[0] = 2;
-                    mensajeria->send("windowclick/a", 2);
                     cout << "Window 2" << endl;
-                    
-                    // Window 4
+                // Window 4
                 } else if (_x<=587) {
                     clicked[0] = 3;
-                    mensajeria->send("windowclick/a", 3);
                     cout << "Window 3" << endl;
-                    
-                    // Window 5
+                // Window 5
                 } else if (_x<=711) {
                     clicked[0] = 4;
-                    mensajeria->send("windowclick/a", 4);
                     cout << "Window 4" << endl;
-                    
-                    // Window 6
+                // Window 6
                 } else if (_x<=832) {
                     clicked[0] = 5;
-                    mensajeria->send("windowclick/a", 5);
                     cout << "Window 5" << endl;
-                    
-                    // Window 7
+                // Window 7
                 } else {
                     clicked[0] = 6;
-                    mensajeria->send("windowclick/a", 6);
                     cout << "Window 6" << endl;
-                    
+                }
+                if (clicked[0]!=7) {
+                    /*  OSC  */
+                    /* ----- */
+                    int clip = clicked[0] + 22;
+                    mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", 1);
+                    cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+                    /* ----- */
                 }
                 if (clicked[0]==targetsShot) ok[0] = true;
                 checkIsGo(0);
@@ -989,45 +976,39 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                 // Window 7
                 if (_x<=1088) {
                     clicked[1] = 0;
-                    mensajeria->send("windowclick/b", 0);
                     cout << "Window 0" << endl;
-                    
-                    // Window 6
+                // Window 6
                 } else if (_x<=1210) {
                     clicked[1] = 1;
-                    mensajeria->send("windowclick/b", 1);
                     cout << "Window 1" << endl;
-                    
-                    // Window 5
+                // Window 5
                 } else if (_x<=1334) {
                     clicked[1] = 2;
-                    mensajeria->send("windowclick/b", 2);
                     cout << "Window 2" << endl;
-                    
-                    // Window 4
+                // Window 4
                 } else if (_x<=1466) {
                     clicked[1] = 3;
-                    mensajeria->send("windowclick/b", 3);
                     cout << "Window 3" << endl;
-                    
-                    // Window 3
+                // Window 3
                 } else if (_x<=1603) {
                     clicked[1] = 4;
-                    mensajeria->send("windowclick/b", 4);
                     cout << "Window 4" << endl;
-                    
-                    // Window 2
+                // Window 2
                 } else if (_x<=1748) {
                     clicked[1] = 5;
-                    mensajeria->send("windowclick/b", 5);
                     cout << "Window 5" << endl;
-                    
-                    // Window 1
+                // Window 1
                 } else {
                     clicked[1] = 6;
-                    mensajeria->send("windowclick/b", 6);
                     cout << "Window 6" << endl;
-                    
+                }
+                if (clicked[1]!=7) {
+                    /*  OSC  */
+                    /* ----- */
+                    int clip = clicked[1] + 22;
+                    mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
+                    cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+                    /* ----- */
                 }
                 if (clicked[1]==targetsShot) ok[1] = true;
                 checkIsGo(1);
@@ -1147,44 +1128,39 @@ void vhpGameCore::touchPressedPattern(float & _x, float & _y){
                 // Window 1
                 if (_x<=171) {
                     registeredPattern[0][n[0]] = 0;
-                    mensajeria->send("windowclick/a", 0);
                     cout << "Window 0" << endl;
-                    
-                    // Window 2
+                // Window 2
                 } else if (_x<=316) {
                     registeredPattern[0][n[0]] = 1;
-                    mensajeria->send("windowclick/a", 1);
                     cout << "Window 1" << endl;
-                    
-                    // Window 3
+                // Window 3
                 } else if (_x<=455) {
                     registeredPattern[0][n[0]] = 2;
-                    mensajeria->send("windowclick/a", 2);
                     cout << "Window 2" << endl;
-                    
-                    // Window 4
+                // Window 4
                 } else if (_x<=587) {
                     registeredPattern[0][n[0]] = 3;
-                    mensajeria->send("windowclick/a", 3);
                     cout << "Window 3" << endl;
-                    
-                    // Window 5
+                // Window 5
                 } else if (_x<=711) {
                     registeredPattern[0][n[0]] = 4;
-                    mensajeria->send("windowclick/a", 4);
                     cout << "Window 4" << endl;
-                    
-                    // Window 6
+                // Window 6
                 } else if (_x<=832) {
                     registeredPattern[0][n[0]] = 5;
-                    mensajeria->send("windowclick/a", 5);
                     cout << "Window 5" << endl;
-                    
-                    // Window 7
+                // Window 7
                 } else {
                     registeredPattern[0][n[0]] = 6;
-                    mensajeria->send("windowclick/a", 6);
                     cout << "Window 6" << endl;
+                }
+                if (registeredPattern[0][n[0]]!=7) {
+                    /*  OSC  */
+                    /* ----- */
+                    int clip = registeredPattern[0][n[0]] + 22;
+                    mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", 1);
+                    cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+                    /* ----- */
                 }
                 aWindowClick.setOneWindow(n[0], registeredPattern[0][n[0]], 0);
                 if ((n[0]==3)&&(registeredPattern[0][3]!=7)) {
@@ -1206,45 +1182,39 @@ void vhpGameCore::touchPressedPattern(float & _x, float & _y){
                 // Window 7
                 if (_x<=1088) {
                     registeredPattern[1][n[1]] = 6;
-                    mensajeria->send("windowclick/b", 6);
                     cout << "Window 6" << endl;
-                    
-                    // Window 6
+                // Window 6
                 } else if (_x<=1210) {
                     registeredPattern[1][n[1]] = 5;
-                    mensajeria->send("windowclick/b", 5);
                     cout << "Window 5" << endl;
-                    
-                    // Window 5
+                // Window 5
                 } else if (_x<=1334) {
                     registeredPattern[1][n[1]] = 4;
-                    mensajeria->send("windowclick/b", 4);
                     cout << "Window 4" << endl;
-                    
-                    // Window 4
+                // Window 4
                 } else if (_x<=1466) {
                     registeredPattern[1][n[1]] = 3;
-                    mensajeria->send("windowclick/b", 3);
                     cout << "Window 3" << endl;
-                    
-                    // Window 3
+                // Window 3
                 } else if (_x<=1603) {
                     registeredPattern[1][n[1]] = 2;
-                    mensajeria->send("windowclick/b", 2);
                     cout << "Window 2" << endl;
-                    
-                    // Window 2
+                // Window 2
                 } else if (_x<=1748) {
                     registeredPattern[1][n[1]] = 1;
-                    mensajeria->send("windowclick/b", 1);
                     cout << "Window 1" << endl;
-                    
-                    // Window 1
+                // Window 1
                 } else {
                     registeredPattern[1][n[1]] = 0;
-                    mensajeria->send("windowclick/b", 0);
                     cout << "Window 0" << endl;
-                    
+                }
+                if (registeredPattern[1][n[1]]!=7) {
+                    /*  OSC  */
+                    /* ----- */
+                    int clip = registeredPattern[1][n[1]] + 22;
+                    mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
+                    cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+                    /* ----- */
                 }
                 // hay discordancias entre el orden de las ventanas, si es igual o en espejo corregir para arreglar este apaño
                 aWindowClick.setOneWindow(n[1], 6-registeredPattern[1][n[1]], 1);
@@ -1376,14 +1346,12 @@ void vhpGameCore::checkRoundWinner(){
                 currentRound --;
                 currentUpdate = &vhpGameCore::showTie;
                 currentTouchPressed = &vhpGameCore::touchPressedWinner;
-                mensajeria->send("gamestate", 5);
             } else {
                 hold[0] = false;
                 hold[1] = false;
                 points[winner]++;
                 currentUpdate = &vhpGameCore::showWinner;
                 currentTouchPressed = &vhpGameCore::touchPressedWinner;
-                mensajeria->send("gamestate", 4);
             }
             
         }
