@@ -8,7 +8,7 @@
 #include "vhpWindow.h"
 
 #define nWINDOWS        7
-#define nROUNDS         1
+#define nROUNDS         3
 
 #define lostW           0
 #define wonW            1
@@ -86,6 +86,7 @@ class vhpGameCore {
         // Para recoger la pulsación del ratón en la pantalla
         void touchPressed(float & _x, float & _y);
         void (vhpGameCore::*currentTouchPressed)(float & _x, float & _y);
+        void touchPressedNull(float & _x, float & _y);
         void touchPressedRoundTutorial(float & _x, float & _y);
         void touchPressedGame(float & _x, float & _y);
         void touchPressedWinner(float & _x, float & _y);
@@ -136,8 +137,8 @@ class vhpGameCore {
         bool                        loading;
     
         vhpWindow                   pWindow;
-        vhpWindow                   aWindowClick;
-        vhpWindow                   bWindowClick;
+        vhpWindow                   aWindowClick[4];
+        vhpWindow                   bWindowClick[4];
     
         int                         windowState[2][7];
         ofImage                     winnerBackground[2];
@@ -166,6 +167,10 @@ class vhpGameCore {
         ofImage                     trofeo;
         ofImage                     bandera;
         ofImage                     ventana;
+        ofImage                     afterPurple;
+        ofImage                     afterYellow;
+        ofImage                     afterGreen;
+        ofImage                     afterBlue;
     
         // Estado del juego
         int                         level;

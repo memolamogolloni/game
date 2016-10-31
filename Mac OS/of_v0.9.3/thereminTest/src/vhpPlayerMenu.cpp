@@ -482,6 +482,7 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
             } else {
                 cout << "4 xogadores" << endl;
                 cout << "state: " << state << endl;
+                /*
                 switch (state) {
                     case MENU:
                         cout << "setFour();" << endl;
@@ -506,6 +507,7 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                         }
                         break;
                 }
+                 */
             }
         } else {
             cout << "fora" << endl;

@@ -22,5 +22,6 @@ class vhpLine {
         vector<string>              texto;
         int                         p;
         string                      visible;
+        string                      full;
     
 };

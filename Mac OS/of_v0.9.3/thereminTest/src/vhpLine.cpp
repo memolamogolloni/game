@@ -6,6 +6,7 @@ vhpLine::vhpLine(){
 }
 vhpLine::vhpLine(string _line){
     cout << _line << endl;
+    full = _line;
     setLine(_line);
     init();
 }
