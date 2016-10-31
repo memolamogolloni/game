@@ -75,8 +75,8 @@ class vhpStandby {
         int                         count;
         int                         countDown;
 
-        ofxTrueTypeFontUC              TTF;
-        ofxTrueTypeFontUC              TTFB;
+        ofxTrueTypeFontUC           TTF;
+        ofxTrueTypeFontUC           TTFB;
     
         ofImage                     clock;
         ofImage                     cancel;

@@ -4,11 +4,12 @@
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
 #include "vhpOSC.h"
+#include "vhpLine.h"
 #include "vhpWindow.h"
 #include "ofxTrueTypeFontUC.h"
 
 #define nWINDOWS        7
-#define nROUNDS         4
+#define nROUNDS         1
 
 #define lostW           0
 #define wonW            1
@@ -26,8 +27,8 @@ class vhpGameCore {
 		/* funciones o métodos */
     
         // Inicializar variables y cargar los archivos
-        void setup(ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene);
-        void getText(string _file);
+        void setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene);
+        void getText(string _file, bool _string);
         void initGame();
         void initRound();
         void initPattern();
@@ -45,6 +46,8 @@ class vhpGameCore {
         // Dibujado y actualización variables
         void update();
         void (vhpGameCore::*currentUpdate)();
+        void updateTextLine();
+    
         void draw(int _x, int _y);
     
         // Dibujado de elementos
@@ -53,45 +56,58 @@ class vhpGameCore {
         void drawGame();
         void drawWindows();
         void drawRound();
+        void drawPatternText();
         void drawRoundWiner();
+        void drawReadyButton();
         void drawClickedWindow();
+        void drawTextLine(int _x, int _y, int _alpha);
     
         // reproducir o detener la escena modificando currentUpdate
         void play();
         void pause();
     
         // Procesado y actualización
-        void playScreenSaver();
-        void pauseScreenSaver();
-        void loopScreenSaver(float _pos);
+        void setRoundTutorial();
+        void showRoundTutorial();
+        void setRound();
         void playReady();
         void playSteady();
         void playGo();
         void showWindow();
         void showWinner();
-        void showFinalWinner();
         void showTie();
+        void setPatternTutorial();
+        void showPatternTutorial();
         void setWindowPattern();
+        void sendWindowPattern();
         void showPattern();
+        void setFinalWinner();
+        void showFinalWinner();
     
         // Para recoger la pulsación del ratón en la pantalla
         void touchPressed(float & _x, float & _y);
         void (vhpGameCore::*currentTouchPressed)(float & _x, float & _y);
+        void touchPressedRoundTutorial(float & _x, float & _y);
         void touchPressedGame(float & _x, float & _y);
         void touchPressedWinner(float & _x, float & _y);
+        void touchPressedPatternTutorial(float & _x, float & _y);
         void touchPressedPattern(float & _x, float & _y);
         void touchPressedPatternWinner(float & _x, float & _y);
     
         void checkIsGo(int _p);
+        void checkPatternWinner();
+        void checkRoundWinner();
     
         int randomWindow();
         void randomPattern();
         void setTimeReference();
+        void setTimeReference(float _ago);
         float getElapsedtime();
+    
     
         /* Variables o propiedades */
     
-        vhpOSC                      mensajeria;
+        vhpOSC*                      mensajeria;
     
         // Video de fondo
         vector<ofVideoPlayer>       video;
@@ -102,9 +118,11 @@ class vhpGameCore {
     
         // Elementos gráficos
         vector<string>              lines;
+        vector<vhpLine>             fLines;
         int                         count;
-        ofxTrueTypeFontUC              TTF;
-        ofxTrueTypeFontUC              TTFB;
+        ofxTrueTypeFontUC           TTF;
+        ofxTrueTypeFontUC           TTFB;
+        ofxTrueTypeFontUC           TTFM;
     
         int                         alpha;
         int                         alphaWindow[4];
@@ -119,6 +137,8 @@ class vhpGameCore {
         bool                        loading;
     
         vhpWindow                   pWindow;
+        vhpWindow                   aWindowClick;
+        vhpWindow                   bWindowClick;
     
         int                         windowState[2][7];
         ofImage                     winnerBackground[2];
@@ -137,6 +157,16 @@ class vhpGameCore {
         ofImage                     balls;
         ofImage                     shadow;
         ofImage                     wrong;
+        ofImage                     keko;
+        ofImage                     glow;
+        ofImage                     shadowblue;
+        ofImage                     shadowred;
+        ofImage                     buttonblue;
+        ofImage                     buttonred;
+        ofImage                     colorBar[2];
+        ofImage                     trofeo;
+        ofImage                     bandera;
+        ofImage                     ventana;
     
         // Estado del juego
         int                         currentScene;
@@ -154,19 +184,24 @@ class vhpGameCore {
         int                         holdSteady;
         int                         targetsShot;
         int                         targetsPattern[4];
+        vector<int>                 nums;
         int                         registeredPattern[2][4];
         int                         currentRound;
+        int                         currentWindow;
         int                         delay;
     
         float                       tRef;
     
         // Recorte de las ventanas
-        int             wHeight;
-        int             wWidth[2][nWINDOWS];
-        int             wY;
-        int             wX[2][nWINDOWS];
+        int                         wHeight;
+        int                         wWidth[2][nWINDOWS];
+        int                         wY;
+        int                         wX[2][nWINDOWS];
+    
+        float                       angle;
     
         // notificación de eventos
         static ofEvent<int> onClick;
+        static ofEvent<int> onRestart;
     
 };

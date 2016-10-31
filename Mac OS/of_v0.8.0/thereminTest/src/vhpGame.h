@@ -42,6 +42,7 @@ class vhpGame {
         void playerLevelOnSelect(int &_s);
         void standByOnCancel(int &_s);
         void onPlayersReceived(int &_s);
+        void gameOnRestart(int &_s);
         void toggleScale();
     
         // loading
@@ -113,12 +114,12 @@ class vhpGame {
         void mouseReleased(int x, int y, int button);
     
         // Variables ou propiedades
-        ofxTrueTypeFontUC              TTF;
+        ofxTrueTypeFontUC           TTF;
         float                       scale;
         int                         state;
         int                         width;
         int                         height;
-        ofxXmlSettings              videoList;
+        ofxXmlSettings              settings;
         ofFbo                       fullScreen;
         /*
         ofShader                    shaderMixture;

@@ -79,8 +79,8 @@ class vhpLevelMenu {
         // elementos gráficos
         vector<vhpLine>             lines;
         int                         count;
-        ofxTrueTypeFontUC              TTF;
-        ofxTrueTypeFontUC              TTFB;
+        ofxTrueTypeFontUC           TTF;
+        ofxTrueTypeFontUC           TTFB;
     
         ofImage                     glow;
         ofImage                     keko;

@@ -1,9 +1,8 @@
 #include "vhpPlayerMenu.h"
 
 // Constructor -------------------------------------------------
-vhpPlayerMenu::vhpPlayerMenu():state(MENU),selected(0){
-	loaded = false;
-	loading = false;
+vhpPlayerMenu::vhpPlayerMenu():state(MENU),selected(0),loaded(false),loading(false){
+
 }
 vhpPlayerMenu::~vhpPlayerMenu(){
     stop();
@@ -28,8 +27,8 @@ void vhpPlayerMenu::setup(int _currentScene, int _targetScene1, int _targetScene
     fbo.end();
     
     // Añadir las fuentes
-    TTF.loadFont("fonts/titilliumweblight.ttf", 22, true, true);
-    TTFB.loadFont("fonts/titilliumweblight.ttf", 70, true, true);
+    TTF.load("fonts/titilliumweblight.ttf", 22, true, true);
+    TTFB.load("fonts/titilliumweblight.ttf", 70, true, true);
 
     // elementos gráficos
     
@@ -59,8 +58,8 @@ void vhpPlayerMenu::setup(int _currentScene, int _targetScene1, int _targetScene
 void vhpPlayerMenu::getText(string _file) {
     ofBuffer buffer = ofBufferFromFile(_file);
     for (int i = 0; i < buffer.size(); i++) {
-        lines.push_back(buffer.getNextLine());
-        // cout << lines[lines.size()-1] << endl;
+        lines.push_back(vhpLine(buffer.getNextLine()));
+        cout << lines[lines.size()-1].full << endl;
     }
 }
 

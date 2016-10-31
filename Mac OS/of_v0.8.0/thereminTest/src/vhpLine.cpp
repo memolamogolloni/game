@@ -6,6 +6,7 @@ vhpLine::vhpLine(){
 }
 vhpLine::vhpLine(string _line){
     cout << _line << endl;
+    full = _line;
     setLine(_line);
     init();
 }
@@ -35,4 +36,7 @@ void vhpLine::draw(){
 //--------------------------------------------------------------
 bool vhpLine::isNotLast(){
     return p < texto.size();
+}
+string vhpLine::getVisibleLine(){
+    return visible;
 }

@@ -2,7 +2,7 @@
 
 // Constructor -------------------------------------------------
 
-vhpScreenSaver::vhpScreenSaver(){
+vhpScreenSaver::vhpScreenSaver():loaded(false), loading(false){
 
 }
 
@@ -11,33 +11,62 @@ vhpScreenSaver::~vhpScreenSaver(){
 }
 
 // Inicializar variables y cargar los archivos -----------------
-void vhpScreenSaver::setup(ofxXmlSettings& _videoList, string _videoTag, int _currentScene, int _targetScene){
-    
-    // Añadir los vídeos desde el documento xml de settings
-    int n = _videoList.getNumTags(_videoTag +":VIDEO");
-    if(n > 0){
-        _videoList.pushTag(_videoTag, n-1);
-        int num = _videoList.getNumTags("VIDEO");
-        cout << num << " videos in " << _videoTag << " " << _videoList.getValue("VIDEO", "", 0) << endl;
-        if(num > 0) video.loadMovie(_videoList.getValue("VIDEO", "", 0));
-        _videoList.popTag();
-    }
+void vhpScreenSaver::setup(int _currentScene, int _targetScene){
     
     // Inicializar las variables
     currentScene = _currentScene;   // SCREENSAVER
     targetScene = _targetScene;     // PLAYERMENU
-    width = video.getWidth();
-    height = video.getHeight();
+    alpha = 0;
+    alpha_increment = 2;
+    salpha = 0;
+    salpha_increment = 1;
+    finishLoading = false;
     
-    cout << " video width: " << width << " height: " << height << endl;
-    
+    // FBO alocation and cleaning
+    width = 1920;
+    height = 1080;
     fbo.allocate(width, height, GL_RGBA);
-    
-    // clean FBO
     fbo.begin();
     ofClear(255,255,255, 0);
     fbo.end();
     
+    // Añadir las imágenes Sueltas
+    loadingSilge.push_back(&bg);
+    filesSingle.push_back("ss-bg");
+    loadingSilge.push_back(&theremin);
+    filesSingle.push_back("ss-theremin");
+    loadingSilge.push_back(&loadingtxt);
+    filesSingle.push_back("ss-loading");
+    
+    currentLoad = &vhpScreenSaver::loadSingle;
+    
+}
+
+// Precarga de todos los elementos -----------------------------
+void vhpScreenSaver::load(){
+    (*this.*currentLoad)();
+}
+void vhpScreenSaver::loadSingle(){
+    if (!loaded) {
+        int actual = filesSingle.size() -1;
+        if (actual>=0) {
+            if(loadingSilge[actual]->isAllocated()) {
+                loadingSilge.pop_back();
+                filesSingle.pop_back();
+                loading = false;
+            } else {
+                if (!loading) {
+                    loadingSilge[actual]->loadImage("images/"+ filesSingle[actual] +".png");
+                    cout << "images/"+ filesSingle[actual] +".png" << endl;
+                    loading = true;
+                }
+            }
+            
+        } else {
+            cout << "loading single images in Player Menu finished!" << endl;
+            loaded = true;
+        }
+    }
 }
 
 // Comenzar e interrumpir los hilos y listeners de la escena ---
@@ -63,25 +92,40 @@ void vhpScreenSaver::draw(int _x, int _y){
 
 void vhpScreenSaver::play(){
     currentUpdate = &vhpScreenSaver::playScreenSaver;
-    video.play();
+    //video.play();
 }
 
 void vhpScreenSaver::pause(){
     currentUpdate = &vhpScreenSaver::pause;
-    video.stop();
+    //video.stop();
 }
 
 // Procesado y actualización -----------------------------------
 
 void vhpScreenSaver::playScreenSaver(){
     // Reproduce el video y lo dibuja en el FBO
-    video.update();
+    //video.update();
     ofPushStyle();
     ofSetColor(255, 255, 255);
     fbo.begin();
-    video.draw(0, 0);
+    ofClear(0,0,0,0);
+    //video.draw(0, 0);
+    ofSetColor(255, 255, 255, salpha);
+    bg.draw(0, 0);
+    theremin.draw(0, 0);
+    ofSetColor(255, 255, 255, (alpha/255)*salpha);
+    loadingtxt.draw(0, 0);
     fbo.end();
     ofPopStyle();
+    salpha += salpha_increment;
+    alpha += alpha_increment;
+    if (alpha>=255) {
+        alpha = 255;
+        alpha_increment = -1 * alpha_increment;
+    } else if (alpha<=0) {
+        alpha = 0;
+        if (!finishLoading) alpha_increment = -1 * alpha_increment;
+    }
 }
 
 void vhpScreenSaver::pauseScreenSaver(){
@@ -90,7 +134,7 @@ void vhpScreenSaver::pauseScreenSaver(){
 
 void vhpScreenSaver::loopScreenSaver(float _pos){
     // Envia la cabeza lectora del video a un punto determinado
-    video.setPosition(_pos);
+    //video.setPosition(_pos);
 }
 
 // Eventos ------------------------------------------------------

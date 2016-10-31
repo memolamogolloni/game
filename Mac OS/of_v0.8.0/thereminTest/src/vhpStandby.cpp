@@ -2,9 +2,8 @@
 
 // Constructor -------------------------------------------------
 
-vhpStandby::vhpStandby(){
-	loaded = false;
-	loading = false;
+vhpStandby::vhpStandby():loaded(false),loading(false){
+
 }
 
 vhpStandby::~vhpStandby(){
@@ -27,8 +26,8 @@ void vhpStandby::setup(int _currentScene, int _targetScene){
     fbo.end();
     
     // Añadir las fuentes
-    TTF.loadFont("fonts/titilliumweblight.ttf", 22, true, true);
-    TTFB.loadFont("fonts/titilliumweblight.ttf", 70, true, true);
+    TTF.load("fonts/titilliumweblight.ttf", 22, true, true);
+    TTFB.load("fonts/titilliumweblight.ttf", 70, true, true);
     
     // elementos gráficos
     
@@ -227,12 +226,7 @@ void vhpStandby::fadeInCancel(){
     alpha += alpha_increment;
     if (alpha>=255) alpha = 255;
 }
-void vhpStandby::fadeInAcepted(){
-    
-}
-void vhpStandby::fadeOutAcepted(){
-    
-}
+
 // Eventos ------------------------------------------------------
 void vhpStandby::touchPressed(){
     cout << "Button active in Standby!" << endl;
