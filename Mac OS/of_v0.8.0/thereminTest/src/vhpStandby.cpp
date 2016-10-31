@@ -54,7 +54,7 @@ void vhpStandby::getText(string _file) {
     ofBuffer buffer = ofBufferFromFile(_file);
     for (int i = 0; i < buffer.size(); i++) {
         lines.push_back(buffer.getNextLine());
-        cout << lines[lines.size()-1] << endl;
+        cout << lines[i] << endl;
     }
 }
 

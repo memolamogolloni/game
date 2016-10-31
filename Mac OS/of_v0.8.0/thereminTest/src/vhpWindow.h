@@ -16,6 +16,7 @@ class vhpWindow {
 		// funcións ou métodos
 		void setup();
         void setWindows(ofImage* _purple, int _nP, ofImage* _yellow, int _nY, ofImage* _blue, int _nB, ofImage* _green, int _nG);
+        void setAfterWindows(ofImage* _apurple, ofImage* _ayellow, ofImage* _ablue, ofImage* _agreen);
         void setActualWindow();
         void setOneWindow(int _order, int _n, int _player);
     
@@ -50,6 +51,7 @@ class vhpWindow {
         void setFadeOutOne();
         void setHidden();
         void setHiddenOne();
+        void setHiddenOneAfter();
     
         void setStart();
         void setAlpha();
@@ -62,10 +64,15 @@ class vhpWindow {
         int             order;
         int             state;
         ofImage*        window;
+        ofImage*        aWindow;
         ofImage*        purple;
         ofImage*        yellow;
         ofImage*        blue;
         ofImage*        green;
+        ofImage*        aPurple;
+        ofImage*        aYellow;
+        ofImage*        aBlue;
+        ofImage*        aGreen;
         int             alpha;
     
         // Recorte de las ventanas

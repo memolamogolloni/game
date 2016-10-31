@@ -8,10 +8,6 @@ vhpGame::vhpGame(){
 // Destructor ---------------------------------------------------
 vhpGame::~vhpGame(){
     if (state==SCREENSAVER) ofRemoveListener(vhpScreenSaver::onClick, this, &vhpGame::set);
-    /*{
-        ofRemoveListener(vhpButton::onActive, this, &vhpGame::set);
-        myTest.stop();
-    }*/
 }
 
 //--------------------------------------------------------------
@@ -26,10 +22,6 @@ void vhpGame::setup(){
     ofClear(255,255,255, 0);
     fullScreen.end();
     
-    /*
-    bufferTex.allocate(width, height, GL_RGB);
-    shaderMixture.load("shadersGL2/mixture");
-     */
     alpha = 0;
     alpha_increment = 15;
     

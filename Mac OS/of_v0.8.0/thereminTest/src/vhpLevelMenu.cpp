@@ -55,7 +55,7 @@ void vhpLevelMenu::getText(string _file) {
     ofBuffer buffer = ofBufferFromFile(_file);
     for (int i = 0; i < buffer.size(); i++) {
         lines.push_back(vhpLine(buffer.getNextLine()));
-        cout << lines[lines.size()-1].full << endl;
+        cout << lines[i].full << endl;
     }
 }
 
