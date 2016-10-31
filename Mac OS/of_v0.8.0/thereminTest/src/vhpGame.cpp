@@ -61,6 +61,14 @@ void vhpGame::setup(){
     
     toggleScale();
     
+    /*  OSC  */
+    /* ----- */
+    mensajeria.send("composition/disconnectall", 1);
+    mensajeria.send("composition/deck1/select", 1);
+    cout << "sending composition/disconnectall" << 1 << endl;
+    cout << "sending composition/deck1/select" << 1 << endl;
+    /* ----- */
+    
 }
 
 //--------------------------------------------------------------
@@ -171,12 +179,27 @@ void vhpGame::set(int &_state){
 }
 void vhpGame::screenSaverOnClick(int &_s){
     cout << "screensaver clicked! state: " << _s << endl;
+    
+    /*  OSC  */
+    /* ----- */
+    mensajeria.send("layer2/clip1/connect", 1);
+    cout << "sending layer2/clip1/connect" << 1 << endl;
+    /* ----- */
+    
+    
     fadeInPlayerMenu();
 }
 void vhpGame::playerMenuOnSelect(int &_s){
     cout << "players selected! state: " << _s << endl;
     if (_s == LEVELMENU) {
         cout << "LEVELMENU: " << LEVELMENU << endl;
+        
+        /*  OSC  */
+        /* ----- */
+        mensajeria.send("layer2/clip2/connect", 1);
+        cout << "sending layer2/clip2/connect" << 1 << endl;
+        /* ----- */
+        
         fadeInDirectLevelMenu();
     } else if (_s == STANDBY){
         cout << "STANDBY: " << STANDBY << endl;
@@ -186,6 +209,12 @@ void vhpGame::playerMenuOnSelect(int &_s){
 void vhpGame::playerLevelOnSelect(int &_s){
     cout << "level selected! state: " << _s << endl;
     
+    /*  OSC  */
+    /* ----- */
+    mensajeria.send("layer2/clip3/connect", 1);
+    cout << "sending layer2/clip3/connect" << 1 << endl;
+    /* ----- */
+    xogo.level = _s;
     fadeInGame();
 }
 void vhpGame::standByOnCancel(int &_s){
@@ -220,6 +249,13 @@ void vhpGame::loadScreenSaver(){
             cout << "logos video is loaded" << endl;
         }
     } else {
+        
+        /*  OSC  */
+        /* ----- */
+        mensajeria.send("layer1/clip1/connect", 1);
+        cout << "sending layer1/clip1/connect" << 1 << endl;
+        /* ----- */
+        
         state = SCREENSAVER;
         set(state);
     }
@@ -750,7 +786,6 @@ void vhpGame::fadeInGame(){
     //niveis.pause();
     xogo.play();
     alpha = 0;
-    //mensajeria.send(xogadores.selected);
     currentUpdate = &vhpGame::updateGameInOut;
     currentDraw = &vhpGame::drawGameIn;
 }
@@ -812,6 +847,15 @@ void vhpGame::drawGameIn(){
         currentUpdate = &vhpGame::updateGame;
         currentDraw = &vhpGame::drawGame;
         niveis.stop();
+        
+        /*  OSC  */
+        /* ----- */
+        mensajeria.send("composition/deck2/select", 1);
+        mensajeria.send("layer1/clip"+ ofToString(xogo.level) +"/connect", 1);
+        cout << "sending composition/deck2/select" << 1 << endl;
+        cout << "layer1/clip"+ ofToString(xogo.level) +"/connect" << 1 << endl;
+        /* ----- */
+        
         //niveis.pause();
     }
     

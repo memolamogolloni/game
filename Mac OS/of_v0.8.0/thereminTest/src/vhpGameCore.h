@@ -169,6 +169,7 @@ class vhpGameCore {
         ofImage                     ventana;
     
         // Estado del juego
+        int                         level;
         int                         currentScene;
         int                         targetScene;
         float                       scale;
