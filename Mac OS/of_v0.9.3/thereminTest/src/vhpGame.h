@@ -11,6 +11,7 @@
 #include "vhpStandby.h"
 #include "vhpLevelMenu.h"
 #include "vhpGameCore.h"
+#include "vhpLoader.h"
 
 #define SCREENSAVER         0
 #define PLAYERMENU          1
@@ -113,6 +114,8 @@ class vhpGame {
         void mouseReleased(int x, int y, int button);
     
         // Variables ou propiedades
+    
+    
         ofTrueTypeFont              TTF;
         float                       scale;
         int                         state;
@@ -130,6 +133,8 @@ class vhpGame {
         vhpOSC                      mensajeria;
         vhpScreenSaver              logos;
         bool                        logosLoaded;
+        vhpLoader                   resources;
+        bool                        resourcesLoaded;
         vhpPlayerMenu               xogadores;
         bool                        xogadoresLoaded;
         vhpStandby                  espera;

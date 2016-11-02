@@ -91,6 +91,7 @@ class vhpPlayerMenu {
         ofImage                     one;
         ofImage                     two;
         ofImage                     four;
+    
         int                         alpha;
         int                         alpha_increment;
     

@@ -6,6 +6,7 @@
 #include "vhpOSC.h"
 #include "vhpLine.h"
 #include "vhpWindow.h"
+#include "vhpCarita.h"
 
 #define nWINDOWS        7
 #define nROUNDS         3
@@ -27,6 +28,7 @@ class vhpGameCore {
     
         // Inicializar variables y cargar los archivos
         void setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene);
+        void setupResources(vhpCarita* _roja, vhpCarita* _azul);
         void getText(string _file, bool _string);
         void initGame();
         void initRound();
@@ -95,14 +97,20 @@ class vhpGameCore {
         void touchPressedPatternWinner(float & _x, float & _y);
     
         void checkIsGo(int _p);
-        void checkPatternWinner();
         void checkRoundWinner();
+        void checkPatternWinner();
+        void triggerPressedGame();
+        void triggerPressedPattern();
+        void setDelay();
     
         int randomWindow();
         void randomPattern();
         void setTimeReference();
         void setTimeReference(float _ago);
+        void setIATimeReference();
+        void setIATimeReference(float _ago);
         float getElapsedtime();
+        float getIAElapsedtime();
     
     
         /* Variables o propiedades */
@@ -171,6 +179,7 @@ class vhpGameCore {
         ofImage                     afterYellow;
         ofImage                     afterGreen;
         ofImage                     afterBlue;
+        vhpCarita*                  caritas[2];
     
         // Estado del juego
         int                         level;
@@ -204,6 +213,13 @@ class vhpGameCore {
         int                         wX[2][nWINDOWS];
     
         float                       angle;
+    
+    
+        // IA
+        bool                        IA;
+        float                       IAdelay;
+        float                       maxIAdelay;
+        float                       IAtRef;
     
         // notificación de eventos
         static ofEvent<int> onClick;
