@@ -24,19 +24,11 @@ void vhpLevelMenu::setup(int _currentScene, int _targetScene){
     ofClear(255,255,255, 0);
     fbo.end();
     
-    // A–adir las fuentes
-    TTF.loadFont("fonts/titilliumweblight.ttf", 22, true, true);
-    TTFB.loadFont("fonts/titilliumweblight.ttf", 70, true, true);
-    
     // elementos gr‡ficos
     
     // A–adir las im‡genes Sueltas
     loadingSilge.push_back(&glow);
     filesSingle.push_back("lm-glow");
-    loadingSilge.push_back(&keko);
-    filesSingle.push_back("lm-keko");
-    loadingSilge.push_back(&bg);
-    filesSingle.push_back("lm-bg");
     loadingSilge.push_back(&icons);
     filesSingle.push_back("lm-icons");
     loadingSilge.push_back(&bases);
@@ -50,6 +42,14 @@ void vhpLevelMenu::setup(int _currentScene, int _targetScene){
     
     currentLoad = &vhpLevelMenu::loadSingle;
     
+}
+void vhpLevelMenu::setupResources(ofImage* _bg, ofImage* _keko) {
+    bg = _bg;
+    keko = _keko;
+}
+void vhpLevelMenu::setupFonts(ofxTrueTypeFontUC* _TTF, ofxTrueTypeFontUC* _TTFB){
+    TTF = _TTF;
+    TTFB = _TTFB;
 }
 void vhpLevelMenu::getText(string _file) {
     ofBuffer buffer = ofBufferFromFile(_file);
@@ -168,23 +168,23 @@ void vhpLevelMenu::draw(int _x, int _y){
 void vhpLevelMenu::drawTextLine(int _x, int _y, int _alpha){
     ofSetColor(255, 255, 255, _alpha);
     for (int i = 0; i < lines.size(); i++) {
-        TTF.drawString(lines[i].visible, _x, _y +(40*i));
+        TTF->drawString(lines[i].visible, _x, _y +(40*i));
     }
 }
 void vhpLevelMenu::drawMenu(){
     ofSetColor(255, 255, 255);
-    bg.draw(0,0);
+    bg->draw(0,0);
     bases.draw(0,0);
     icons.draw(0,0);
     ofSetColor(255,255,255,alpha);
     glow.draw(0,0);
     drawTextLine(425, 200, alpha);
     ofSetColor(255, 255, 255);
-    keko.draw(0,0);
+    keko->draw(0,0);
 }
 void vhpLevelMenu::drawDestreza(){
     ofSetColor(255, 255, 255);
-    bg.draw(0,0);
+    bg->draw(0,0);
     ofSetColor(255,255,255,alpha);
     glow.draw(0,0,width*0.8,height);
     destreza.draw(0,0);
@@ -192,11 +192,11 @@ void vhpLevelMenu::drawDestreza(){
     ofSetColor(255, 255, 255);
     bases.draw(0,0);
     icons.draw(0,0);
-    keko.draw(0,0);
+    keko->draw(0,0);
 }
 void vhpLevelMenu::drawEspiritualidad(){
     ofSetColor(255, 255, 255);
-    bg.draw(0,0);
+    bg->draw(0,0);
     ofSetColor(255,255,255,alpha);
     glow.draw(0,0,width*0.8,height);
     espiritualidad.draw(0,0);
@@ -204,11 +204,11 @@ void vhpLevelMenu::drawEspiritualidad(){
     ofSetColor(255, 255, 255);
     bases.draw(0,0);
     icons.draw(0,0);
-    keko.draw(0,0);
+    keko->draw(0,0);
 }
 void vhpLevelMenu::drawOratoria(){
     ofSetColor(255, 255, 255);
-    bg.draw(0,0);
+    bg->draw(0,0);
     ofSetColor(255,255,255,alpha);
     glow.draw(0,0,width*0.8,height);
     oratoria.draw(0,0);
@@ -216,7 +216,7 @@ void vhpLevelMenu::drawOratoria(){
     ofSetColor(255, 255, 255);
     bases.draw(0,0);
     icons.draw(0,0);
-    keko.draw(0,0);
+    keko->draw(0,0);
 }
 
 // Reproducir o detener la escena modificando currentUpdate ----

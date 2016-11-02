@@ -114,8 +114,6 @@ class vhpGame {
         void mouseReleased(int x, int y, int button);
     
         // Variables ou propiedades
-    
-    
         ofTrueTypeFont              TTF;
         float                       scale;
         int                         state;

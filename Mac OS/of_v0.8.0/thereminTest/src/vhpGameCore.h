@@ -29,7 +29,8 @@ class vhpGameCore {
     
         // Inicializar variables y cargar los archivos
         void setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene);
-        void setupResources(vhpCarita* _roja, vhpCarita* _azul);
+        void setupResources(vhpCarita* _roja, vhpCarita* _azul, ofImage* _bg, ofImage* _keko, ofImage* _colorBarR, ofImage* _colorBarA);
+        void setupFonts(ofxTrueTypeFontUC* _TTF, ofxTrueTypeFontUC* _TTFB, ofxTrueTypeFontUC* _TTFM);
         void getText(string _file, bool _string);
         void initGame();
         void initRound();
@@ -55,12 +56,13 @@ class vhpGameCore {
         // Dibujado de elementos
         void drawScore();
         void drawBackground();
-        void drawGame();
+        void drawBgFbo(int _mode);
         void drawWindows();
         void drawRound();
         void drawPatternText();
         void drawRoundWiner();
         void drawReadyButton();
+        void drawButton(int _x, int _y, string _txt, string _margin, ofImage* _bar);
         void drawClickedWindow();
         void drawTextLine(int _x, int _y, int _alpha);
     
@@ -122,6 +124,7 @@ class vhpGameCore {
         vector<ofVideoPlayer>       video;
         vector<string>              videoFile;
         ofFbo                       fbo;
+        ofFbo                       bgFbo;
         int                         width;
         int                         height;
     
@@ -129,9 +132,9 @@ class vhpGameCore {
         vector<string>              lines;
         vector<vhpLine>             fLines;
         int                         count;
-        ofxTrueTypeFontUC           TTF;
-        ofxTrueTypeFontUC           TTFB;
-        ofxTrueTypeFontUC           TTFM;
+        ofxTrueTypeFontUC *            TTF;
+        ofxTrueTypeFontUC *            TTFB;
+        ofxTrueTypeFontUC *            TTFM;
     
         int                         alpha;
         int                         alphaWindow[4];
@@ -151,7 +154,6 @@ class vhpGameCore {
     
         int                         windowState[2][7];
         ofImage                     winnerBackground[2];
-        ofImage                     winnerButton[2];
         ofImage                     score[2];
         ofImage                     purple;
         ofImage                     yellow;
@@ -162,17 +164,12 @@ class vhpGameCore {
         ofImage                     marcos;
         ofImage                     avisos;
         ofImage                     click;
-        ofImage                     bg;
         ofImage                     balls;
         ofImage                     shadow;
         ofImage                     wrong;
-        ofImage                     keko;
         ofImage                     glow;
         ofImage                     shadowblue;
         ofImage                     shadowred;
-        ofImage                     buttonblue;
-        ofImage                     buttonred;
-        ofImage                     colorBar[2];
         ofImage                     trofeo;
         ofImage                     bandera;
         ofImage                     ventana;
@@ -180,7 +177,11 @@ class vhpGameCore {
         ofImage                     afterYellow;
         ofImage                     afterGreen;
         ofImage                     afterBlue;
-        vhpCarita*                  caritas[2];
+    
+        vhpCarita *                 caritas[2];
+        ofImage *                   colorBar[2];
+        ofImage *                   bg;
+        ofImage *                   keko;
     
         // Estado del juego
         int                         level;

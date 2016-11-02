@@ -23,6 +23,8 @@ class vhpLevelMenu {
     
         // Inicializar variables y cargar los archivos
         void setup(int _currentScene, int _targetScene);
+        void setupResources(ofImage* _bg, ofImage* _keko);
+        void setupFonts(ofxTrueTypeFontUC* _TTF, ofxTrueTypeFontUC* _TTFB);
         void getText(string _file);
     
         // Precarga de todos los elementos
@@ -79,17 +81,20 @@ class vhpLevelMenu {
         // elementos gráficos
         vector<vhpLine>             lines;
         int                         count;
-        ofxTrueTypeFontUC           TTF;
-        ofxTrueTypeFontUC           TTFB;
+        ofxTrueTypeFontUC *            TTF;
+        ofxTrueTypeFontUC *            TTFB;
     
         ofImage                     glow;
-        ofImage                     keko;
-        ofImage                     bg;
         ofImage                     icons;
         ofImage                     bases;
         ofImage                     destreza;
         ofImage                     espiritualidad;
         ofImage                     oratoria;
+    
+    
+        ofImage *                    keko;
+        ofImage *                    bg;
+    
         int                         alpha;
         int                         alpha_increment;
     

@@ -1,6 +1,7 @@
 #pragma once
 #include "ofMain.h"
 #include "vhpCarita.h"
+#include "ofxTrueTypeFontUC.h"
 
 class vhpLoader {
 
@@ -26,6 +27,10 @@ class vhpLoader {
         vector<string>              imageFile;
         bool                        loaded;
         bool                        loading;
+    
+        ofxTrueTypeFontUC           TTF;
+        ofxTrueTypeFontUC           TTFB;
+        ofxTrueTypeFontUC           TTFM;
     
         vhpCarita                   caritas[2];
 };

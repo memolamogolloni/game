@@ -40,8 +40,8 @@ void vhpScreenSaver::setup(int _currentScene, int _targetScene){
     
     currentLoad = &vhpScreenSaver::loadSingle;
     
-}
-
+}                           
+                           
 // Precarga de todos los elementos -----------------------------
 void vhpScreenSaver::load(){
     (*this.*currentLoad)();
