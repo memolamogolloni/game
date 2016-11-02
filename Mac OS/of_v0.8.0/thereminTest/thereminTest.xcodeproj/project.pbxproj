@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0202C6571DC9E83200ADBC20 /* vhpCarita.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0202C6531DC9E83200ADBC20 /* vhpCarita.cpp */; };
+		0202C6581DC9E83200ADBC20 /* vhpLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0202C6551DC9E83200ADBC20 /* vhpLoader.cpp */; };
 		02626A761DC25B2700D7954B /* vhpGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02626A641DC25B2700D7954B /* vhpGame.cpp */; };
 		02626A771DC25B2700D7954B /* vhpGameCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02626A661DC25B2700D7954B /* vhpGameCore.cpp */; };
 		02626A781DC25B2700D7954B /* vhpLevelMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02626A681DC25B2700D7954B /* vhpLevelMenu.cpp */; };
@@ -90,6 +92,10 @@
 /* Begin PBXFileReference section */
 		00D6D32B84B099226431108C /* ofxOsc.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOsc.h; path = ../../../addons/ofxOsc/src/ofxOsc.h; sourceTree = SOURCE_ROOT; };
 		01DCC0911400F9ACF5B65578 /* ofxXmlSettings.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxXmlSettings.h; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.h; sourceTree = SOURCE_ROOT; };
+		0202C6531DC9E83200ADBC20 /* vhpCarita.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpCarita.cpp; sourceTree = "<group>"; };
+		0202C6541DC9E83200ADBC20 /* vhpCarita.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpCarita.h; sourceTree = "<group>"; };
+		0202C6551DC9E83200ADBC20 /* vhpLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpLoader.cpp; sourceTree = "<group>"; };
+		0202C6561DC9E83200ADBC20 /* vhpLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpLoader.h; sourceTree = "<group>"; };
 		02626A641DC25B2700D7954B /* vhpGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpGame.cpp; sourceTree = "<group>"; };
 		02626A651DC25B2700D7954B /* vhpGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpGame.h; sourceTree = "<group>"; };
 		02626A661DC25B2700D7954B /* vhpGameCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpGameCore.cpp; sourceTree = "<group>"; };
@@ -423,6 +429,10 @@
 				02626A6C1DC25B2700D7954B /* vhpOSC.cpp */,
 				02626A751DC25B2700D7954B /* vhpWindow.h */,
 				02626A741DC25B2700D7954B /* vhpWindow.cpp */,
+				0202C6541DC9E83200ADBC20 /* vhpCarita.h */,
+				0202C6531DC9E83200ADBC20 /* vhpCarita.cpp */,
+				0202C6561DC9E83200ADBC20 /* vhpLoader.h */,
+				0202C6551DC9E83200ADBC20 /* vhpLoader.cpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -577,6 +587,8 @@
 				02626A7C1DC25B2700D7954B /* vhpScreenSaver.cpp in Sources */,
 				02626A7D1DC25B2700D7954B /* vhpStandby.cpp in Sources */,
 				02626A7E1DC25B2700D7954B /* vhpWindow.cpp in Sources */,
+				0202C6571DC9E83200ADBC20 /* vhpCarita.cpp in Sources */,
+				0202C6581DC9E83200ADBC20 /* vhpLoader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

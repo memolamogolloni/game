@@ -212,6 +212,10 @@ void vhpStandby::fadeOutWaiting(){
          */
     }
 }
+void vhpStandby::fadeInAcepted(){
+}
+void vhpStandby::fadeOutAcepted(){
+}
 void vhpStandby::fadeInCancel(){
     count++;
     
