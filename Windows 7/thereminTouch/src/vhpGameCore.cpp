@@ -43,10 +43,14 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     width = 1920;
     height = 1080;
     fbo.allocate(width, height, GL_RGBA);
+    bgFbo.allocate(width, height, GL_RGBA);
     fbo.begin();
     ofClear(255,255,255, 0);
     fbo.end();
-
+    bgFbo.begin();
+    ofClear(255,255,255, 0);
+    bgFbo.end();
+    
     // Añadir las imágenes Sueltas
     loadingSilge.push_back(&building);
     filesSingle.push_back("g-fondo-edificio");
@@ -60,10 +64,6 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     filesSingle.push_back("g-red-wins");
     loadingSilge.push_back(&winnerBackground[1]);
     filesSingle.push_back("g-blue-wins");
-    loadingSilge.push_back(&winnerButton[0]);
-    filesSingle.push_back("g-red-wins-button");
-    loadingSilge.push_back(&winnerButton[1]);
-    filesSingle.push_back("g-blue-wins-button");
     loadingSilge.push_back(&purple);
     filesSingle.push_back("g-purple");
     loadingSilge.push_back(&yellow);
@@ -82,30 +82,19 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     filesSingle.push_back("g-avisos");
     loadingSilge.push_back(&click);
     filesSingle.push_back("g-click");
-    loadingSilge.push_back(&bg);
-    filesSingle.push_back("g-bg");
     loadingSilge.push_back(&balls);
     filesSingle.push_back("g-balls");
     loadingSilge.push_back(&shadow);
     filesSingle.push_back("g-shadow");
     loadingSilge.push_back(&wrong);
     filesSingle.push_back("g-wrong");
-    loadingSilge.push_back(&keko);
-    filesSingle.push_back("g-keko");
     loadingSilge.push_back(&glow);
     filesSingle.push_back("g-glow");
     loadingSilge.push_back(&shadowblue);
     filesSingle.push_back("g-shadow-blue");
     loadingSilge.push_back(&shadowred);
     filesSingle.push_back("g-shadow-red");
-    loadingSilge.push_back(&buttonblue);
-    filesSingle.push_back("g-button-blue");
-    loadingSilge.push_back(&buttonred);
-    filesSingle.push_back("g-button-red");
-    loadingSilge.push_back(&colorBar[0]);
-    filesSingle.push_back("g-red-b");
-    loadingSilge.push_back(&colorBar[1]);
-    filesSingle.push_back("g-blue-b");
+    
     loadingSilge.push_back(&trofeo);
     filesSingle.push_back("g-trofeo");
     loadingSilge.push_back(&bandera);
@@ -120,14 +109,6 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     filesSingle.push_back("g-aviso-verde");
     loadingSilge.push_back(&afterBlue);
     filesSingle.push_back("g-aviso-azul");
-    
-    // Añadir las fuentes
-    TTF.loadFont("fonts/titilliumweblight.ttf", 22, true, true);
-    TTF.setGlobalDpi(72);
-    TTFB.loadFont("fonts/titilliumweblight.ttf", 70, true, true);
-    TTFB.setGlobalDpi(72);
-    TTFM.loadFont("fonts/titilliumweblight.ttf", 45, true, true);
-    TTFM.setGlobalDpi(72);
     
     currentLoad = &vhpGameCore::loadSingle;
     
@@ -149,9 +130,18 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     maxIAdelay = 6.0;
     IA = true;
 }
-void vhpGameCore::setupResources(vhpCarita* _roja, vhpCarita* _azul){
+void vhpGameCore::setupResources(vhpCarita* _roja, vhpCarita* _azul, ofImage* _bg, ofImage* _keko, ofImage* _colorBarR, ofImage* _colorBarA) {
+    colorBar[0] = _colorBarR;
+    colorBar[1] = _colorBarA;
     caritas[0] = _roja;
     caritas[1] = _azul;
+    bg = _bg;
+    keko = _keko;
+}
+void vhpGameCore::setupFonts(ofxTrueTypeFontUC* _TTF, ofxTrueTypeFontUC* _TTFB, ofxTrueTypeFontUC* _TTFM){
+    TTF = _TTF;
+    TTFB = _TTFB;
+    TTFM = _TTFM;
 }
 void vhpGameCore::getText(string _file, bool _string) {
     if (_string) {
@@ -340,12 +330,6 @@ void vhpGameCore::drawScore(){
     ofLine(260 + widthA, 925+16, 260 + widthA, 925+16+49);
     ofPopStyle();
 }
-void vhpGameCore::drawGame(){
-    ofSetColor(255, 255, 255);
-    drawBackground();
-    building.draw(0, 0);
-    drawWindows();
-}
 void vhpGameCore::drawWindows(){
     ofSetColor(255,255,255);
     for (int i = 0; i<nWINDOWS; i++) {
@@ -386,27 +370,54 @@ void vhpGameCore::drawWindows(){
     }
 }
 void vhpGameCore::drawBackground(){
-    bg.draw(0,0);
+    bg->draw(0,0);
     shadow.draw(0,0);
+}
+void vhpGameCore::drawBgFbo(int _mode){
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    bgFbo.begin();
+    ofClear(255,255,255, 0);
+    ofSetColor(255, 255, 255);
+    bg->draw(0,0);
+    shadow.draw(0,0);
+    switch (_mode) {
+        case 0:
+            glPushMatrix();
+            glTranslatef(0,100,0);
+            building.draw(0, 0);
+            drawWindows();
+            glPopMatrix();
+            break;
+        case 1:
+            building.draw(0, 0);
+            drawWindows();
+            break;
+        default:
+            break;
+    }
+    bgFbo.end();
+    ofDisableAlphaBlending();
+    ofPopStyle();
 }
 void vhpGameCore::drawRound(){
     ofSetColor(255, 255, 255);
     ofRectangle box;
-    box = TTFB.getStringBoundingBox(lines[0], 0, 0);
+    box = TTFB->getStringBoundingBox(lines[0], 0, 0);
     ofRectangle center;
-    center = TTFB.getStringBoundingBox(lines[0]+" "+ofToString(currentRound+1), 0, 0);
-    TTFB.drawString(lines[0], (1920 - center.width)/2, 140);
-    TTFB.drawString(ofToString(currentRound+1), (1920 - center.width)/2 + box.width + 10, 140);
-    center = TTF.getStringBoundingBox(lines[1], 0, 0);
-    TTF.drawString(lines[1], (1920 - center.width)/2, 210);
+    center = TTFB->getStringBoundingBox(lines[0]+" "+ofToString(currentRound+1), 0, 0);
+    TTFB->drawString(lines[0], (1920 - center.width)/2, 140);
+    TTFB->drawString(ofToString(currentRound+1), (1920 - center.width)/2 + box.width + 10, 140);
+    center = TTF->getStringBoundingBox(lines[1], 0, 0);
+    TTF->drawString(lines[1], (1920 - center.width)/2, 210);
 }
 void vhpGameCore::drawPatternText(){
     ofSetColor(255, 255, 255);
     ofRectangle box;
-    box = TTFB.getStringBoundingBox(lines[11], 0, 0);
-    TTFB.drawString(lines[11], (1920 - box.width)/2, 140);
-    box = TTF.getStringBoundingBox(lines[12], 0, 0);
-    TTF.drawString(lines[12], (1920 - box.width)/2, 210);
+    box = TTFB->getStringBoundingBox(lines[11], 0, 0);
+    TTFB->drawString(lines[11], (1920 - box.width)/2, 140);
+    box = TTF->getStringBoundingBox(lines[12], 0, 0);
+    TTF->drawString(lines[12], (1920 - box.width)/2, 210);
 }
 void vhpGameCore::drawRoundWiner(){
     int x = 580;
@@ -414,41 +425,50 @@ void vhpGameCore::drawRoundWiner(){
     int margin = 0;
     ofRectangle box;
     ofSetColor(255, 255, 255);
-    TTFB.drawString(lines[5], x, y);
-    box = TTFB.getStringBoundingBox(lines[5], x, y);
+    TTFB->drawString(lines[5], x, y);
+    box = TTFB->getStringBoundingBox(lines[5], x, y);
     x += box.width + margin;
     if (winner==0) {
         ofSetColor(240, 27, 86);
-        TTFB.drawString(lines[6], x, y);
-        box = TTFB.getStringBoundingBox(lines[6], x, y);
+        TTFB->drawString(lines[6], x, y);
+        box = TTFB->getStringBoundingBox(lines[6], x, y);
         x += box.width + margin;
     } else {
         ofSetColor(24, 194, 201);
-        TTFB.drawString(lines[7], x, y);
-        box = TTFB.getStringBoundingBox(lines[7], x, y);
+        TTFB->drawString(lines[7], x, y);
+        box = TTFB->getStringBoundingBox(lines[7], x, y);
         x += box.width + margin;
     }
     ofSetColor(255, 255, 255);
-    TTFB.drawString(lines[8], x, y);
-    box = TTFB.getStringBoundingBox(lines[8], x, y);
+    TTFB->drawString(lines[8], x, y);
+    box = TTFB->getStringBoundingBox(lines[8], x, y);
     x += box.width + margin;
-    TTFB.drawString(ofToString(currentRound), x, y);
-    box = TTFB.getStringBoundingBox(ofToString(currentRound), x, y);
+    TTFB->drawString(ofToString(currentRound), x, y);
+    box = TTFB->getStringBoundingBox(ofToString(currentRound), x, y);
     x += box.width + margin;
-    TTFB.drawString(lines[9], x, y);
+    TTFB->drawString(lines[9], x, y);
 }
 void vhpGameCore::drawReadyButton(){
     ofRectangle box;
-    box = TTFM.getStringBoundingBox("EE", 0, 0);
+    box = TTFM->getStringBoundingBox("EE", 0, 0);
     int margin = box.width;
     ofSetRectMode(OF_RECTMODE_CORNER);
-    box = TTFM.getStringBoundingBox(lines[10], 0, 0);
-    colorBar[0].draw(340 - margin, 900, box.width + margin*2 + 12, TTFM.getLineHeight() + 12);
-    TTFM.drawString(lines[10], 340, 900 + TTFM.getLineHeight());
+    box = TTFM->getStringBoundingBox(lines[10], 0, 0);
+    colorBar[0]->draw(340 - margin, 900, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
+    TTFM->drawString(lines[10], 340, 900 + TTFM->getLineHeight());
     if (!IA) {
-        colorBar[1].draw(1580 - box.width - margin, 900, box.width + margin*2 + 12, TTFM.getLineHeight() + 12);
-        TTFM.drawString(lines[10], 1580 - box.width, 900 + TTFM.getLineHeight());
+        colorBar[1]->draw(1580 - box.width - margin, 900, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
+        TTFM->drawString(lines[10], 1580 - box.width, 900 + TTFM->getLineHeight());
     }
+}
+void vhpGameCore::drawButton(int _x, int _y, string _txt, string _margin, ofImage* _bar){
+    ofRectangle box;
+    box = TTFM->getStringBoundingBox(_margin, 0, 0);
+    int margin = box.width;
+    ofSetRectMode(OF_RECTMODE_CORNER);
+    box = TTFM->getStringBoundingBox(_txt, 0, 0);
+    _bar->draw(_x, _y, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
+    TTFM->drawString(_txt, _x + margin, _y + TTFM->getLineHeight());
 }
 void vhpGameCore::drawClickedWindow(){
     if (clicked[0]!=7) {
@@ -475,7 +495,7 @@ void vhpGameCore::drawClickedWindow(){
 void vhpGameCore::drawTextLine(int _x, int _y, int _alpha){
     ofSetColor(255, 255, 255, _alpha);
     for (int i = 0; i < fLines.size(); i++) {
-        TTF.drawString(fLines[i].getVisibleLine(), _x, _y +(40*i));
+        TTF->drawString(fLines[i].getVisibleLine(), _x, _y +(40*i));
     }
 }
 
@@ -498,6 +518,7 @@ void vhpGameCore::setRoundTutorial(){
         fLines[i].init();
     }
     setTimeReference();
+    drawBgFbo(0);
     currentUpdate = &vhpGameCore::showRoundTutorial;
     currentTouchPressed = &vhpGameCore::touchPressedRoundTutorial;
 }
@@ -517,15 +538,14 @@ void vhpGameCore::showRoundTutorial(){
     ofPushStyle();
     ofEnableAlphaBlending();
     
-    drawBackground();
+    bgFbo.draw(0,0);
+    
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
     
     glPushMatrix();
     glTranslatef(0,100,0);
-    building.draw(0, 0);
-    drawWindows();
     ofSetColor(255,255,255,alpha);
     avisos.drawSubsection(wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight, wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight);
     avisos.drawSubsection(wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight, wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight);
@@ -534,7 +554,7 @@ void vhpGameCore::showRoundTutorial(){
     glPushMatrix();
     glTranslatef(0,-20,0);
     ofSetColor(255, 255, 255);
-    keko.draw(0, 0);
+    keko->draw(0, 0);
     drawTextLine(425, 200, 255);
     ventana.draw(1435, 140);
     glPopMatrix();
@@ -550,27 +570,32 @@ void vhpGameCore::showRoundTutorial(){
 // Round -------------------------------------------------------
 void vhpGameCore::setRound(){
     initRound();
+    drawBgFbo(1);
     currentUpdate = &vhpGameCore::playReady;
     currentTouchPressed = &vhpGameCore::touchPressedNull;
 }
 void vhpGameCore::playReady(){
-    // Reproduce el video y lo dibuja en el FBO
-    fbo.begin();
-    drawGame();
+    // Draw
     ofPushStyle();
     ofEnableAlphaBlending();
+    fbo.begin();
+    
+    bgFbo.draw(0,0);
     ofSetColor(255,206,0,alpha);
-    ofRectangle box = TTFB.getStringBoundingBox(lines[2], 0, 0);
-    TTFB.drawString(lines[2], (width-box.width)/2, 840);
+    ofRectangle box = TTFB->getStringBoundingBox(lines[2], 0, 0);
+    TTFB->drawString(lines[2], (width-box.width)/2, 840);
     ofSetColor(255, 255, 255);
     drawScore();
     drawRound();
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
+    
+    fbo.end();
     ofDisableAlphaBlending();
     ofPopStyle();
-    fbo.end();
+    
+    // Update
     alpha += alpha_increment;
     if (alpha>255) {
         alpha = 255;
@@ -590,24 +615,27 @@ void vhpGameCore::playReady(){
     }
 }
 void vhpGameCore::playSteady(){
-    // Reproduce el video y lo dibuja en el FBO
-    fbo.begin();
-    drawGame();
+    // Draw
     ofPushStyle();
     ofEnableAlphaBlending();
-    ofSetColor(255,255,255,alpha);
+    fbo.begin();
+    
+    bgFbo.draw(0,0);
     ofSetColor(255,206,0,alpha);
-    ofRectangle box = TTFB.getStringBoundingBox(lines[3], 0, 0);
-    TTFB.drawString(lines[3], (width-box.width)/2, 840);
+    ofRectangle box = TTFB->getStringBoundingBox(lines[3], 0, 0);
+    TTFB->drawString(lines[3], (width-box.width)/2, 840);
     ofSetColor(255, 255, 255);
     drawScore();
     drawRound();
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
+    
+    fbo.end();
     ofDisableAlphaBlending();
     ofPopStyle();
-    fbo.end();
+    
+    // Update
     alpha += alpha_increment;
     if (alpha>=255) {
         alpha = 255;
@@ -630,24 +658,27 @@ void vhpGameCore::playSteady(){
     }
 }
 void vhpGameCore::playGo(){
-    // Reproduce el video y lo dibuja en el FBO
-    fbo.begin();
-    drawGame();
+    // Draw
     ofPushStyle();
     ofEnableAlphaBlending();
-    ofSetColor(255,255,255,alpha);
+    fbo.begin();
+    
+    bgFbo.draw(0,0);
     ofSetColor(255,206,0,alpha);
-    ofRectangle box = TTFB.getStringBoundingBox(lines[4], 0, 0);
-    TTFB.drawString(lines[4], (width-box.width)/2, 840);
+    ofRectangle box = TTFB->getStringBoundingBox(lines[4], 0, 0);
+    TTFB->drawString(lines[4], (width-box.width)/2, 840);
     ofSetColor(255, 255, 255);
     drawScore();
     drawRound();
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
+    
+    fbo.end();
     ofDisableAlphaBlending();
     ofPopStyle();
-    fbo.end();
+    
+    // Update
     alpha += alpha_increment;
     if (alpha>=255) {
         alpha = 255;
@@ -669,10 +700,12 @@ void vhpGameCore::playGo(){
     }
 }
 void vhpGameCore::showWindow(){
-    fbo.begin();
-    drawGame();
+    // Draw
     ofPushStyle();
     ofEnableAlphaBlending();
+    fbo.begin();
+    
+    bgFbo.draw(0,0);
     ofSetColor(255,255,255,alpha);
     avisos.drawSubsection(wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight, wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight);
     avisos.drawSubsection(wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight, wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight);
@@ -683,9 +716,12 @@ void vhpGameCore::showWindow(){
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
+    
+    fbo.end();
     ofDisableAlphaBlending();
     ofPopStyle();
-    fbo.end();
+    
+    // Update
     if (getElapsedtime()>=3.0) {
         alpha += alpha_increment;
         if (alpha>=255) alpha = 255;
@@ -697,54 +733,60 @@ void vhpGameCore::showWindow(){
 
 // Show Winner -------------------------------------------------
 void vhpGameCore::showWinner(){
-    // Reproduce el video y lo dibuja en el FBO
-    fbo.begin();
+    // Draw
     ofPushStyle();
     ofEnableAlphaBlending();
-    drawGame();
+    fbo.begin();
+    
+    bgFbo.draw(0,0);
     ofSetColor(255,255,255,alpha);
     winnerBackground[winner].draw(0,0);
     ofSetColor(255, 255, 255);
     drawScore();
     drawRoundWiner();
-    winnerButton[0].draw(0,0);
-    if (!IA) winnerButton[1].draw(0,0);
+    drawButton(220, 730, lines[14], "M", colorBar[0]);
+    if (!IA) drawButton(1105, 730, lines[14], "M", colorBar[1]);
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
+    
+    fbo.end();
     ofDisableAlphaBlending();
     ofPopStyle();
-    fbo.end();
+    
+    // Update
     alpha += alpha_increment;
     if (alpha>=255) alpha = 255;
 }
 
 // Show Tie ----------------------------------------------------
 void vhpGameCore::showTie(){
-    // Reproduce el video y lo dibuja en el FBO
-    fbo.begin();
-    drawGame();
+    // Draw
     ofPushStyle();
     ofEnableAlphaBlending();
+    fbo.begin();
+    
+    bgFbo.draw(0,0);
     ofSetColor(255, 255, 255);
     drawScore();
     tie.draw(0,0);
-    winnerButton[0].draw(0,0);
-    if (!IA) winnerButton[1].draw(0,0);
+    drawButton(220, 730, lines[14], "M", colorBar[0]);
+    if (!IA) drawButton(1105, 730, lines[14], "M", colorBar[1]);
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
+    
+    fbo.end();
     ofDisableAlphaBlending();
     ofPopStyle();
-    fbo.end();
+    
+    // Update
     alpha += alpha_increment;
     if (alpha>=255) alpha = 255;
 }
 
 // Pattern Tutorial --------------------------------------------
 void vhpGameCore::setPatternTutorial(){
-    currentUpdate = &vhpGameCore::showPatternTutorial;
-    currentTouchPressed = &vhpGameCore::touchPressedPatternTutorial;
     fLines.clear();
     getText("txt/g-pattern-tutorial.txt", false);
     for (int i = 0; i < fLines.size(); i++) {
@@ -755,31 +797,27 @@ void vhpGameCore::setPatternTutorial(){
     pWindow.setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
     pWindow.setFadeIn();
     setTimeReference();
+    drawBgFbo(0);
+    currentUpdate = &vhpGameCore::showPatternTutorial;
+    currentTouchPressed = &vhpGameCore::touchPressedPatternTutorial;
 }
 void vhpGameCore::showPatternTutorial(){
-    
-    // Update
-    updateTextLine();
-    if (getElapsedtime()>8.0) pWindow.update();
-    
-    //Draw
-    fbo.begin();
+    // Draw
     ofPushStyle();
     ofEnableAlphaBlending();
+    fbo.begin();
     
-    drawBackground();
-    
-    glPushMatrix();
-    glTranslatef(0,100,0);
-    building.draw(0, 0);
-    drawWindows();
-    if (getElapsedtime()>8.0) pWindow.draw();
-    glPopMatrix();
-
+    bgFbo.draw(0,0);
+    if (getElapsedtime()>8.0) {
+        glPushMatrix();
+        glTranslatef(0,100,0);
+        pWindow.draw();
+        glPopMatrix();
+    }
     glPushMatrix();
     glTranslatef(0,-20,0);
     ofSetColor(255, 255, 255);
-    keko.draw(0, 0);
+    keko->draw(0, 0);
     drawTextLine(425, 200, 255);
     bandera.draw(1435, 140);
     glPopMatrix();
@@ -789,14 +827,24 @@ void vhpGameCore::showPatternTutorial(){
     caritas[1]->draw(1751, 887);
     drawReadyButton();
     
+    fbo.end();
     ofDisableAlphaBlending();
     ofPopStyle();
-    fbo.end();
+    
+    // Update
+    updateTextLine();
+    if (getElapsedtime()>8.0) pWindow.update();
     
 }
 
 // Show Window Pattern -----------------------------------------
 void vhpGameCore::setWindowPattern(){
+    /*  OSC  */
+    /* ----- */
+    mensajeria->send("layer5/clear", 1);
+    mensajeria->send("layer6/clear", 1);
+    mensajeria->send("layer7/clear", 1);
+    /* ----- */
     initPattern();
     randomPattern();
     setTimeReference(3.0);
@@ -812,10 +860,35 @@ void vhpGameCore::setWindowPattern(){
     }
     pWindow.order = 0;
     pWindow.setFadeIn();
+    drawBgFbo(1);
     currentUpdate = &vhpGameCore::sendWindowPattern;
     currentTouchPressed = &vhpGameCore::touchPressedPattern;
+    /*  OSC  */
+    /* ----- */
+    mensajeria->send("composition/deck3/select", 1);
+    /* ----- */
 }
 void vhpGameCore::sendWindowPattern(){
+    // Draw
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    fbo.begin();
+    
+    bgFbo.draw(0,0);
+    drawPatternText();
+    for (int i = 0; i < 4; i++) {
+        aWindowClick[i].draw();
+        bWindowClick[i].draw();
+    }
+    ofSetColor(255, 255, 255);
+    balls.draw(0,0);
+    caritas[0]->draw(73, 887);
+    caritas[1]->draw(1751, 887);
+    drawScore();
+    
+    fbo.end();
+    ofDisableAlphaBlending();
+    ofPopStyle();
     
     // Update
     for (int i = 0; i < 4; i++) {
@@ -827,9 +900,9 @@ void vhpGameCore::sendWindowPattern(){
         if (currentWindow<4) {
             /*  OSC  */
             /* ----- */
-            int clip = targetsPattern[currentWindow] + 15;
+            int clip = targetsPattern[currentWindow] + 1 + currentWindow*7;
             mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", currentWindow);
-            clip = targetsPattern[currentWindow] + 15;
+            clip = targetsPattern[currentWindow] + 1;
             mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", currentWindow);
             /* ----- */
             currentWindow++;
@@ -841,43 +914,14 @@ void vhpGameCore::sendWindowPattern(){
     // IA
     if ((getIAElapsedtime()>=IAdelay)&&(IA))  triggerPressedPattern();
     
-    // Draw
-    fbo.begin();
-    ofPushStyle();
-    ofEnableAlphaBlending();
-    drawGame();
-    drawPatternText();
-    for (int i = 0; i < 4; i++) {
-        aWindowClick[i].draw();
-        bWindowClick[i].draw();
-    }
-    ofSetColor(255, 255, 255);
-    balls.draw(0,0);
-    caritas[0]->draw(73, 887);
-    caritas[1]->draw(1751, 887);
-    drawScore();
-    ofDisableAlphaBlending();
-    ofPopStyle();
-    fbo.end();
-    
 }
 void vhpGameCore::showPattern(){
-    
-    // Update
-    pWindow.update();
-    for (int i = 0; i < 4; i++) {
-        aWindowClick[i].update();
-        bWindowClick[i].update();
-    }
-    if (pWindow.order==4) checkPatternWinner();
-    // IA
-    if ((getIAElapsedtime()>=IAdelay)&&(IA)) triggerPressedPattern();
-    
     // Draw
-    fbo.begin();
     ofPushStyle();
     ofEnableAlphaBlending();
-    drawGame();
+    fbo.begin();
+    
+    bgFbo.draw(0,0);
     drawPatternText();
     pWindow.draw();
     for (int i = 0; i < 4; i++) {
@@ -890,9 +934,19 @@ void vhpGameCore::showPattern(){
     caritas[1]->draw(1751, 887);
     drawScore();
     
+    fbo.end();
     ofDisableAlphaBlending();
     ofPopStyle();
-    fbo.end();
+    
+    // Update
+    pWindow.update();
+    for (int i = 0; i < 4; i++) {
+        aWindowClick[i].update();
+        bWindowClick[i].update();
+    }
+    if (pWindow.order==4) checkPatternWinner();
+    // IA
+    if ((getIAElapsedtime()>=IAdelay)&&(IA)) triggerPressedPattern();
     
 }
 
@@ -920,23 +974,20 @@ void vhpGameCore::setFinalWinner(){
     }
 }
 void vhpGameCore::showFinalWinner(){
-    // Reproduce el video y lo dibuja en el FBO
-    //video[0].update();
-    
-    updateTextLine();
-    
-    fbo.begin();
+    // Draw
     ofPushStyle();
     ofEnableAlphaBlending();
+    fbo.begin();
+    
     ofSetColor(255, 255, 255);
-    bg.draw(0, 0);
-    keko.draw(0, 0);
+    bg->draw(0, 0);
+    keko->draw(0, 0);
     if (winner==0) {
         shadowred.draw(0,0);
-        buttonred.draw(75,915);
+        drawButton(85, 915, lines[13], "Mee", colorBar[0]);
     } else {
         shadowblue.draw(0,0);
-        buttonblue.draw(1575,915);
+        drawButton(1565, 915, lines[13], "Mee", colorBar[1]);
     }
     ofSetColor(255,255,255);
     glPushMatrix();
@@ -949,18 +1000,15 @@ void vhpGameCore::showFinalWinner(){
     if (angle == 360) {
         angle = 0;
     }
-    //trofeo.draw(0,0);
-    //video[0].draw(0, 0);
-    ofSetColor(255,255,255,alpha);
-    //winnerBackground[winner].draw(0,0);
-    ofSetColor(255, 255, 255);
-    //drawRoundWiner();
     drawTextLine(425, 200, 255);
     
-    
+    fbo.end();
     ofDisableAlphaBlending();
     ofPopStyle();
-    fbo.end();
+    
+    // Update
+    updateTextLine();
+    
     alpha += alpha_increment;
     if (alpha>=255) {
         alpha = 255;
@@ -1126,7 +1174,7 @@ void vhpGameCore::touchPressedWinner(float & _x, float & _y){
                         initRound();
                         currentUpdate = &vhpGameCore::playReady;
                         currentTouchPressed = &vhpGameCore::touchPressedGame;
-                        // última ronda
+                    // última ronda
                     } else {
                         cout << "Last Round!" << endl;
                         setPatternTutorial();
@@ -1149,7 +1197,7 @@ void vhpGameCore::touchPressedWinner(float & _x, float & _y){
                         initRound();
                         currentUpdate = &vhpGameCore::playReady;
                         currentTouchPressed = &vhpGameCore::touchPressedGame;
-                        // última ronda
+                    // última ronda
                     } else {
                         cout << "Last Round!" << endl;
                         setPatternTutorial();
@@ -1175,12 +1223,6 @@ void vhpGameCore::touchPressedPatternTutorial(float & _x, float & _y){
                 hold[0] = true;
                 if ((next[1]==true)||(IA)) {
                     setWindowPattern();
-                    /*  OSC  */
-                    /* ----- */
-                    mensajeria->send("layer5/clear", 1);
-                    mensajeria->send("layer6/clear", 1);
-                    mensajeria->send("layer7/clear", 1);
-                    /* ----- */
                 }
             }
         // Player B
@@ -1192,12 +1234,6 @@ void vhpGameCore::touchPressedPatternTutorial(float & _x, float & _y){
                 hold[1] = true;
                 if (next[0]==true) {
                     setWindowPattern();
-                    /*  OSC  */
-                    /* ----- */
-                    mensajeria->send("layer5/clear", 1);
-                    mensajeria->send("layer6/clear", 1);
-                    mensajeria->send("layer7/clear", 1);
-                    /* ----- */
                 }
             }
 
@@ -1419,6 +1455,7 @@ void vhpGameCore::checkRoundWinner(){
                 hold[0] = false;
                 hold[1] = false;
                 points[winner]++;
+                drawBgFbo(1);
                 currentUpdate = &vhpGameCore::showWinner;
                 currentTouchPressed = &vhpGameCore::touchPressedWinner;
                 switch (winner) {
