@@ -21,7 +21,7 @@ void vhpGame::setup(){
     fullScreen.begin();
     ofClear(255,255,255, 0);
     fullScreen.end();
-
+    
     alpha = 0;
     alpha_increment = 15;
     
@@ -37,12 +37,15 @@ void vhpGame::setup(){
     mensajeria.setOSC(settings, "SENDER");
     
     logos.setup(SCREENSAVER, PLAYERMENU);
+    resources.setup();
     xogadores.setup(PLAYERMENU, LEVELMENU, STANDBY);
     espera.setup(STANDBY, LEVELMENU);
     niveis.setup(LEVELMENU, GAME);
     xogo.setup(&mensajeria, GAME, RANKING);
+    xogo.setupResources(&resources.caritas[0], &resources.caritas[1]);
     
     logosLoaded = false;
+    resourcesLoaded = false;
     xogadoresLoaded = false;
     esperaLoaded = false;
     niveisLoaded = false;
@@ -182,6 +185,7 @@ void vhpGame::screenSaverOnClick(int &_s){
     fadeInPlayerMenu();
 }
 void vhpGame::playerMenuOnSelect(int &_s){
+    (xogadores.selected==1) ? xogo.IA = true : xogo.IA = false;
     cout << "players selected! state: " << _s << endl;
     if (_s == LEVELMENU) {
         cout << "LEVELMENU: " << LEVELMENU << endl;
@@ -253,7 +257,14 @@ void vhpGame::loadScreenSaver(){
     }
 }
 void vhpGame::loadGame(){
-    if (!xogadoresLoaded) {
+    if (!resourcesLoaded) {
+        if(!resources.loaded) {
+            resources.load();
+        } else {
+            resourcesLoaded = true;
+            cout << "resources is loaded" << endl;
+        }
+    } else if (!xogadoresLoaded) {
         if(!xogadores.loaded) {
             xogadores.load();
         } else {

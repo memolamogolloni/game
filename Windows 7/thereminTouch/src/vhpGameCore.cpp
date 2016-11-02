@@ -1,7 +1,6 @@
 #include "vhpGameCore.h"
 
 // Constructor -------------------------------------------------
-
 vhpGameCore::vhpGameCore(): scale(1.0),loaded(false),loading(false),angle(0){
 
     wHeight = 223;
@@ -31,8 +30,8 @@ vhpGameCore::vhpGameCore(): scale(1.0),loaded(false),loading(false),angle(0){
     }
     
 }
-
 vhpGameCore::~vhpGameCore(){
+    
 }
 
 // Inicializar variables y cargar los archivos -----------------
@@ -146,6 +145,13 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     }
     initGame();
     
+    IAdelay = 3.0;
+    maxIAdelay = 6.0;
+    IA = true;
+}
+void vhpGameCore::setupResources(vhpCarita* _roja, vhpCarita* _azul){
+    caritas[0] = _roja;
+    caritas[1] = _azul;
 }
 void vhpGameCore::getText(string _file, bool _string) {
     if (_string) {
@@ -191,11 +197,13 @@ void vhpGameCore::initRound(){
     ok[0] = false;
     ok[1] = false;
     hold[0] = false;
-    hold[1] = false;
+    (IA) ? hold[1] = true : hold[1] = false;
     next[0] = false;
     next[1] = false;
     winner = 0;
     delay = 90;
+    caritas[0]->setAimationFull();
+    caritas[1]->setAimationFull();
 }
 void vhpGameCore::initPattern(){
     currentWindow = 0;
@@ -226,6 +234,8 @@ void vhpGameCore::initPattern(){
         windowState[0][i]= whiteW;
         windowState[1][i]= whiteW;
     }
+    caritas[0]->setAimationFull();
+    caritas[1]->setAimationFull();
 }
 
 // Precarga de todos los elementos -----------------------------
@@ -335,7 +345,6 @@ void vhpGameCore::drawGame(){
     drawBackground();
     building.draw(0, 0);
     drawWindows();
-    drawScore();
 }
 void vhpGameCore::drawWindows(){
     ofSetColor(255,255,255);
@@ -379,7 +388,6 @@ void vhpGameCore::drawWindows(){
 void vhpGameCore::drawBackground(){
     bg.draw(0,0);
     shadow.draw(0,0);
-    balls.draw(0,0);
 }
 void vhpGameCore::drawRound(){
     ofSetColor(255, 255, 255);
@@ -437,8 +445,10 @@ void vhpGameCore::drawReadyButton(){
     box = TTFM.getStringBoundingBox(lines[10], 0, 0);
     colorBar[0].draw(340 - margin, 900, box.width + margin*2 + 12, TTFM.getLineHeight() + 12);
     TTFM.drawString(lines[10], 340, 900 + TTFM.getLineHeight());
-    colorBar[1].draw(1580 - box.width - margin, 900, box.width + margin*2 + 12, TTFM.getLineHeight() + 12);
-    TTFM.drawString(lines[10], 1580 - box.width, 900 + TTFM.getLineHeight());
+    if (!IA) {
+        colorBar[1].draw(1580 - box.width - margin, 900, box.width + margin*2 + 12, TTFM.getLineHeight() + 12);
+        TTFM.drawString(lines[10], 1580 - box.width, 900 + TTFM.getLineHeight());
+    }
 }
 void vhpGameCore::drawClickedWindow(){
     if (clicked[0]!=7) {
@@ -508,6 +518,9 @@ void vhpGameCore::showRoundTutorial(){
     ofEnableAlphaBlending();
     
     drawBackground();
+    balls.draw(0,0);
+    caritas[0]->draw(73, 887);
+    caritas[1]->draw(1751, 887);
     
     glPushMatrix();
     glTranslatef(0,100,0);
@@ -549,8 +562,12 @@ void vhpGameCore::playReady(){
     ofSetColor(255,206,0,alpha);
     ofRectangle box = TTFB.getStringBoundingBox(lines[2], 0, 0);
     TTFB.drawString(lines[2], (width-box.width)/2, 840);
-    //drawClickedWindow();
+    ofSetColor(255, 255, 255);
+    drawScore();
     drawRound();
+    balls.draw(0,0);
+    caritas[0]->draw(73, 887);
+    caritas[1]->draw(1751, 887);
     ofDisableAlphaBlending();
     ofPopStyle();
     fbo.end();
@@ -565,11 +582,9 @@ void vhpGameCore::playReady(){
         /*  OSC  */
         /* ----- */
         int clip = ceil(ofRandom(7));
-        mensajeria->send("/layer2/clip"+ ofToString(clip) +"/connect", 1);
-        cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+        mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", 1);
         clip = ceil(ofRandom(7));
-        mensajeria->send("/layer3/clip"+ ofToString(clip) +"/connect", 1);
-        cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+        mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
         /* ----- */
 
     }
@@ -584,8 +599,12 @@ void vhpGameCore::playSteady(){
     ofSetColor(255,206,0,alpha);
     ofRectangle box = TTFB.getStringBoundingBox(lines[3], 0, 0);
     TTFB.drawString(lines[3], (width-box.width)/2, 840);
-    //drawClickedWindow();
+    ofSetColor(255, 255, 255);
+    drawScore();
     drawRound();
+    balls.draw(0,0);
+    caritas[0]->draw(73, 887);
+    caritas[1]->draw(1751, 887);
     ofDisableAlphaBlending();
     ofPopStyle();
     fbo.end();
@@ -602,11 +621,9 @@ void vhpGameCore::playSteady(){
             /*  OSC  */
             /* ----- */
             int clip = ceil(ofRandom(7));
-            mensajeria->send("/layer2/clip"+ ofToString(clip) +"/connect", 1);
-            cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+            mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", 1);
             clip = ceil(ofRandom(7));
-            mensajeria->send("/layer3/clip"+ ofToString(clip) +"/connect", 1);
-            cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+            mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
             /* ----- */
         }
         holdSteady --;
@@ -622,8 +639,12 @@ void vhpGameCore::playGo(){
     ofSetColor(255,206,0,alpha);
     ofRectangle box = TTFB.getStringBoundingBox(lines[4], 0, 0);
     TTFB.drawString(lines[4], (width-box.width)/2, 840);
-    //drawClickedWindow();
+    ofSetColor(255, 255, 255);
+    drawScore();
     drawRound();
+    balls.draw(0,0);
+    caritas[0]->draw(73, 887);
+    caritas[1]->draw(1751, 887);
     ofDisableAlphaBlending();
     ofPopStyle();
     fbo.end();
@@ -641,11 +662,9 @@ void vhpGameCore::playGo(){
         /*  OSC  */
         /* ----- */
         int clip = targetsShot + 8;
-        mensajeria->send("/layer2/clip"+ ofToString(clip) +"/connect", 1);
-        cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+        mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", 1);
         clip = targetsShot + 8;
-        mensajeria->send("/layer3/clip"+ ofToString(clip) +"/connect", 1);
-        cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+        mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
         /* ----- */
     }
 }
@@ -658,7 +677,12 @@ void vhpGameCore::showWindow(){
     avisos.drawSubsection(wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight, wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight);
     avisos.drawSubsection(wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight, wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight);
     drawClickedWindow();
+    ofSetColor(255, 255, 255);
+    drawScore();
     drawRound();
+    balls.draw(0,0);
+    caritas[0]->draw(73, 887);
+    caritas[1]->draw(1751, 887);
     ofDisableAlphaBlending();
     ofPopStyle();
     fbo.end();
@@ -667,21 +691,27 @@ void vhpGameCore::showWindow(){
         if (alpha>=255) alpha = 255;
         checkRoundWinner();
     }
+    // IA
+    if ((getElapsedtime()>=IAdelay)&&(IA)) triggerPressedGame();
 }
 
 // Show Winner -------------------------------------------------
 void vhpGameCore::showWinner(){
     // Reproduce el video y lo dibuja en el FBO
     fbo.begin();
-    drawGame();
     ofPushStyle();
     ofEnableAlphaBlending();
+    drawGame();
     ofSetColor(255,255,255,alpha);
     winnerBackground[winner].draw(0,0);
     ofSetColor(255, 255, 255);
+    drawScore();
     drawRoundWiner();
     winnerButton[0].draw(0,0);
-    winnerButton[1].draw(0,0);
+    if (!IA) winnerButton[1].draw(0,0);
+    balls.draw(0,0);
+    caritas[0]->draw(73, 887);
+    caritas[1]->draw(1751, 887);
     ofDisableAlphaBlending();
     ofPopStyle();
     fbo.end();
@@ -697,9 +727,13 @@ void vhpGameCore::showTie(){
     ofPushStyle();
     ofEnableAlphaBlending();
     ofSetColor(255, 255, 255);
+    drawScore();
     tie.draw(0,0);
     winnerButton[0].draw(0,0);
-    winnerButton[1].draw(0,0);
+    if (!IA) winnerButton[1].draw(0,0);
+    balls.draw(0,0);
+    caritas[0]->draw(73, 887);
+    caritas[1]->draw(1751, 887);
     ofDisableAlphaBlending();
     ofPopStyle();
     fbo.end();
@@ -750,6 +784,9 @@ void vhpGameCore::showPatternTutorial(){
     bandera.draw(1435, 140);
     glPopMatrix();
     
+    balls.draw(0,0);
+    caritas[0]->draw(73, 887);
+    caritas[1]->draw(1751, 887);
     drawReadyButton();
     
     ofDisableAlphaBlending();
@@ -763,6 +800,7 @@ void vhpGameCore::setWindowPattern(){
     initPattern();
     randomPattern();
     setTimeReference(3.0);
+    setIATimeReference(3.0);
     pWindow.setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
     for (int i = 0; i < 4; i++) {
         aWindowClick[i].setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
@@ -790,11 +828,9 @@ void vhpGameCore::sendWindowPattern(){
             /*  OSC  */
             /* ----- */
             int clip = targetsPattern[currentWindow] + 15;
-            mensajeria->send("/layer2/clip"+ ofToString(clip) +"/connect", currentWindow);
-            cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << currentWindow << endl;
+            mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", currentWindow);
             clip = targetsPattern[currentWindow] + 15;
-            mensajeria->send("/layer3/clip"+ ofToString(clip) +"/connect", currentWindow);
-            cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << currentWindow << endl;
+            mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", currentWindow);
             /* ----- */
             currentWindow++;
             setTimeReference();
@@ -802,6 +838,8 @@ void vhpGameCore::sendWindowPattern(){
             currentUpdate = &vhpGameCore::showPattern;
         }
     }
+    // IA
+    if ((getIAElapsedtime()>=IAdelay)&&(IA))  triggerPressedPattern();
     
     // Draw
     fbo.begin();
@@ -813,6 +851,11 @@ void vhpGameCore::sendWindowPattern(){
         aWindowClick[i].draw();
         bWindowClick[i].draw();
     }
+    ofSetColor(255, 255, 255);
+    balls.draw(0,0);
+    caritas[0]->draw(73, 887);
+    caritas[1]->draw(1751, 887);
+    drawScore();
     ofDisableAlphaBlending();
     ofPopStyle();
     fbo.end();
@@ -826,6 +869,9 @@ void vhpGameCore::showPattern(){
         aWindowClick[i].update();
         bWindowClick[i].update();
     }
+    if (pWindow.order==4) checkPatternWinner();
+    // IA
+    if ((getIAElapsedtime()>=IAdelay)&&(IA)) triggerPressedPattern();
     
     // Draw
     fbo.begin();
@@ -838,7 +884,11 @@ void vhpGameCore::showPattern(){
         aWindowClick[i].draw();
         bWindowClick[i].draw();
     }
-    if (pWindow.order==4) checkPatternWinner();
+    ofSetColor(255, 255, 255);
+    balls.draw(0,0);
+    caritas[0]->draw(73, 887);
+    caritas[1]->draw(1751, 887);
+    drawScore();
     
     ofDisableAlphaBlending();
     ofPopStyle();
@@ -859,15 +909,13 @@ void vhpGameCore::setFinalWinner(){
         /*  OSC  */
         /* ----- */
         int clip = clicked[0] + 22;
-        mensajeria->send("/layer1/clip4/connect", 1);
-        cout << "sending /layer1/clip4/connect"+ ofToString(clip) +"/connect" << 1 << endl;
+        mensajeria->send("layer1/clip4/connect", 1);
         /* ----- */
     } else {
         /*  OSC  */
         /* ----- */
         int clip = clicked[0] + 22;
-        mensajeria->send("/layer1/clip4/connect", 1);
-        cout << "sending /layer1/clip5/connect"+ ofToString(clip) +"/connect" << 1 << endl;
+        mensajeria->send("layer1/clip4/connect", 1);
         /* ----- */
     }
 }
@@ -940,7 +988,7 @@ void vhpGameCore::touchPressedRoundTutorial(float & _x, float & _y){
                 cout << "Set next[0] true" << endl;
                 next[0] = true;
                 hold[0] = true;
-                if (next[1]==true) setRound();
+                if ((next[1]==true)||(IA)) setRound();
             }
             // Player B
         } else if ((_x>=1270)&(_x<=1680)) {
@@ -1000,8 +1048,7 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                     /*  OSC  */
                     /* ----- */
                     int clip = clicked[0] + 22;
-                    mensajeria->send("/layer2/clip"+ ofToString(clip) +"/connect", 1);
-                    cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+                    mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", 1);
                     /* ----- */
                 }
                 if (clicked[0]==targetsShot) ok[0] = true;
@@ -1046,8 +1093,7 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                     /*  OSC  */
                     /* ----- */
                     int clip = clicked[1] + 22;
-                    mensajeria->send("/layer3/clip"+ ofToString(clip) +"/connect", 1);
-                    cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+                    mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
                     /* ----- */
                 }
                 if (clicked[1]==targetsShot) ok[1] = true;
@@ -1071,7 +1117,7 @@ void vhpGameCore::touchPressedWinner(float & _x, float & _y){
                 cout << "Set next[0] true" << endl;
                 next[0] = true;
                 hold[0] = true;
-                if (next[1]==true) {
+                if ((next[1]==true)||(IA)) {
                     cout << "next[1] is true" << endl;
                     currentRound++;
                     // cuatro primeras rondas
@@ -1127,16 +1173,13 @@ void vhpGameCore::touchPressedPatternTutorial(float & _x, float & _y){
                 cout << "Set next[0] true" << endl;
                 next[0] = true;
                 hold[0] = true;
-                if (next[1]==true) {
+                if ((next[1]==true)||(IA)) {
                     setWindowPattern();
                     /*  OSC  */
                     /* ----- */
-                    mensajeria->send("/layer5/clear", 1);
-                    cout << "sending /layer5/clear" << 1 << endl;
-                    mensajeria->send("/layer6/clear", 1);
-                    cout << "sending /layer6/clear" << 1 << endl;
-                    mensajeria->send("/layer7/clear", 1);
-                    cout << "sending /layer7/clear" << 1 << endl;
+                    mensajeria->send("layer5/clear", 1);
+                    mensajeria->send("layer6/clear", 1);
+                    mensajeria->send("layer7/clear", 1);
                     /* ----- */
                 }
             }
@@ -1151,12 +1194,9 @@ void vhpGameCore::touchPressedPatternTutorial(float & _x, float & _y){
                     setWindowPattern();
                     /*  OSC  */
                     /* ----- */
-                    mensajeria->send("/layer5/clear", 1);
-                    cout << "sending /layer5/clear" << 1 << endl;
-                    mensajeria->send("/layer6/clear", 1);
-                    cout << "sending /layer6/clear" << 1 << endl;
-                    mensajeria->send("/layer7/clear", 1);
-                    cout << "sending /layer7/clear" << 1 << endl;
+                    mensajeria->send("layer5/clear", 1);
+                    mensajeria->send("layer6/clear", 1);
+                    mensajeria->send("layer7/clear", 1);
                     /* ----- */
                 }
             }
@@ -1220,8 +1260,7 @@ void vhpGameCore::touchPressedPattern(float & _x, float & _y){
                     /*  OSC  */
                     /* ----- */
                     int clip = registeredPattern[0][n[0]] + 22;
-                    mensajeria->send("/layer2/clip"+ ofToString(clip) +"/connect", 1);
-                    cout << "sending /layer2/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+                    mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", 1);
                     /* ----- */
                 }
                 aWindowClick[n[0]].setOneWindow(n[0], registeredPattern[0][n[0]], 0);
@@ -1274,8 +1313,7 @@ void vhpGameCore::touchPressedPattern(float & _x, float & _y){
                     /*  OSC  */
                     /* ----- */
                     int clip = registeredPattern[1][n[1]] + 22;
-                    mensajeria->send("/layer3/clip"+ ofToString(clip) +"/connect", 1);
-                    cout << "sending /layer3/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+                    mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
                     /* ----- */
                 }
                 // hay discordancias entre el orden de las ventanas, si es igual o en espejo corregir para arreglar este apaño
@@ -1306,20 +1344,16 @@ void vhpGameCore::touchPressedPatternWinner(float & _x, float & _y){
         ofNotifyEvent(onRestart, targetScene);
         /*  OSC  */
         /* ----- */
-        mensajeria->send("/composition/deck1/select", 1);
-        mensajeria->send("/layer1/clip1/connect", 1);
-        cout << "sending /composition/deck1/select" << 1 << endl;
-        cout << "sending /layer1/clip1/connect" << 1 << endl;
+        mensajeria->send("composition/deck1/select", 1);
+        mensajeria->send("layer1/clip1/connect", 1);
         /* ----- */
     // Player B
     } else if ((winner==1)&&(_y>=894)&&(_y<=1036)&&(_x>=1510)&&(_x<=1910)) {
         ofNotifyEvent(onRestart, targetScene);
         /*  OSC  */
         /* ----- */
-        mensajeria->send("/composition/deck1/select", 1);
-        mensajeria->send("/layer1/clip1/connect", 1);
-        cout << "sending /composition/deck1/select" << 1 << endl;
-        cout << "sending /layer1/clip1/connect" << 1 << endl;
+        mensajeria->send("composition/deck1/select", 1);
+        mensajeria->send("layer1/clip1/connect", 1);
         /* ----- */
     }
 }
@@ -1330,48 +1364,6 @@ void vhpGameCore::checkIsGo(int _p){
         hold[_p] = true;
         ok[_p] = false;
         soon[_p] = true;
-    }
-}
-void vhpGameCore::checkPatternWinner(){
-    if (hold[0]&&hold[1]) {
-        delay--;
-        if (delay<=0) {
-            alpha = 0;
-            bool tie = false;
-            if (ok[0]&&ok[1]) {
-                cout << "Both user have trigered a correct pattern" << endl;
-                cout << "Time A: " << time[0] << endl;
-                cout << "Time B: " << time[1] << endl;
-                // foron igual de rápidos
-                if (time[0]==time[1]) {
-                    cout << "Both players where right!" << endl;
-                    tie = true;
-                } if (time[0]<time[1]) {
-                    cout << "Player 0 was faster!" << endl;
-                    winner = 0;
-                } else {
-                    cout << "Player 1 was faster!" << endl;
-                    winner = 1;
-                }
-            } else {
-                // acertou só 0
-                if (ok[0]) {
-                    cout << "Only 0 was succesful" << endl;
-                    winner = 0;
-                // acertou só 1
-                } else if (ok[1]) {
-                    cout << "Only 1 was succesful" << endl;
-                    winner = 1;
-                // no acertou ninguén
-                } else {
-                    cout << "Both players failed" << endl;
-                    tie = true;
-                }
-            }
-            if (!tie) points[winner] += 2;
-            (points[0]>points[1]) ? winner = 0 : winner = 1;
-            setFinalWinner();
-        }
     }
 }
 void vhpGameCore::checkRoundWinner(){
@@ -1422,26 +1414,38 @@ void vhpGameCore::checkRoundWinner(){
                 currentRound --;
                 currentUpdate = &vhpGameCore::showTie;
                 currentTouchPressed = &vhpGameCore::touchPressedWinner;
+                if (IA) setDelay();
             } else {
                 hold[0] = false;
                 hold[1] = false;
                 points[winner]++;
                 currentUpdate = &vhpGameCore::showWinner;
                 currentTouchPressed = &vhpGameCore::touchPressedWinner;
+                switch (winner) {
+                    case 0:
+                        caritas[0]->setAimationUp();
+                        caritas[1]->setAimationDown();
+                        break;
+                        
+                    case 1:
+                        caritas[0]->setAimationDown();
+                        caritas[1]->setAimationUp();
+                        break;
+                }
                 /*  OSC  */
                 /* ----- */
                 string whichLayer;                // Envía a diferentes layers según ronda
                 switch (currentRound) {
                     case 0:
-                        whichLayer = "/layer5/clip";
+                        whichLayer = "layer5/clip";
                         break;
                         
                     case 1:
-                        whichLayer = "/layer6/clip";
+                        whichLayer = "layer6/clip";
                         break;
                         
                     case 2:
-                        whichLayer = "/layer7/clip";
+                        whichLayer = "layer7/clip";
                         break;
                         
                     default:
@@ -1450,17 +1454,107 @@ void vhpGameCore::checkRoundWinner(){
                 int clip = targetsShot + 1;
                 if (winner == 1) clip + 7;            // 1-7 ganadas por jugador 1, 8-14 ganadas por Jugador 2
                 mensajeria->send(whichLayer+ ofToString(clip) +"/connect", 1);
-                cout << whichLayer+ ofToString(clip) +"/connect" << 1 << endl;
+                if (IA) setDelay();
             }
             
             /*  OSC  */
             /* ----- */
             int  clip = (6 - (points[0]-points[1]));
-            mensajeria->send("/layer4/clip"+ ofToString(clip) +"/connect", 1);
-            cout << "sending /layer4/clip"+ ofToString(clip) +"/connect" << 1 << endl;
+            mensajeria->send("layer4/clip"+ ofToString(clip) +"/connect", 1);
             /* ----- */
         }
     }
+}
+void vhpGameCore::checkPatternWinner(){
+    if (hold[0]&&hold[1]) {
+        delay--;
+        if (delay<=0) {
+            alpha = 0;
+            bool tie = false;
+            if (ok[0]&&ok[1]) {
+                cout << "Both user have trigered a correct pattern" << endl;
+                cout << "Time A: " << time[0] << endl;
+                cout << "Time B: " << time[1] << endl;
+                // foron igual de rápidos
+                if (time[0]==time[1]) {
+                    cout << "Both players where right!" << endl;
+                    tie = true;
+                } if (time[0]<time[1]) {
+                    cout << "Player 0 was faster!" << endl;
+                    winner = 0;
+                } else {
+                    cout << "Player 1 was faster!" << endl;
+                    winner = 1;
+                }
+            } else {
+                // acertou só 0
+                if (ok[0]) {
+                    cout << "Only 0 was succesful" << endl;
+                    winner = 0;
+                // acertou só 1
+                } else if (ok[1]) {
+                    cout << "Only 1 was succesful" << endl;
+                    winner = 1;
+                // no acertou ninguén
+                } else {
+                    cout << "Both players failed" << endl;
+                    tie = true;
+                }
+            }
+            if (!tie) points[winner] += 2;
+            (points[0]>points[1]) ? winner = 0 : winner = 1;
+            setFinalWinner();
+        }
+    }
+}
+void vhpGameCore::triggerPressedGame(){
+    if (clicked[1]==7) {
+        time[1] = ofGetElapsedTimeMillis();
+        clicked[1] = targetsShot;
+        ok[1] = true;
+        cout << "Window " << targetsShot << " triggered" << endl;
+        /*  OSC  */
+        /* ----- */
+        int clip = clicked[1] + 22;
+        mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
+        /* ----- */
+    }
+}
+void vhpGameCore::triggerPressedPattern(){
+    if (registeredPattern[1][3]==7) {
+        int n = 0;
+        if(registeredPattern[1][2]!=7) {
+            n = 3;
+        } else if(registeredPattern[1][1]!=7) {
+            n = 2;
+        } else if(registeredPattern[1][0]!=7) {
+            n = 1;
+        }
+        if (n<=currentWindow) {
+            registeredPattern[1][n] = targetsPattern[n];
+            /*  OSC  */
+            /* ----- */
+            int clip = registeredPattern[1][n] + 22;
+            mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
+            /* ----- */
+            // Parece que en el trigger pattern no se produce la discordancia que había en el click
+            bWindowClick[n].setOneWindow(n, registeredPattern[1][n], 1);
+            if (n==3) {
+                cout << "Lets check" << endl;
+                time[1] = ofGetElapsedTimeMillis();
+                hold[1] = true;
+                ok[1] = true;
+                cout << "Player 1 has succeded!" << endl;
+            }
+            setIATimeReference();
+        }
+    }
+}
+void vhpGameCore::setDelay(){
+    float diff = (time[0] - time[1])/1000;
+    IAdelay += diff * 0.75 +  diff * 0.25 * ofRandomf();
+    if (IAdelay>maxIAdelay) IAdelay = maxIAdelay;
+    cout << "IAdelay: " << IAdelay << endl;
 }
 
 int vhpGameCore::randomWindow(){
@@ -1525,9 +1619,18 @@ void vhpGameCore::setTimeReference(float _ago){
     tRef = ofGetElapsedTimef();
     tRef -= _ago;
 }
-
+void vhpGameCore::setIATimeReference(){
+    IAtRef = ofGetElapsedTimef();
+}
+void vhpGameCore::setIATimeReference(float _ago){
+    IAtRef = ofGetElapsedTimef();
+    IAtRef -= _ago;
+}
 float vhpGameCore::getElapsedtime(){
     return ofGetElapsedTimef() - tRef;
+}
+float vhpGameCore::getIAElapsedtime(){
+    return ofGetElapsedTimef() - IAtRef;
 }
 
 

@@ -52,8 +52,6 @@ void vhpPlayerMenu::setup(int _currentScene, int _targetScene1, int _targetScene
     loadingSilge.push_back(&elegir);
     filesSingle.push_back("pm-elegir");
     
-    
-    
     currentLoad = &vhpPlayerMenu::loadSingle;
     
 }

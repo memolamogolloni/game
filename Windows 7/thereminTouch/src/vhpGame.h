@@ -12,6 +12,7 @@
 #include "vhpLevelMenu.h"
 #include "vhpGameCore.h"
 #include "ofxTrueTypeFontUC.h"
+#include "vhpLoader.h"
 
 #define SCREENSAVER         0
 #define PLAYERMENU          1
@@ -132,6 +133,8 @@ class vhpGame {
         vhpOSC                      mensajeria;
         vhpScreenSaver              logos;
         bool                        logosLoaded;
+        vhpLoader                   resources;
+        bool                        resourcesLoaded;
         vhpPlayerMenu               xogadores;
         bool                        xogadoresLoaded;
         vhpStandby                  espera;
