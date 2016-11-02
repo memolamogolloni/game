@@ -42,7 +42,6 @@ void vhpGame::setup(){
     espera.setup(STANDBY, LEVELMENU);
     niveis.setup(LEVELMENU, GAME);
     xogo.setup(&mensajeria, GAME, RANKING);
-    xogo.setupResources(&resources.caritas[0], &resources.caritas[1]);
     
     logosLoaded = false;
     resourcesLoaded = false;
@@ -261,6 +260,12 @@ void vhpGame::loadGame(){
         if(!resources.loaded) {
             resources.load();
         } else {
+            xogadores.setupResources(&resources.images[2], &resources.images[3], &resources.images[4], &resources.images[5]);
+            xogadores.setupFonts(&resources.TTF, &resources.TTFB, &resources.TTFM);
+            niveis.setupResources(&resources.images[2], &resources.images[3]);
+            niveis.setupFonts(&resources.TTF, &resources.TTFB);
+            xogo.setupResources(&resources.caritas[0], &resources.caritas[1], &resources.images[2], &resources.images[3], &resources.images[4], &resources.images[5]);
+            xogo.setupFonts(&resources.TTF, &resources.TTFB, &resources.TTFM);
             resourcesLoaded = true;
             cout << "resources is loaded" << endl;
         }

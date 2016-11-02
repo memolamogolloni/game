@@ -22,23 +22,19 @@ void vhpPlayerMenu::setup(int _currentScene, int _targetScene1, int _targetScene
     width = 1920;
     height = 1080;
     fbo.allocate(width, height, GL_RGBA);
+    transparent.allocate(width, height, GL_RGBA);
     fbo.begin();
     ofClear(255,255,255, 0);
     fbo.end();
+    transparent.begin();
+    ofClear(255,255,255, 0);
+    transparent.end();
     
-    // Añadir las fuentes
-    TTF.load("fonts/titilliumweblight.ttf", 22);
-    TTFB.load("fonts/titilliumweblight.ttf", 70);
-
     // elementos gráficos
     
     // Añadir las imágenes Sueltas
     loadingSilge.push_back(&glow);
     filesSingle.push_back("pm-glow");
-    loadingSilge.push_back(&keko);
-    filesSingle.push_back("pm-keko");
-    loadingSilge.push_back(&bg);
-    filesSingle.push_back("pm-bg");
     loadingSilge.push_back(&balls);
     filesSingle.push_back("pm-balls");
     loadingSilge.push_back(&bases);
@@ -49,13 +45,20 @@ void vhpPlayerMenu::setup(int _currentScene, int _targetScene1, int _targetScene
     filesSingle.push_back("pm-two");
     loadingSilge.push_back(&four);
     filesSingle.push_back("pm-four");
-    loadingSilge.push_back(&elegir);
-    filesSingle.push_back("pm-elegir");
-    
-    
     
     currentLoad = &vhpPlayerMenu::loadSingle;
     
+}
+void vhpPlayerMenu::setupResources(ofImage* _bg, ofImage* _keko, ofImage* _colorBarR, ofImage* _colorBarA) {
+    colorBar[0] = _colorBarR;
+    colorBar[1] = _colorBarA;
+    bg = _bg;
+    keko = _keko;
+}
+void vhpPlayerMenu::setupFonts(ofTrueTypeFont* _TTF, ofTrueTypeFont* _TTFB, ofTrueTypeFont* _TTFM){
+    TTF = _TTF;
+    TTFB = _TTFB;
+    TTFM = _TTFM;
 }
 void vhpPlayerMenu::getText(string _file) {
     ofBuffer buffer = ofBufferFromFile(_file);
@@ -114,9 +117,11 @@ void vhpPlayerMenu::setOne(){
         lines[i].init();
     }
     count = 0;
+    drawButtons(1);
     currentUpdate = &vhpPlayerMenu::fadeInOne;
     state = ONEPLAYER;
     target = MENU;
+    
 }
 void vhpPlayerMenu::setTwo(){
     lines.clear();
@@ -127,6 +132,7 @@ void vhpPlayerMenu::setTwo(){
         lines[i].init();
     }
     count = 0;
+    drawButtons(2);
     currentUpdate = &vhpPlayerMenu::fadeInTwo;
     state = TWOPLAYERS;
     target = MENU;
@@ -142,6 +148,7 @@ void vhpPlayerMenu::setFour(){
         lines[i].init();
     }
     count = 0;
+    drawButtons(4);
     currentUpdate = &vhpPlayerMenu::fadeInFour;
     state = FOURPLAYERS;
     target = MENU;
@@ -198,64 +205,95 @@ void vhpPlayerMenu::draw(int _x, int _y){
 void vhpPlayerMenu::drawTextLine(int _x, int _y, int _alpha){
     ofSetColor(255, 255, 255, _alpha);
     for (int i = 0; i < lines.size(); i++) {
-        TTF.drawString(lines[i].visible, _x, _y +(40*i));
+        TTF->drawString(lines[i].visible, _x, _y +(40*i));
     }
+}
+void vhpPlayerMenu::drawChooseButton(int _x, int _y){
+    ofRectangle box;
+    box = TTFM->getStringBoundingBox("EE", 0, 0);
+    int margin = box.width;
+    ofSetRectMode(OF_RECTMODE_CORNER);
+    box = TTFM->getStringBoundingBox("Elegir", 0, 0);
+    colorBar[0]->draw(_x - margin, _y, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
+    TTFM->drawString("Elegir", _x, _y + TTFM->getAscenderHeight());
+}
+void vhpPlayerMenu::drawButtons(int _n) {
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    transparent.begin();
+    ofClear(255,255,255, 0);
+    switch (_n) {
+        case 1:
+            drawChooseButton(318, 866);
+            TTFB->drawString("1 vs AI", 285, 566);
+            break;
+        case 2:
+            drawChooseButton(775, 866);
+            TTFB->drawString("1 vs 1", 750, 566);
+            break;
+        case 4:
+            drawChooseButton(1320, 866);
+            TTFB->drawString("2 vs 2", 1230, 566);
+            break;
+        default:
+            break;
+    }
+    transparent.end();
+    ofDisableAlphaBlending();
+    ofPopStyle();
 }
 void vhpPlayerMenu::drawMenu(){
     ofSetColor(255, 255, 255);
-    bg.draw(0,0);
+    bg->draw(0,0);
     bases.draw(0,0);
     balls.draw(0,0);
     ofSetColor(255,255,255,alpha);
     glow.draw(0,0);
     drawTextLine(425, 200, alpha);
     ofSetColor(255, 255, 255);
-    keko.draw(0,0);
+    keko->draw(0,0);
 }
 void vhpPlayerMenu::drawOne(){
     ofSetColor(255, 255, 255);
-    bg.draw(0,0);
+    bg->draw(0,0);
     ofSetColor(255,255,255,alpha);
     glow.draw(0,0,width*0.8,height);
     one.draw(0,0);
     drawTextLine(425, 200, alpha);
-    TTFB.drawString("1 vs AI", 255, 566);
     ofSetColor(255, 255, 255);
     bases.draw(0,0);
     balls.draw(0,0);
-    keko.draw(0,0);
+    keko->draw(0,0);
     ofSetColor(255,255,255,alpha);
-    elegir.draw(249, 866);
+    transparent.draw(0,0);
 }
 void vhpPlayerMenu::drawTwo(){
     ofSetColor(255, 255, 255);
-    bg.draw(0,0);
+    bg->draw(0,0);
     ofSetColor(255,255,255,alpha);
     glow.draw(0,0,width*0.8,height);
     two.draw(0,0);
     drawTextLine(425, 200, alpha);
-    TTFB.drawString("1 vs 1", 740, 566);
     ofSetColor(255, 255, 255);
     bases.draw(0,0);
     balls.draw(0,0);
-    keko.draw(0,0);
+    keko->draw(0,0);
     ofSetColor(255,255,255,alpha);
-    elegir.draw(716, 866);
+    transparent.draw(0,0);
 }
 void vhpPlayerMenu::drawFour(){
     ofSetColor(255, 255, 255);
-    bg.draw(0,0);
+    bg->draw(0,0);
     ofSetColor(255,255,255,alpha);
     glow.draw(0,0,width*0.8,height);
     four.draw(0,0);
     drawTextLine(425, 200, alpha);
-    TTFB.drawString("2 vs 2", 1230, 566);
     ofSetColor(255, 255, 255);
     bases.draw(0,0);
     balls.draw(0,0);
-    keko.draw(0,0);
+    keko->draw(0,0);
     ofSetColor(255,255,255,alpha);
-    elegir.draw(1320, 866);
+    transparent.draw(0,0);
 }
 
 // Reproducir o detener la escena modificando currentUpdate ----

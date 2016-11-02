@@ -22,6 +22,8 @@ class vhpPlayerMenu {
     
         // Inicializar variables y cargar los archivos
         void setup(int _currentScene, int _targetScene1, int _targetScene2);
+        void setupResources(ofImage* _bg, ofImage* _keko, ofImage* _colorBarR, ofImage* _colorBarA);
+        void setupFonts(ofTrueTypeFont* _TTF, ofTrueTypeFont* _TTFB, ofTrueTypeFont* _TTFM);
         void getText(string _file);
     
         // Precarga de todos los elementos
@@ -48,6 +50,8 @@ class vhpPlayerMenu {
     
         // Dibujado de elementos gráficos
         void drawTextLine(int _x, int _y, int _alpha);
+        void drawChooseButton(int _x, int _y);
+        void drawButtons(int _n);
         void drawMenu();
         void drawOne();
         void drawTwo();
@@ -79,18 +83,22 @@ class vhpPlayerMenu {
         // elementos gráficos
         vector<vhpLine>             lines;
         int                         count;
-        ofTrueTypeFont              TTF;
-        ofTrueTypeFont              TTFB;
+        ofTrueTypeFont *            TTF;
+        ofTrueTypeFont *            TTFB;
+        ofTrueTypeFont *            TTFM;
     
         ofImage                     elegir;
         ofImage                     glow;
-        ofImage                     keko;
-        ofImage                     bg;
         ofImage                     balls;
         ofImage                     bases;
         ofImage                     one;
         ofImage                     two;
         ofImage                     four;
+    
+        ofImage *                   colorBar[2];
+        ofImage *                   keko;
+        ofImage *                   bg;
+    
     
         int                         alpha;
         int                         alpha_increment;
@@ -103,6 +111,7 @@ class vhpPlayerMenu {
 
         // Video de fondo
         ofFbo                       fbo;
+        ofFbo                       transparent;
         int                         width;
         int                         height;
     

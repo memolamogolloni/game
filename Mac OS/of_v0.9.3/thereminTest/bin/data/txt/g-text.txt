@@ -11,3 +11,5 @@ Azul
 ¡Estoy listo!
 Ronda final
 ¡Repite el patrón en el orden correcto!
+ok
+¡Listo para la siguiente!

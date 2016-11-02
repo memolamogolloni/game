@@ -27,5 +27,9 @@ class vhpLoader {
         bool                        loaded;
         bool                        loading;
     
+        ofTrueTypeFont              TTF;
+        ofTrueTypeFont              TTFB;
+        ofTrueTypeFont              TTFM;
+    
         vhpCarita                   caritas[2];
 };

@@ -7,9 +7,24 @@ vhpLoader::vhpLoader():loaded(false),loading(false){
 
 //--------------------------------------------------------------
 void vhpLoader::setup(){
+    
+    imageFile.push_back("t-blue-b");
+    imageFile.push_back("t-red-b");
+    imageFile.push_back("t-keko");
+    imageFile.push_back("t-bg");
     imageFile.push_back("caraAzul");
     imageFile.push_back("caraRosa");
+    
+    // Añadir las fuentes
+    TTF.load("fonts/titilliumweblight.ttf", 22);
+    TTF.setGlobalDpi(72);
+    TTFB.load("fonts/titilliumweblight.ttf", 70);
+    TTFB.setGlobalDpi(72);
+    TTFM.load("fonts/titilliumweblight.ttf", 55);
+    TTFM.setGlobalDpi(72);
+    
     currentLoad = &vhpLoader::loadImages;
+    
 }
 
 //--------------------------------------------------------------
@@ -32,8 +47,9 @@ void vhpLoader::loadImages(){
         cout << "actual: " << actual << endl;
         if (actual>=0) {
             if (loading) {
-                if (images[actual].isAllocated()) {
-                    cout << "actual: " << actual << " is allocated."<< endl;
+                // cout << "loading: " << actual << endl;
+                if (images[images.size()-1].isAllocated()) {
+                    cout << "actual: " << images.size()-1 << " is allocated."<< endl;
                     cout << imageFile.size() << " pending!"<< endl;
                     loading = false;
                 }
