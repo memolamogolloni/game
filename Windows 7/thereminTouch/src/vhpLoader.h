@@ -2,6 +2,8 @@
 #include "ofMain.h"
 #include "vhpCarita.h"
 #include "ofxTrueTypeFontUC.h"
+#include "vhpPetamuti.h"
+#include "vhpFlecha.h"
 
 class vhpLoader {
 
@@ -33,4 +35,7 @@ class vhpLoader {
         ofxTrueTypeFontUC           TTFM;
     
         vhpCarita                   caritas[2];
+        vhpPetamuti                 petamuti;
+        vhpFlecha                   flecha;
+    
 };

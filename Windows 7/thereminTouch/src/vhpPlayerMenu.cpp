@@ -49,11 +49,12 @@ void vhpPlayerMenu::setup(int _currentScene, int _targetScene1, int _targetScene
     currentLoad = &vhpPlayerMenu::loadSingle;
     
 }
-void vhpPlayerMenu::setupResources(ofImage* _bg, ofImage* _keko, ofImage* _colorBarR, ofImage* _colorBarA) {
+void vhpPlayerMenu::setupResources(ofImage* _bg, ofImage* _colorBarR, ofImage* _colorBarA, vhpPetamuti* _petamuti) {
     colorBar[0] = _colorBarR;
     colorBar[1] = _colorBarA;
+    petamuti = _petamuti;
     bg = _bg;
-    keko = _keko;
+    petamuti->setAimationFull();
 }
 void vhpPlayerMenu::setupFonts(ofxTrueTypeFontUC* _TTF, ofxTrueTypeFontUC* _TTFB, ofxTrueTypeFontUC* _TTFM){
     TTF = _TTF;
@@ -251,7 +252,7 @@ void vhpPlayerMenu::drawMenu(){
     glow.draw(0,0);
     drawTextLine(425, 200, alpha);
     ofSetColor(255, 255, 255);
-    keko->draw(0,0);
+    petamuti->draw(76, 51);
 }
 void vhpPlayerMenu::drawOne(){
     ofSetColor(255, 255, 255);
@@ -263,7 +264,7 @@ void vhpPlayerMenu::drawOne(){
     ofSetColor(255, 255, 255);
     bases.draw(0,0);
     balls.draw(0,0);
-    keko->draw(0,0);
+    petamuti->draw(76, 51);
     ofSetColor(255,255,255,alpha);
     transparent.draw(0,0);
 }
@@ -277,7 +278,7 @@ void vhpPlayerMenu::drawTwo(){
     ofSetColor(255, 255, 255);
     bases.draw(0,0);
     balls.draw(0,0);
-    keko->draw(0,0);
+    petamuti->draw(76, 51);
     ofSetColor(255,255,255,alpha);
     transparent.draw(0,0);
 }
@@ -291,7 +292,7 @@ void vhpPlayerMenu::drawFour(){
     ofSetColor(255, 255, 255);
     bases.draw(0,0);
     balls.draw(0,0);
-    keko->draw(0,0);
+    petamuti->draw(76, 51);
     ofSetColor(255,255,255,alpha);
     transparent.draw(0,0);
 }

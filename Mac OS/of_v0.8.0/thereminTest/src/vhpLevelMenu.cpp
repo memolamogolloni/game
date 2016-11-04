@@ -43,9 +43,10 @@ void vhpLevelMenu::setup(int _currentScene, int _targetScene){
     currentLoad = &vhpLevelMenu::loadSingle;
     
 }
-void vhpLevelMenu::setupResources(ofImage* _bg, ofImage* _keko) {
+void vhpLevelMenu::setupResources(ofImage* _bg, vhpPetamuti* _petamuti) {
     bg = _bg;
-    keko = _keko;
+    petamuti = _petamuti;
+    petamuti->setAimationFull();
 }
 void vhpLevelMenu::setupFonts(ofxTrueTypeFontUC* _TTF, ofxTrueTypeFontUC* _TTFB){
     TTF = _TTF;
@@ -99,18 +100,39 @@ void vhpLevelMenu::init(){
     target = MENUNIVEL;
 }
 void vhpLevelMenu::setDestreza(){
+    lines.clear();
+    getText("txt/lm-destreza.txt");
+    alpha = 0.0;
+    alpha_increment = 10.0;
+    for (int i = 0; i < lines.size(); i++) {
+        lines[i].init();
+    }
     count = 0;
     currentUpdate = &vhpLevelMenu::fadeInDestreza;
     state = DESTREZA;
     target = MENUNIVEL;
 }
 void vhpLevelMenu::setEspiritualidad(){
+    lines.clear();
+    getText("txt/lm-espiritualidad.txt");
+    alpha = 0.0;
+    alpha_increment = 10.0;
+    for (int i = 0; i < lines.size(); i++) {
+        lines[i].init();
+    }
     count = 0;
     currentUpdate = &vhpLevelMenu::fadeInEspiritualidad;
     state = ESPIRITUALIDAD;
     target = MENUNIVEL;
 }
 void vhpLevelMenu::setOratoria(){
+    lines.clear();
+    getText("txt/lm-oratoria.txt");
+    alpha = 0.0;
+    alpha_increment = 10.0;
+    for (int i = 0; i < lines.size(); i++) {
+        lines[i].init();
+    }
     count = 0;
     currentUpdate = &vhpLevelMenu::fadeInOratoria;
     state = ORATORIA;
@@ -180,7 +202,7 @@ void vhpLevelMenu::drawMenu(){
     glow.draw(0,0);
     drawTextLine(425, 200, alpha);
     ofSetColor(255, 255, 255);
-    keko->draw(0,0);
+    petamuti->draw(76, 51);
 }
 void vhpLevelMenu::drawDestreza(){
     ofSetColor(255, 255, 255);
@@ -192,7 +214,7 @@ void vhpLevelMenu::drawDestreza(){
     ofSetColor(255, 255, 255);
     bases.draw(0,0);
     icons.draw(0,0);
-    keko->draw(0,0);
+    petamuti->draw(76, 51);
 }
 void vhpLevelMenu::drawEspiritualidad(){
     ofSetColor(255, 255, 255);
@@ -204,7 +226,7 @@ void vhpLevelMenu::drawEspiritualidad(){
     ofSetColor(255, 255, 255);
     bases.draw(0,0);
     icons.draw(0,0);
-    keko->draw(0,0);
+    petamuti->draw(76, 51);
 }
 void vhpLevelMenu::drawOratoria(){
     ofSetColor(255, 255, 255);
@@ -216,7 +238,7 @@ void vhpLevelMenu::drawOratoria(){
     ofSetColor(255, 255, 255);
     bases.draw(0,0);
     icons.draw(0,0);
-    keko->draw(0,0);
+    petamuti->draw(76, 51);
 }
 
 // Reproducir o detener la escena modificando currentUpdate ----

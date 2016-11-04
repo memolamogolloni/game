@@ -4,6 +4,7 @@
 #include "ofxXmlSettings.h"
 #include "ofEvents.h"
 #include "vhpLine.h"
+#include "vhpPetamuti.h"
 
 #define MENUNIVEL               0
 #define DESTREZA                1
@@ -22,7 +23,7 @@ class vhpLevelMenu {
     
         // Inicializar variables y cargar los archivos
         void setup(int _currentScene, int _targetScene);
-        void setupResources(ofImage* _bg, ofImage* _keko);
+        void setupResources(ofImage* _bg, vhpPetamuti* _petamuti);
         void setupFonts(ofTrueTypeFont* _TTF, ofTrueTypeFont* _TTFB);
         void getText(string _file);
     
@@ -90,12 +91,11 @@ class vhpLevelMenu {
         ofImage                     espiritualidad;
         ofImage                     oratoria;
     
+        ofImage *                   bg;
+        vhpPetamuti *               petamuti;
     
-        ofImage *                    keko;
-        ofImage *                    bg;
-    
-        float                        alpha;
-        float                        alpha_increment;
+        float                       alpha;
+        float                       alpha_increment;
     
         // fbo
         ofFbo                       fbo;

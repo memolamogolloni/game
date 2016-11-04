@@ -117,6 +117,8 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     targetScene = _targetScene;     // PLAYERMENU
     alpha = 0.0;
     alpha_increment = 10.0;
+    alphaF = 255.0;
+    alphaF_increment = -10.0;
     count = 0;
     
     pWindow.setup();
@@ -130,13 +132,14 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     maxIAdelay = 6.0;
     IA = true;
 }
-void vhpGameCore::setupResources(vhpCarita* _roja, vhpCarita* _azul, ofImage* _bg, ofImage* _keko, ofImage* _colorBarR, ofImage* _colorBarA) {
+void vhpGameCore::setupResources(vhpCarita* _roja, vhpCarita* _azul, ofImage* _bg, ofImage* _colorBarR, ofImage* _colorBarA, vhpPetamuti* _petamuti, vhpFlecha* _flecha) {
     colorBar[0] = _colorBarR;
     colorBar[1] = _colorBarA;
     caritas[0] = _roja;
     caritas[1] = _azul;
     bg = _bg;
-    keko = _keko;
+    petamuti = _petamuti;
+    flecha = _flecha;
 }
 void vhpGameCore::setupFonts(ofTrueTypeFont* _TTF, ofTrueTypeFont* _TTFB, ofTrueTypeFont* _TTFM){
     TTF = _TTF;
@@ -180,6 +183,7 @@ void vhpGameCore::initRound(){
         alphaWindow[i] = 0.0;
     }
     alpha_increment = 10.0;
+    alphaF_increment = -10.0;
     soon[0] = false;
     soon[1] = false;
     clicked[0] = 7;
@@ -198,7 +202,7 @@ void vhpGameCore::initRound(){
 void vhpGameCore::initPattern(){
     currentWindow = 0;
     holdSteady = ceil(ofRandom(3));
-    targetsShot = randomWindow(true);
+    targetsShot = randomWindow(false);
     alpha = 0.0;
     for (int i=0; i<4; i++) {
         alphaWindow[i] = 0.0;
@@ -400,8 +404,8 @@ void vhpGameCore::drawBgFbo(int _mode){
     ofDisableAlphaBlending();
     ofPopStyle();
 }
-void vhpGameCore::drawRound(){
-    ofSetColor(255, 255, 255);
+void vhpGameCore::drawRound(int _alpha){
+    ofSetColor(255, 255, 255, _alpha);
     ofRectangle box;
     box = TTFB->getStringBoundingBox(lines[0], 0, 0);
     ofRectangle center;
@@ -554,7 +558,7 @@ void vhpGameCore::showRoundTutorial(){
     glPushMatrix();
     glTranslatef(0,-20,0);
     ofSetColor(255, 255, 255);
-    keko->draw(0, 0);
+    petamuti->draw(76, 51);
     drawTextLine(425, 200, 255);
     ventana.draw(1435, 140);
     glPopMatrix();
@@ -586,7 +590,7 @@ void vhpGameCore::playReady(){
     TTFB->drawString(lines[2], (width-box.width)/2, 840);
     ofSetColor(255, 255, 255);
     drawScore();
-    drawRound();
+    drawRound(255);
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
@@ -626,7 +630,9 @@ void vhpGameCore::playSteady(){
     TTFB->drawString(lines[3], (width-box.width)/2, 840);
     ofSetColor(255, 255, 255);
     drawScore();
-    drawRound();
+    if (alphaF_increment<0) drawRound(alphaF);
+    if (alphaF_increment>0) flecha->draw((1920-176)/2, 60, alphaF);
+    ofSetColor(255, 255, 255);
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
@@ -636,6 +642,12 @@ void vhpGameCore::playSteady(){
     ofPopStyle();
     
     // Update
+    alphaF += alphaF_increment;
+    if (alphaF<0) {
+        alphaF_increment = -1 * alphaF_increment;
+    } else if (alphaF>255) {
+        alphaF=255;
+    }
     alpha += alpha_increment;
     if (alpha>=255) {
         alpha = 255;
@@ -669,7 +681,9 @@ void vhpGameCore::playGo(){
     TTFB->drawString(lines[4], (width-box.width)/2, 840);
     ofSetColor(255, 255, 255);
     drawScore();
-    drawRound();
+    //drawRound(255);
+    flecha->draw((1920-176)/2, 60, alphaF);
+    ofSetColor(255, 255, 255);
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
@@ -712,7 +726,9 @@ void vhpGameCore::showWindow(){
     drawClickedWindow();
     ofSetColor(255, 255, 255);
     drawScore();
-    drawRound();
+    //drawRound(255);
+    flecha->draw((1920-176)/2, 60, alphaF);
+    ofSetColor(255, 255, 255);
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
@@ -817,7 +833,7 @@ void vhpGameCore::showPatternTutorial(){
     glPushMatrix();
     glTranslatef(0,-20,0);
     ofSetColor(255, 255, 255);
-    keko->draw(0, 0);
+    petamuti->draw(76, 51);
     drawTextLine(425, 200, 255);
     bandera.draw(1435, 140);
     glPopMatrix();
@@ -952,26 +968,27 @@ void vhpGameCore::showPattern(){
 
 // Show Winner -------------------------------------------------
 void vhpGameCore::setFinalWinner(){
-    currentUpdate = &vhpGameCore::showFinalWinner;
-    currentTouchPressed = &vhpGameCore::touchPressedPatternWinner;
     fLines.clear();
-    getText("txt/g-final.txt", false);
-    for (int i = 0; i < fLines.size(); i++) {
-        fLines[i].init();
-    }
     if (winner == 0){
+        getText("txt/g-final-rojo.txt", false);
         /*  OSC  */
         /* ----- */
         int clip = clicked[0] + 22;
         mensajeria->send("layer1/clip4/connect", 1);
         /* ----- */
     } else {
+        getText("txt/g-final-azul.txt", false);
         /*  OSC  */
         /* ----- */
         int clip = clicked[0] + 22;
         mensajeria->send("layer1/clip4/connect", 1);
         /* ----- */
     }
+    for (int i = 0; i < fLines.size(); i++) {
+        fLines[i].init();
+    }
+    currentUpdate = &vhpGameCore::showFinalWinner;
+    currentTouchPressed = &vhpGameCore::touchPressedPatternWinner;
 }
 void vhpGameCore::showFinalWinner(){
     // Draw
@@ -981,7 +998,7 @@ void vhpGameCore::showFinalWinner(){
     
     ofSetColor(255, 255, 255);
     bg->draw(0, 0);
-    keko->draw(0, 0);
+    petamuti->draw(76, 51);
     if (winner==0) {
         shadowred.draw(0,0);
         drawButton(85, 915, lines[13], "Mee", colorBar[0]);
@@ -1595,7 +1612,7 @@ void vhpGameCore::setDelay(){
 }
 int vhpGameCore::randomWindow(bool _resize){
     if (_resize) {
-    nums.clear();
+        nums.clear();
         for (int i=0; i<nWINDOWS; i++) {
             if (windowState[0][i]==pendingW) {
                 nums.push_back(i);

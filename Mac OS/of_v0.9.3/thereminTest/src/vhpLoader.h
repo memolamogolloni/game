@@ -1,6 +1,8 @@
 #pragma once
 #include "ofMain.h"
 #include "vhpCarita.h"
+#include "vhpPetamuti.h"
+#include "vhpFlecha.h"
 
 class vhpLoader {
 
@@ -32,4 +34,7 @@ class vhpLoader {
         ofTrueTypeFont              TTFM;
     
         vhpCarita                   caritas[2];
+        vhpPetamuti                 petamuti;
+        vhpFlecha                   flecha;
+    
 };

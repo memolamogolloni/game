@@ -5,6 +5,7 @@
 #include "ofEvents.h"
 #include "vhpLine.h"
 #include "ofxTrueTypeFontUC.h"
+#include "vhpPetamuti.h"
 
 #define MENU                0
 #define ONEPLAYER           1
@@ -23,7 +24,7 @@ class vhpPlayerMenu {
     
         // Inicializar variables y cargar los archivos
         void setup(int _currentScene, int _targetScene1, int _targetScene2);
-        void setupResources(ofImage* _bg, ofImage* _keko, ofImage* _colorBarR, ofImage* _colorBarA);
+        void setupResources(ofImage* _bg, ofImage* _colorBarR, ofImage* _colorBarA, vhpPetamuti* _petamuti);
         void setupFonts(ofxTrueTypeFontUC* _TTF, ofxTrueTypeFontUC* _TTFB, ofxTrueTypeFontUC* _TTFM);
         void getText(string _file);
     
@@ -97,9 +98,8 @@ class vhpPlayerMenu {
         ofImage                     four;
     
         ofImage *                   colorBar[2];
-        ofImage *                   keko;
         ofImage *                   bg;
-    
+        vhpPetamuti *               petamuti;
     
         float                       alpha;
         float                       alpha_increment;

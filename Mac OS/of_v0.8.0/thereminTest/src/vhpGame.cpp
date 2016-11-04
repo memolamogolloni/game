@@ -262,11 +262,11 @@ void vhpGame::loadGame(){
         if(!resources.loaded) {
             resources.load();
         } else {
-            xogadores.setupResources(&resources.images[2], &resources.images[3], &resources.images[4], &resources.images[5]);
+            xogadores.setupResources(&resources.images[2], &resources.images[3], &resources.images[4], &resources.petamuti);
             xogadores.setupFonts(&resources.TTF, &resources.TTFB, &resources.TTFM);
-            niveis.setupResources(&resources.images[2], &resources.images[3]);
+            niveis.setupResources(&resources.images[2], &resources.petamuti);
             niveis.setupFonts(&resources.TTF, &resources.TTFB);
-            xogo.setupResources(&resources.caritas[0], &resources.caritas[1], &resources.images[2], &resources.images[3], &resources.images[4], &resources.images[5]);
+            xogo.setupResources(&resources.caritas[0], &resources.caritas[1], &resources.images[2], &resources.images[3], &resources.images[4], &resources.petamuti, &resources.flecha);
             xogo.setupFonts(&resources.TTF, &resources.TTFB, &resources.TTFM);
             resourcesLoaded = true;
             cout << "resources is loaded" << endl;

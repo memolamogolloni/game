@@ -8,9 +8,10 @@ vhpLoader::vhpLoader():loaded(false),loading(false){
 //--------------------------------------------------------------
 void vhpLoader::setup(){
     
+    imageFile.push_back("flecha-secuencia");
+    imageFile.push_back("petamuti-secuencia");
     imageFile.push_back("t-blue-b");
     imageFile.push_back("t-red-b");
-    imageFile.push_back("t-keko");
     imageFile.push_back("t-bg");
     imageFile.push_back("caraAzul");
     imageFile.push_back("caraRosa");
@@ -64,6 +65,8 @@ void vhpLoader::loadImages(){
             cout << "loading single images in Player Menu finished!" << endl;
             caritas[0].setup(&images[0]);
             caritas[1].setup(&images[1]);
+            petamuti.setup(&images[5]);
+            flecha.setup(&images[6]);
             loaded = true;
         }
     }

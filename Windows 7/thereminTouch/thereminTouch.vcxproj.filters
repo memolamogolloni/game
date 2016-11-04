@@ -112,6 +112,12 @@
     <ClCompile Include="src\vhpLoader.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\vhpFlecha.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vhpPetamuti.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -288,6 +294,12 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\vhpLoader.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vhpFlecha.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vhpPetamuti.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,6 +8,8 @@
 #include "vhpWindow.h"
 #include "ofxTrueTypeFontUC.h"
 #include "vhpCarita.h"
+#include "vhpPetamuti.h"
+#include "vhpFlecha.h"
 
 #define nWINDOWS        7
 #define nROUNDS         3
@@ -29,7 +31,7 @@ class vhpGameCore {
     
         // Inicializar variables y cargar los archivos
         void setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene);
-        void setupResources(vhpCarita* _roja, vhpCarita* _azul, ofImage* _bg, ofImage* _keko, ofImage* _colorBarR, ofImage* _colorBarA);
+        void setupResources(vhpCarita* _roja, vhpCarita* _azul, ofImage* _bg, ofImage* _colorBarR, ofImage* _colorBarA, vhpPetamuti* _petamuti, vhpFlecha* _flecha);
         void setupFonts(ofxTrueTypeFontUC* _TTF, ofxTrueTypeFontUC* _TTFB, ofxTrueTypeFontUC* _TTFM);
         void getText(string _file, bool _string);
         void initGame();
@@ -58,7 +60,7 @@ class vhpGameCore {
         void drawBackground();
         void drawBgFbo(int _mode);
         void drawWindows();
-        void drawRound();
+        void drawRound(int _alpha);
         void drawPatternText();
         void drawRoundWiner();
         void drawReadyButton();
@@ -137,8 +139,10 @@ class vhpGameCore {
         ofxTrueTypeFontUC *            TTFM;
     
         float                       alpha;
-        float                       alphaWindow[4];
         float                       alpha_increment;
+        float                       alphaF;
+        float                       alphaF_increment;
+        float                       alphaWindow[4];
         ofImage                     tie;
         ofImage                     building;
     
@@ -181,7 +185,8 @@ class vhpGameCore {
         vhpCarita *                 caritas[2];
         ofImage *                   colorBar[2];
         ofImage *                   bg;
-        ofImage *                   keko;
+        vhpPetamuti *               petamuti;
+        vhpFlecha *                 flecha;
     
         // Estado del juego
         int                         level;
