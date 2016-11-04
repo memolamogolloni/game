@@ -90,8 +90,8 @@ void vhpLevelMenu::loadSingle(){
 void vhpLevelMenu::init(){
     lines.clear();
     getText("txt/lm-intro.txt");
-    alpha = 0;
-    alpha_increment = 5;
+    alpha = 0.0;
+    alpha_increment = 10.0;
     for (int i = 0; i < lines.size(); i++) {
         lines[i].init();
     }
@@ -149,7 +149,7 @@ void vhpLevelMenu::updateElements(){
     updateTextLine();
 }
 void vhpLevelMenu::updateTextLine(){
-    if (count%6==0){
+    if (count%3==0){
         for (int i = 0; i < lines.size(); i++) {
             if (lines[i].isNotLast()) {
                 lines[i].add();
@@ -268,8 +268,8 @@ void vhpLevelMenu::fadeOutText(){
     
     alpha -= alpha_increment;
     if (alpha<=0) {
-        alpha = 0;
-        alpha_increment = 5;
+        alpha = 0.0;
+        alpha_increment = 10.0;
         setNext();
     }
 }
@@ -303,8 +303,8 @@ void vhpLevelMenu::fadeOutDestreza(){
     
     alpha -= alpha_increment;
     if (alpha<=0) {
-        alpha = 0;
-        alpha_increment = 5;
+        alpha = 0.0;
+        alpha_increment = 10.0;
         setNext();
     }
 }
@@ -338,8 +338,8 @@ void vhpLevelMenu::fadeOutEspiritualidad(){
     
     alpha -= alpha_increment;
     if (alpha<=0) {
-        alpha = 0;
-        alpha_increment = 5;
+        alpha = 0.0;
+        alpha_increment = 10.0;
         setNext();
     }
 }
@@ -373,7 +373,7 @@ void vhpLevelMenu::fadeOutOratoria(){
     
     alpha -= alpha_increment;
     if (alpha<=0) {
-        alpha = 0;
+        alpha = 0.0;
         setNext();
     }
 }
@@ -423,12 +423,12 @@ void vhpLevelMenu::touchPressed(float _x, float _y){
                         break;
                     case ESPIRITUALIDAD:
                         target = DESTREZA;
-                        alpha_increment = 10;
+                        alpha_increment = 20.0;
                         count=500;
                         break;
                     case ORATORIA:
                         target = DESTREZA;
-                        alpha_increment = 10;
+                        alpha_increment = 20.0;
                         count=500;
                         break;
                 }
@@ -440,14 +440,14 @@ void vhpLevelMenu::touchPressed(float _x, float _y){
                         break;
                     case DESTREZA:
                         target = ESPIRITUALIDAD;
-                        alpha_increment = 10;
+                        alpha_increment = 20.0;
                         count=500;
                         break;
                     case ESPIRITUALIDAD:
                         break;
                     case ORATORIA:
                         target = ESPIRITUALIDAD;
-                        alpha_increment = 10;
+                        alpha_increment = 20.0;
                         count=500;
                         break;
                 }
@@ -459,12 +459,12 @@ void vhpLevelMenu::touchPressed(float _x, float _y){
                         break;
                     case DESTREZA:
                         target = ORATORIA;
-                        alpha_increment = 10;
+                        alpha_increment = 20.0;
                         count=500;
                         break;
                     case ESPIRITUALIDAD:
                         target = ORATORIA;
-                        alpha_increment = 10;
+                        alpha_increment = 20.0;
                         count=500;
                         break;
                     case ORATORIA:

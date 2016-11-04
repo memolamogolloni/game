@@ -99,8 +99,8 @@ void vhpPlayerMenu::loadSingle(){
 void vhpPlayerMenu::init(){
     lines.clear();
     getText("txt/pm-intro.txt");
-    alpha = 0;
-    alpha_increment = 5;
+    alpha = 0.0;
+    alpha_increment = 10.0;
     for (int i = 0; i < lines.size(); i++) {
         lines[i].init();
     }
@@ -111,8 +111,8 @@ void vhpPlayerMenu::init(){
 void vhpPlayerMenu::setOne(){
     lines.clear();
     getText("txt/pm-1vsai.txt");
-    alpha = 0;
-    alpha_increment = 5;
+    alpha = 0.0;
+    alpha_increment = 10.0;
     for (int i = 0; i < lines.size(); i++) {
         lines[i].init();
     }
@@ -126,8 +126,8 @@ void vhpPlayerMenu::setOne(){
 void vhpPlayerMenu::setTwo(){
     lines.clear();
     getText("txt/pm-1vs1.txt");
-    alpha = 0;
-    alpha_increment = 5;
+    alpha = 0.0;
+    alpha_increment = 10.0;
     for (int i = 0; i < lines.size(); i++) {
         lines[i].init();
     }
@@ -142,8 +142,8 @@ void vhpPlayerMenu::setFour(){
     getText("txt/pm-2vs2.txt");
     
     cout << "txt/pm-2vs2.txt" << endl;
-    alpha = 0;
-    alpha_increment = 5;
+    alpha = 0.0;
+    alpha_increment = 10.0;
     for (int i = 0; i < lines.size(); i++) {
         lines[i].init();
     }
@@ -186,7 +186,7 @@ void vhpPlayerMenu::updateElements(){
     updateTextLine();
 }
 void vhpPlayerMenu::updateTextLine(){
-    if (count%6==0){
+    if (count%3==0){
         for (int i = 0; i < lines.size(); i++) {
             if (lines[i].isNotLast()) {
                 lines[i].add();
@@ -345,7 +345,7 @@ void vhpPlayerMenu::fadeOutText(){
     alpha -= alpha_increment;
     if (alpha<=0) {
         alpha = 0;
-        alpha_increment = 5;
+        alpha_increment = 10.0;
         setNext();
     }
 }
@@ -380,7 +380,7 @@ void vhpPlayerMenu::fadeOutOne(){
     alpha -= alpha_increment;
     if (alpha<=0) {
         alpha = 0;
-        alpha_increment = 5;
+        alpha_increment = 10.0;
         setNext();
     }
 }
@@ -415,7 +415,7 @@ void vhpPlayerMenu::fadeOutTwo(){
     alpha -= alpha_increment;
     if (alpha<=0) {
         alpha = 0;
-        alpha_increment = 5;
+        alpha_increment = 10.0;
         setNext();
     }
 }
@@ -450,7 +450,7 @@ void vhpPlayerMenu::fadeOutFour(){
     alpha -= alpha_increment;
     if (alpha<=0) {
         alpha = 0;
-        alpha_increment = 5;
+        alpha_increment = 10.0;
         setNext();
     }
 }
@@ -485,12 +485,12 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                         break;
                     case TWOPLAYERS:
                         target = ONEPLAYER;
-                        alpha_increment = 10;
+                        alpha_increment = 20.0;
                         count=500;
                         break;
                     case FOURPLAYERS:
                         target = ONEPLAYER;
-                        alpha_increment = 10;
+                        alpha_increment = 20.0;
                         count=500;
                         break;
                 }
@@ -502,7 +502,7 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                         break;
                     case ONEPLAYER:
                         target = TWOPLAYERS;
-                        alpha_increment = 10;
+                        alpha_increment = 20.0;
                         count=500;
                         break;
                     case TWOPLAYERS:
@@ -515,7 +515,7 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                         break;
                     case FOURPLAYERS:
                         target = TWOPLAYERS;
-                        alpha_increment = 10;
+                        alpha_increment = 20.0;
                         count=500;
                         break;
                 }
@@ -530,12 +530,12 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                         break;
                     case ONEPLAYER:
                         target = FOURPLAYERS;
-                        alpha_increment = 10;
+                        alpha_increment = 20.0;
                         count=500;
                         break;
                     case TWOPLAYERS:
                         target = FOURPLAYERS;
-                        alpha_increment = 10;
+                        alpha_increment = 20.0;
                         count=500;
                         break;
                     case FOURPLAYERS:

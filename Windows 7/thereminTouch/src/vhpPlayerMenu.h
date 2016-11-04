@@ -101,8 +101,8 @@ class vhpPlayerMenu {
         ofImage *                   bg;
     
     
-        int                         alpha;
-        int                         alpha_increment;
+        float                       alpha;
+        float                       alpha_increment;
     
         //loader
         vector<ofImage*>            loadingSilge;

@@ -115,8 +115,8 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     // Inicializar las variables
     currentScene = _currentScene;   // SCREENSAVER
     targetScene = _targetScene;     // PLAYERMENU
-    alpha = 0;
-    alpha_increment = 5;
+    alpha = 0.0;
+    alpha_increment = 10.0;
     count = 0;
     
     pWindow.setup();
@@ -174,12 +174,12 @@ void vhpGameCore::initRound(){
     cout << "initRound()" << endl;
     isGo = false;
     holdSteady = ceil(ofRandom(3));
-    targetsShot = randomWindow();
-    alpha = 0;
+    targetsShot = randomWindow(true);
+    alpha = 0.0;
     for (int i=0; i<4; i++) {
-        alphaWindow[i] = 0;
+        alphaWindow[i] = 0.0;
     }
-    alpha_increment = 5;
+    alpha_increment = 10.0;
     soon[0] = false;
     soon[1] = false;
     clicked[0] = 7;
@@ -198,16 +198,16 @@ void vhpGameCore::initRound(){
 void vhpGameCore::initPattern(){
     currentWindow = 0;
     holdSteady = ceil(ofRandom(3));
-    targetsShot = randomWindow();
-    alpha = 0;
+    targetsShot = randomWindow(true);
+    alpha = 0.0;
     for (int i=0; i<4; i++) {
-        alphaWindow[i] = 0;
+        alphaWindow[i] = 0.0;
     }
     for (int i = 0; i<4; i++) {
         registeredPattern[0][i] = 7;
         registeredPattern[1][i] = 7;
     }
-    alpha_increment = 5;
+    alpha_increment = 10.0;
     soon[0] = false;
     soon[1] = false;
     clicked[0] = 7;
@@ -303,7 +303,7 @@ void vhpGameCore::update(){
 }
 void vhpGameCore::updateTextLine(){
     // cout << count << endl;
-    if (count%6==0){
+    if (count%3==0){
         for (int i = 0; i < fLines.size(); i++) {
             if (fLines[i].isNotLast()) {
                 fLines[i].add();
@@ -478,7 +478,7 @@ void vhpGameCore::drawClickedWindow(){
         } else {
             click.drawSubsection(wX[0][clicked[0]], wY, wWidth[0][clicked[0]], wHeight, wX[0][clicked[0]], wY, wWidth[0][clicked[0]], wHeight);
         }
-        alphaWindow[0] += 35;
+        alphaWindow[0] += 51.0;
         if (alphaWindow[0]>=255) alphaWindow[0] = 255;
     }
     if (clicked[1]!=7) {
@@ -488,7 +488,7 @@ void vhpGameCore::drawClickedWindow(){
         } else {
             click.drawSubsection(wX[1][clicked[1]], wY, wWidth[1][clicked[1]], wHeight, wX[1][clicked[1]], wY, wWidth[1][clicked[1]], wHeight);
         }
-        alphaWindow[1] += 35;
+        alphaWindow[1] += 51.0;
         if (alphaWindow[1]>=255) alphaWindow[1] = 255;
     }
 }
@@ -601,7 +601,7 @@ void vhpGameCore::playReady(){
         alpha = 255;
         alpha_increment = -1 * alpha_increment;
     } else if (alpha<0) {
-        alpha = 0;
+        alpha = 0.0;
         alpha_increment = -1 * alpha_increment;
         currentUpdate = &vhpGameCore::playSteady;
         /*  OSC  */
@@ -684,7 +684,7 @@ void vhpGameCore::playGo(){
         alpha = 255;
         alpha_increment = -1 * alpha_increment;
     } else if (alpha<=0) {
-        alpha = 0;
+        alpha = 0.0;
         alpha_increment = -1 * alpha_increment;
         isGo = true;
         setTimeReference();
@@ -708,7 +708,7 @@ void vhpGameCore::showWindow(){
     bgFbo.draw(0,0);
     ofSetColor(255,255,255,alpha);
     avisos.drawSubsection(wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight, wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight);
-    avisos.drawSubsection(wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight, wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight);
+    if (!IA) avisos.drawSubsection(wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight, wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight);
     drawClickedWindow();
     ofSetColor(255, 255, 255);
     drawScore();
@@ -1409,7 +1409,7 @@ void vhpGameCore::checkRoundWinner(){
             cout << "Both user have trigered a window" << endl;
             cout << "Time A: " << time[0] << endl;
             cout << "Time B: " << time[1] << endl;
-            alpha = 0;
+            alpha = 0.0;
             bool tie = false;
             // os dous acertaron
             if (ok[0]&&ok[1]) {
@@ -1506,7 +1506,7 @@ void vhpGameCore::checkPatternWinner(){
     if (hold[0]&&hold[1]) {
         delay--;
         if (delay<=0) {
-            alpha = 0;
+            alpha = 0.0;
             bool tie = false;
             if (ok[0]&&ok[1]) {
                 cout << "Both user have trigered a correct pattern" << endl;
@@ -1593,9 +1593,9 @@ void vhpGameCore::setDelay(){
     if (IAdelay>maxIAdelay) IAdelay = maxIAdelay;
     cout << "IAdelay: " << IAdelay << endl;
 }
-
-int vhpGameCore::randomWindow(){
-    if (nums.size()==0) {
+int vhpGameCore::randomWindow(bool _resize){
+    if (_resize) {
+    nums.clear();
         for (int i=0; i<nWINDOWS; i++) {
             if (windowState[0][i]==pendingW) {
                 nums.push_back(i);

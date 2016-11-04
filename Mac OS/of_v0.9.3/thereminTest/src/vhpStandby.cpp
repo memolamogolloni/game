@@ -89,8 +89,8 @@ void vhpStandby::loadSingle(){
 void vhpStandby::setWaiting(){
     lines.clear();
     getText("txt/sb-waiting.txt");
-    alpha = 0;
-    alpha_increment = 5;
+    alpha = 0.0;
+    alpha_increment = 10.0;
     currentUpdate = &vhpStandby::fadeInWaiting;
     
     count = 0;
@@ -99,16 +99,16 @@ void vhpStandby::setWaiting(){
 void vhpStandby::setAcepted(){
     lines.clear();
     getText("txt/sb-acepted.txt");
-    alpha = 0;
-    alpha_increment = 5;
+    alpha = 0.0;
+    alpha_increment = 10.0;
     currentUpdate = &vhpStandby::fadeInAcepted;
     state = WAITING;
 }
 void vhpStandby::setCancel(){
     lines.clear();
     getText("txt/sb-cancel.txt");
-    alpha = 0;
-    alpha_increment = 5;
+    alpha = 0.0;
+    alpha_increment = 10.0;
     currentUpdate = &vhpStandby::fadeInCancel;
     state = CANCELED;
 }
@@ -205,7 +205,7 @@ void vhpStandby::fadeOutWaiting(){
     
     alpha -= alpha_increment;
     if (alpha<=0) {
-        alpha = 0;
+        alpha = 0.0;
         setCancel();
         /*
         setNext();

@@ -121,12 +121,9 @@ class vhpGame {
         int                         height;
         ofxXmlSettings              settings;
         ofFbo                       fullScreen;
-        /*
-        ofShader                    shaderMixture;
-        ofTexture                   bufferTex;
-         */
-        int                         alpha;
-        int                         alpha_increment;
+    
+        float                       alpha;
+        float                       alpha_increment;
     
         vhpOSC                      mensajeria;
         vhpScreenSaver              logos;
@@ -142,12 +139,5 @@ class vhpGame {
     
         vhpGameCore                 xogo;
         bool                        xogoLoaded;
-    
-        /*
-         vector<vhpVid>            background;
-         vector<ofVideoPlayer> 		windowA;
-         vector<ofVideoPlayer> 		windowB;
-         vhpButton                   start;
-         */
     
 };

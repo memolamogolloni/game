@@ -1,8 +1,8 @@
 Ronda 
 ¡Sé más rápido que tu oponente en presionar la ventana indicada!
-Ready
-Steady
-go
+Preparados
+Listos
+ya
 ¡  
 Rojo
 Azul

@@ -115,8 +115,8 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     // Inicializar las variables
     currentScene = _currentScene;   // SCREENSAVER
     targetScene = _targetScene;     // PLAYERMENU
-    alpha = 0;
-    alpha_increment = 5;
+    alpha = 0.0;
+    alpha_increment = 10.0;
     count = 0;
     
     pWindow.setup();
@@ -174,12 +174,12 @@ void vhpGameCore::initRound(){
     cout << "initRound()" << endl;
     isGo = false;
     holdSteady = ceil(ofRandom(3));
-    targetsShot = randomWindow();
-    alpha = 0;
+    targetsShot = randomWindow(true);
+    alpha = 0.0;
     for (int i=0; i<4; i++) {
-        alphaWindow[i] = 0;
+        alphaWindow[i] = 0.0;
     }
-    alpha_increment = 5;
+    alpha_increment = 10.0;
     soon[0] = false;
     soon[1] = false;
     clicked[0] = 7;
@@ -198,16 +198,16 @@ void vhpGameCore::initRound(){
 void vhpGameCore::initPattern(){
     currentWindow = 0;
     holdSteady = ceil(ofRandom(3));
-    targetsShot = randomWindow();
-    alpha = 0;
+    targetsShot = randomWindow(true);
+    alpha = 0.0;
     for (int i=0; i<4; i++) {
-        alphaWindow[i] = 0;
+        alphaWindow[i] = 0.0;
     }
     for (int i = 0; i<4; i++) {
         registeredPattern[0][i] = 7;
         registeredPattern[1][i] = 7;
     }
-    alpha_increment = 5;
+    alpha_increment = 10.0;
     soon[0] = false;
     soon[1] = false;
     clicked[0] = 7;
@@ -303,7 +303,7 @@ void vhpGameCore::update(){
 }
 void vhpGameCore::updateTextLine(){
     // cout << count << endl;
-    if (count%6==0){
+    if (count%3==0){
         for (int i = 0; i < fLines.size(); i++) {
             if (fLines[i].isNotLast()) {
                 fLines[i].add();
@@ -403,11 +403,13 @@ void vhpGameCore::drawBgFbo(int _mode){
 void vhpGameCore::drawRound(){
     ofSetColor(255, 255, 255);
     ofRectangle box;
+	box = TTFB->getStringBoundingBox("e", 0, 0);
+    int margin = box.width;
     box = TTFB->getStringBoundingBox(lines[0], 0, 0);
     ofRectangle center;
-    center = TTFB->getStringBoundingBox(lines[0]+" "+ofToString(currentRound+1), 0, 0);
+    center = TTFB->getStringBoundingBox(lines[0]+"e"+ofToString(currentRound + 1), 0, 0);
     TTFB->drawString(lines[0], (1920 - center.width)/2, 140);
-    TTFB->drawString(ofToString(currentRound+1), (1920 - center.width)/2 + box.width + 10, 140);
+    TTFB->drawString(ofToString(currentRound + 1), (1920 - center.width)/2 + box.width + margin, 140);
     center = TTF->getStringBoundingBox(lines[1], 0, 0);
     TTF->drawString(lines[1], (1920 - center.width)/2, 210);
 }
@@ -422,8 +424,9 @@ void vhpGameCore::drawPatternText(){
 void vhpGameCore::drawRoundWiner(){
     int x = 580;
     int y = 180;
-    int margin = 0;
     ofRectangle box;
+    box = TTFB->getStringBoundingBox("e", 0, 0);
+    int margin = box.width;
     ofSetColor(255, 255, 255);
     TTFB->drawString(lines[5], x, y);
     box = TTFB->getStringBoundingBox(lines[5], x, y);
@@ -443,7 +446,7 @@ void vhpGameCore::drawRoundWiner(){
     TTFB->drawString(lines[8], x, y);
     box = TTFB->getStringBoundingBox(lines[8], x, y);
     x += box.width + margin;
-    TTFB->drawString(ofToString(currentRound), x, y);
+    TTFB->drawString(ofToString(currentRound + 1), x, y);
     box = TTFB->getStringBoundingBox(ofToString(currentRound), x, y);
     x += box.width + margin;
     TTFB->drawString(lines[9], x, y);
@@ -455,10 +458,10 @@ void vhpGameCore::drawReadyButton(){
     ofSetRectMode(OF_RECTMODE_CORNER);
     box = TTFM->getStringBoundingBox(lines[10], 0, 0);
     colorBar[0]->draw(340 - margin, 900, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
-    TTFM->drawString(lines[10], 340, 900 + TTFM->getLineHeight());
+    TTFM->drawString(lines[10], 340, 900 + TTFM->getLineHeight()*3.0/4.0);
     if (!IA) {
         colorBar[1]->draw(1580 - box.width - margin, 900, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
-        TTFM->drawString(lines[10], 1580 - box.width, 900 + TTFM->getLineHeight());
+        TTFM->drawString(lines[10], 1580 - box.width, 900 + TTFM->getLineHeight()*3.0/4.0);
     }
 }
 void vhpGameCore::drawButton(int _x, int _y, string _txt, string _margin, ofImage* _bar){
@@ -468,7 +471,7 @@ void vhpGameCore::drawButton(int _x, int _y, string _txt, string _margin, ofImag
     ofSetRectMode(OF_RECTMODE_CORNER);
     box = TTFM->getStringBoundingBox(_txt, 0, 0);
     _bar->draw(_x, _y, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
-    TTFM->drawString(_txt, _x + margin, _y + TTFM->getLineHeight());
+    TTFM->drawString(_txt, _x + margin, _y + TTFM->getLineHeight()*3.0/4.0);
 }
 void vhpGameCore::drawClickedWindow(){
     if (clicked[0]!=7) {
@@ -478,7 +481,7 @@ void vhpGameCore::drawClickedWindow(){
         } else {
             click.drawSubsection(wX[0][clicked[0]], wY, wWidth[0][clicked[0]], wHeight, wX[0][clicked[0]], wY, wWidth[0][clicked[0]], wHeight);
         }
-        alphaWindow[0] += 35;
+        alphaWindow[0] += 51.0;
         if (alphaWindow[0]>=255) alphaWindow[0] = 255;
     }
     if (clicked[1]!=7) {
@@ -488,7 +491,7 @@ void vhpGameCore::drawClickedWindow(){
         } else {
             click.drawSubsection(wX[1][clicked[1]], wY, wWidth[1][clicked[1]], wHeight, wX[1][clicked[1]], wY, wWidth[1][clicked[1]], wHeight);
         }
-        alphaWindow[1] += 35;
+        alphaWindow[1] += 51.0;
         if (alphaWindow[1]>=255) alphaWindow[1] = 255;
     }
 }
@@ -601,7 +604,7 @@ void vhpGameCore::playReady(){
         alpha = 255;
         alpha_increment = -1 * alpha_increment;
     } else if (alpha<0) {
-        alpha = 0;
+        alpha = 0.0;
         alpha_increment = -1 * alpha_increment;
         currentUpdate = &vhpGameCore::playSteady;
         /*  OSC  */
@@ -684,7 +687,7 @@ void vhpGameCore::playGo(){
         alpha = 255;
         alpha_increment = -1 * alpha_increment;
     } else if (alpha<=0) {
-        alpha = 0;
+        alpha = 0.0;
         alpha_increment = -1 * alpha_increment;
         isGo = true;
         setTimeReference();
@@ -708,7 +711,7 @@ void vhpGameCore::showWindow(){
     bgFbo.draw(0,0);
     ofSetColor(255,255,255,alpha);
     avisos.drawSubsection(wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight, wX[0][targetsShot], wY, wWidth[0][targetsShot], wHeight);
-    avisos.drawSubsection(wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight, wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight);
+    if (!IA) avisos.drawSubsection(wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight, wX[1][targetsShot], wY, wWidth[1][targetsShot], wHeight);
     drawClickedWindow();
     ofSetColor(255, 255, 255);
     drawScore();
@@ -1409,7 +1412,7 @@ void vhpGameCore::checkRoundWinner(){
             cout << "Both user have trigered a window" << endl;
             cout << "Time A: " << time[0] << endl;
             cout << "Time B: " << time[1] << endl;
-            alpha = 0;
+            alpha = 0.0;
             bool tie = false;
             // os dous acertaron
             if (ok[0]&&ok[1]) {
@@ -1506,7 +1509,7 @@ void vhpGameCore::checkPatternWinner(){
     if (hold[0]&&hold[1]) {
         delay--;
         if (delay<=0) {
-            alpha = 0;
+            alpha = 0.0;
             bool tie = false;
             if (ok[0]&&ok[1]) {
                 cout << "Both user have trigered a correct pattern" << endl;
@@ -1593,9 +1596,9 @@ void vhpGameCore::setDelay(){
     if (IAdelay>maxIAdelay) IAdelay = maxIAdelay;
     cout << "IAdelay: " << IAdelay << endl;
 }
-
-int vhpGameCore::randomWindow(){
-    if (nums.size()==0) {
+int vhpGameCore::randomWindow(bool _resize){
+    if (_resize) {
+		nums.clear();
         for (int i=0; i<nWINDOWS; i++) {
             if (windowState[0][i]==pendingW) {
                 nums.push_back(i);

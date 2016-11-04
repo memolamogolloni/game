@@ -105,7 +105,7 @@ class vhpGameCore {
         void triggerPressedPattern();
         void setDelay();
     
-        int randomWindow();
+        int randomWindow(bool _resize);
         void randomPattern();
         void setTimeReference();
         void setTimeReference(float _ago);
@@ -135,9 +135,9 @@ class vhpGameCore {
         ofTrueTypeFont *            TTFB;
         ofTrueTypeFont *            TTFM;
     
-        int                         alpha;
-        int                         alphaWindow[4];
-        int                         alpha_increment;
+        float                       alpha;
+        float                       alphaWindow[4];
+        float                       alpha_increment;
         ofImage                     tie;
         ofImage                     building;
     

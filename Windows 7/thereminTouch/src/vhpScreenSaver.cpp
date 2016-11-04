@@ -16,10 +16,10 @@ void vhpScreenSaver::setup(int _currentScene, int _targetScene){
     // Inicializar las variables
     currentScene = _currentScene;   // SCREENSAVER
     targetScene = _targetScene;     // PLAYERMENU
-    alpha = 0;
-    alpha_increment = 2;
-    salpha = 0;
-    salpha_increment = 1;
+    alpha = 0.0;
+    alpha_increment = 4.0;
+    salpha = 0.0;
+    salpha_increment = 2.0;
     finishLoading = false;
     
     // FBO alocation and cleaning
