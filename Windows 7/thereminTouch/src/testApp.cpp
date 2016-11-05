@@ -8,6 +8,7 @@ void testApp::setup(){
 	hasTouch[0] = false;
 	hasTouch[1] = false;
 	ofHideCursor();
+	ofSetFullscreen(true);
 }
 
 void testApp::exit(){
@@ -102,6 +103,8 @@ void testApp::touchMoved(ofTouchEventArgs &touch){
 		
 //--------------------------------------------------------------
 void testApp::touchUp(ofTouchEventArgs &touch){
+	thereminApp[0]->setTouchPosition(ofPoint(touch.x,touch.y));
+	thereminApp[0]->touchReleased(true);
 	touches.erase(touch.id);
 }
 		

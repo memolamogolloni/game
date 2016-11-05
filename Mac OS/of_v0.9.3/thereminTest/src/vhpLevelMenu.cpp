@@ -97,6 +97,7 @@ void vhpLevelMenu::init(){
         lines[i].init();
     }
     count = 0;
+    state = MENUNIVEL;
     target = MENUNIVEL;
 }
 void vhpLevelMenu::setDestreza(){

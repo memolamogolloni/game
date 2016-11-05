@@ -8,6 +8,12 @@ vhpLoader::vhpLoader():loaded(false),loading(false){
 //--------------------------------------------------------------
 void vhpLoader::setup(){
     
+    // Añadir los sonidos
+    selectSound.loadSound("sound/selecciona-opcion.wav");
+    aceptSound.loadSound("sound/acepta-menu.wav");
+    selectSound.setVolume(0.5f);
+    aceptSound.setVolume(0.5f);
+    
     imageFile.push_back("flecha-secuencia");
     imageFile.push_back("petamuti-secuencia");
     imageFile.push_back("t-blue-b");

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		020201CA1DCE53C000B07C5E /* vhpFlecha.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 020201C81DCE53C000B07C5E /* vhpFlecha.cpp */; };
+		020201CD1DCE53CE00B07C5E /* vhpPetamuti.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 020201CB1DCE53CE00B07C5E /* vhpPetamuti.cpp */; };
 		0202C6571DC9E83200ADBC20 /* vhpCarita.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0202C6531DC9E83200ADBC20 /* vhpCarita.cpp */; };
 		0202C6581DC9E83200ADBC20 /* vhpLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0202C6551DC9E83200ADBC20 /* vhpLoader.cpp */; };
 		02626A761DC25B2700D7954B /* vhpGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 02626A641DC25B2700D7954B /* vhpGame.cpp */; };
@@ -92,6 +94,10 @@
 /* Begin PBXFileReference section */
 		00D6D32B84B099226431108C /* ofxOsc.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOsc.h; path = ../../../addons/ofxOsc/src/ofxOsc.h; sourceTree = SOURCE_ROOT; };
 		01DCC0911400F9ACF5B65578 /* ofxXmlSettings.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxXmlSettings.h; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.h; sourceTree = SOURCE_ROOT; };
+		020201C81DCE53C000B07C5E /* vhpFlecha.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpFlecha.cpp; sourceTree = "<group>"; };
+		020201C91DCE53C000B07C5E /* vhpFlecha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpFlecha.h; sourceTree = "<group>"; };
+		020201CB1DCE53CE00B07C5E /* vhpPetamuti.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpPetamuti.cpp; sourceTree = "<group>"; };
+		020201CC1DCE53CE00B07C5E /* vhpPetamuti.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpPetamuti.h; sourceTree = "<group>"; };
 		0202C6531DC9E83200ADBC20 /* vhpCarita.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpCarita.cpp; sourceTree = "<group>"; };
 		0202C6541DC9E83200ADBC20 /* vhpCarita.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vhpCarita.h; sourceTree = "<group>"; };
 		0202C6551DC9E83200ADBC20 /* vhpLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vhpLoader.cpp; sourceTree = "<group>"; };
@@ -433,6 +439,10 @@
 				0202C6531DC9E83200ADBC20 /* vhpCarita.cpp */,
 				0202C6561DC9E83200ADBC20 /* vhpLoader.h */,
 				0202C6551DC9E83200ADBC20 /* vhpLoader.cpp */,
+				020201C91DCE53C000B07C5E /* vhpFlecha.h */,
+				020201C81DCE53C000B07C5E /* vhpFlecha.cpp */,
+				020201CC1DCE53CE00B07C5E /* vhpPetamuti.h */,
+				020201CB1DCE53CE00B07C5E /* vhpPetamuti.cpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -589,6 +599,8 @@
 				02626A7E1DC25B2700D7954B /* vhpWindow.cpp in Sources */,
 				0202C6571DC9E83200ADBC20 /* vhpCarita.cpp in Sources */,
 				0202C6581DC9E83200ADBC20 /* vhpLoader.cpp in Sources */,
+				020201CA1DCE53C000B07C5E /* vhpFlecha.cpp in Sources */,
+				020201CD1DCE53CE00B07C5E /* vhpPetamuti.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

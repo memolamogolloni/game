@@ -1,7 +1,7 @@
 #include "vhpPlayerMenu.h"
 
 // Constructor -------------------------------------------------
-vhpPlayerMenu::vhpPlayerMenu():state(MENU),selected(0),loaded(false),loading(false){
+vhpPlayerMenu::vhpPlayerMenu():state(MENU),selected(0),loaded(false),loading(false),presed(false){
 
 }
 vhpPlayerMenu::~vhpPlayerMenu(){
@@ -61,6 +61,10 @@ void vhpPlayerMenu::setupFonts(ofTrueTypeFont* _TTF, ofTrueTypeFont* _TTFB, ofTr
     TTFB = _TTFB;
     TTFM = _TTFM;
 }
+void vhpPlayerMenu::setupSounds(ofSoundPlayer* _S1, ofSoundPlayer* _S2){
+    selectS = _S1;
+    aceptS = _S2;
+}
 void vhpPlayerMenu::getText(string _file) {
     ofBuffer buffer = ofBufferFromFile(_file);
     for (auto line : buffer.getLines()){
@@ -110,6 +114,7 @@ void vhpPlayerMenu::init(){
     target = MENU;
 }
 void vhpPlayerMenu::setOne(){
+    selectS->play();
     lines.clear();
     getText("txt/pm-1vsai.txt");
     alpha = 0.0;
@@ -125,6 +130,7 @@ void vhpPlayerMenu::setOne(){
     
 }
 void vhpPlayerMenu::setTwo(){
+    selectS->play();
     lines.clear();
     getText("txt/pm-1vs1.txt");
     alpha = 0.0;
@@ -139,6 +145,7 @@ void vhpPlayerMenu::setTwo(){
     target = MENU;
 }
 void vhpPlayerMenu::setFour(){
+    selectS->play();
     lines.clear();
     getText("txt/pm-2vs2.txt");
     
@@ -215,6 +222,11 @@ void vhpPlayerMenu::drawChooseButton(int _x, int _y){
     int margin = box.width;
     ofSetRectMode(OF_RECTMODE_CORNER);
     box = TTFM->getStringBoundingBox("Elegir", 0, 0);
+    if (presed) {
+        ofFill();
+        ofSetColor(255, 255, 255);
+        ofDrawRectangle(_x - margin, _y, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
+    }
     colorBar[0]->draw(_x - margin, _y, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
     TTFM->drawString("Elegir", _x, _y + TTFM->getAscenderHeight());
 }
@@ -462,7 +474,6 @@ void vhpPlayerMenu::alert(int _e){
 }
 
 // Eventos ------------------------------------------------------
-
 void vhpPlayerMenu::touchPressed(float _x, float _y){
     cout << "Menu active!" << endl;
     //ofNotifyEvent(onClick, gameTarget);
@@ -478,10 +489,8 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                         break;
                     case ONEPLAYER:
                         if ((_y>=840)&&(_y<=960)) {
-                            selected = 1;
-                            cout << "ONEPLAYER confirmed! target: " << targetScene[0] << endl;
-                            int val = 3; // LEVELMENU & targetScene[0] ?
-                            ofNotifyEvent(playersNumber, val);
+                            presed = true;
+                            drawButtons(1);
                         }
                         break;
                     case TWOPLAYERS:
@@ -508,10 +517,8 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                         break;
                     case TWOPLAYERS:
                         if ((_y>=840)&&(_y<=960)) {
-                            selected = 2;
-                            cout << "TWOPLAYERS confirmed! target: " << targetScene[0] << endl;
-                            int val = 3; // LEVELMENU & targetScene[0] ?
-                            ofNotifyEvent(playersNumber, val);
+                            presed = true;
+                             drawButtons(2);
                         }
                         break;
                     case FOURPLAYERS:
@@ -524,30 +531,28 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                 cout << "4 xogadores" << endl;
                 cout << "state: " << state << endl;
                 /*
-                switch (state) {
-                    case MENU:
-                        cout << "setFour();" << endl;
-                        setFour();
-                        break;
-                    case ONEPLAYER:
-                        target = FOURPLAYERS;
-                        alpha_increment = 20.0;
-                        count=500;
-                        break;
-                    case TWOPLAYERS:
-                        target = FOURPLAYERS;
-                        alpha_increment = 20.0;
-                        count=500;
-                        break;
-                    case FOURPLAYERS:
-                        if ((_y>=840)&&(_y<=960)) {
-                            selected = 4;
-                            cout << "FOURPLAYERS confirmed! target: " << targetScene[1] << endl;
-                            int val = 2; // STANDBY & targetScene[1] ?
-                            ofNotifyEvent(playersNumber, val);
-                        }
-                        break;
-                }
+                 switch (state) {
+                 case MENU:
+                 cout << "setFour();" << endl;
+                 setFour();
+                 break;
+                 case ONEPLAYER:
+                 target = FOURPLAYERS;
+                 alpha_increment = 20.0;
+                 count=500;
+                 break;
+                 case TWOPLAYERS:
+                 target = FOURPLAYERS;
+                 alpha_increment = 20.0;
+                 count=500;
+                 break;
+                 case FOURPLAYERS:
+                 if ((_y>=840)&&(_y<=960)) {
+                 presed = true;
+                 drawButtons(4);
+                 }
+                 break;
+                 }
                  */
             }
         } else {
@@ -560,6 +565,47 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
             cout << "fora" << endl;
             target = MENU;
             count=500;
+        }
+    }
+}
+void vhpPlayerMenu::touchReleased(float _x, float _y){
+    cout << "Menu released!" << endl;
+    presed = false;
+    //ofNotifyEvent(onClick, gameTarget);
+    // min x: 520, min y: 182 408 538 630 160
+    cout << "mouse x: " << _x << " mouse y: " << _y << endl;
+    if (_y>=520) {
+        if ((_x>=182)&&(_x<=1760)) {
+            if (_x<=592) {
+                cout << "1 xogador" << endl;
+                if ((state==ONEPLAYER)&&(_y>=840)&&(_y<=960)) {
+                    selected = 1;
+                    cout << "ONEPLAYER confirmed! target: " << targetScene[0] << endl;
+                    int val = 3; // LEVELMENU & targetScene[0] ?
+                    aceptS->play();
+                    ofNotifyEvent(playersNumber, val);
+                }
+            } else if (_x<=1130) {
+                cout << "2 xogadores" << endl;
+                if ((state==TWOPLAYERS)&&(_y>=840)&&(_y<=960)) {
+                    selected = 2;
+                    cout << "TWOPLAYERS confirmed! target: " << targetScene[0] << endl;
+                    int val = 3; // LEVELMENU & targetScene[0] ?
+                    aceptS->play();
+                    ofNotifyEvent(playersNumber, val);
+                }
+            } else {
+                cout << "4 xogadores" << endl;
+                cout << "state: " << state << endl;
+                /*
+                 if ((state==FOURPLAYERS)&&(_y>=840)&&(_y<=960)) {
+                 selected = 4;
+                 cout << "FOURPLAYERS confirmed! target: " << targetScene[1] << endl;
+                 int val = 2; // STANDBY & targetScene[1] ?
+                 ofNotifyEvent(playersNumber, val);
+                 }
+                 */
+            }
         }
     }
 }

@@ -113,7 +113,7 @@ class vhpGame {
         void keyReleased(int _key);
 		void touchPressed(bool _t);
         void setTouchPosition(ofPoint _p);
-        void touchReleased(float _x, float _y);
+        void touchReleased(bool _t);
     
         // Variables ou propiedades
         ofxTrueTypeFontUC           TTF;

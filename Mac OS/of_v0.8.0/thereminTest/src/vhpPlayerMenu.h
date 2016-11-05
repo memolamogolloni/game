@@ -26,6 +26,7 @@ class vhpPlayerMenu {
         void setup(int _currentScene, int _targetScene1, int _targetScene2);
         void setupResources(ofImage* _bg, ofImage* _colorBarR, ofImage* _colorBarA, vhpPetamuti* _petamuti);
         void setupFonts(ofxTrueTypeFontUC* _TTF, ofxTrueTypeFontUC* _TTFB, ofxTrueTypeFontUC* _TTFM);
+        void setupSounds(ofSoundPlayer* _S1, ofSoundPlayer* _S2);
         void getText(string _file);
     
         // Precarga de todos los elementos
@@ -79,6 +80,7 @@ class vhpPlayerMenu {
     
         // Para recoger la pulsación del ratón en la pantalla
         void touchPressed(float _x, float _y);
+        void touchReleased(float _x, float _y);
     
         /* Variables o propiedades */
     
@@ -100,6 +102,8 @@ class vhpPlayerMenu {
         ofImage *                   colorBar[2];
         ofImage *                   bg;
         vhpPetamuti *               petamuti;
+        ofSoundPlayer *             selectS;
+        ofSoundPlayer *             aceptS;
     
         float                       alpha;
         float                       alpha_increment;
@@ -122,6 +126,7 @@ class vhpPlayerMenu {
         int                         state;
         int                         target;
         int                         selected;
+        bool                        presed;
     
         // notificación de eventos
         static ofEvent<int>         playersNumber;

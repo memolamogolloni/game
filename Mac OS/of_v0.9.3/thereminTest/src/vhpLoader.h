@@ -37,4 +37,7 @@ class vhpLoader {
         vhpPetamuti                 petamuti;
         vhpFlecha                   flecha;
     
+        ofSoundPlayer               selectSound;
+        ofSoundPlayer               aceptSound;
+    
 };

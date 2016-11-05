@@ -58,8 +58,6 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     filesSingle.push_back("g-red-bar");
     loadingSilge.push_back(&score[1]);
     filesSingle.push_back("g-blue-bar");
-    loadingSilge.push_back(&tie);
-    filesSingle.push_back("g-empate");
     loadingSilge.push_back(&winnerBackground[0]);
     filesSingle.push_back("g-red-wins");
     loadingSilge.push_back(&winnerBackground[1]);
@@ -131,6 +129,7 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     IAdelay = 3.0;
     maxIAdelay = 6.0;
     IA = true;
+    
 }
 void vhpGameCore::setupResources(vhpCarita* _roja, vhpCarita* _azul, ofImage* _bg, ofImage* _colorBarR, ofImage* _colorBarA, vhpPetamuti* _petamuti, vhpFlecha* _flecha) {
     colorBar[0] = _colorBarR;
@@ -165,6 +164,11 @@ void vhpGameCore::initGame(){
     getText("txt/g-text.txt", true);
     points[0] = 0;
     points[1] = 0;
+    presed[0] = false;
+    presed[1] = false;
+    checked = false;
+    scoreWidth[0] = 700;
+    scoreWidth[1] = 700;
     currentRound = 0;
     count = 0;
     for (int i=0; i<2; i++) {
@@ -198,6 +202,7 @@ void vhpGameCore::initRound(){
     delay = 90;
     caritas[0]->setAimationFull();
     caritas[1]->setAimationFull();
+    flecha->setAimationFull();
 }
 void vhpGameCore::initPattern(){
     currentWindow = 0;
@@ -327,11 +332,15 @@ void vhpGameCore::drawScore(){
     int diff = points[0] - points[1];
     int widthA = 700 + (100*diff);
     int widthB = 700 - (100*diff);
-    score[0].draw(260, 925, widthA, 81);
-    score[1].draw(260 + widthA, 925, widthB, 81);
+    
+    scoreWidth[0] += (widthA - scoreWidth[0])/10;
+    scoreWidth[1] += (widthB - scoreWidth[1])/10;
+    
+    score[0].draw(260, 925, scoreWidth[0], 81);
+    score[1].draw(260 + scoreWidth[0], 925, scoreWidth[1], 81);
     ofSetColor(255,255,255);
     ofSetLineWidth(1);
-    ofDrawLine(260 + widthA, 925+16, 260 + widthA, 925+16+49);
+    ofDrawLine(260 + scoreWidth[0], 925+16, 260 + scoreWidth[0], 925+16+49);
     ofPopStyle();
 }
 void vhpGameCore::drawWindows(){
@@ -407,11 +416,13 @@ void vhpGameCore::drawBgFbo(int _mode){
 void vhpGameCore::drawRound(int _alpha){
     ofSetColor(255, 255, 255, _alpha);
     ofRectangle box;
+	box = TTFB->getStringBoundingBox("e", 0, 0);
+    int margin = box.width;
     box = TTFB->getStringBoundingBox(lines[0], 0, 0);
     ofRectangle center;
-    center = TTFB->getStringBoundingBox(lines[0]+" "+ofToString(currentRound+1), 0, 0);
+    center = TTFB->getStringBoundingBox(lines[0]+"e"+ofToString(currentRound + 1), 0, 0);
     TTFB->drawString(lines[0], (1920 - center.width)/2, 140);
-    TTFB->drawString(ofToString(currentRound+1), (1920 - center.width)/2 + box.width + 10, 140);
+    TTFB->drawString(ofToString(currentRound + 1), (1920 - center.width)/2 + box.width + margin, 140);
     center = TTF->getStringBoundingBox(lines[1], 0, 0);
     TTF->drawString(lines[1], (1920 - center.width)/2, 210);
 }
@@ -426,12 +437,13 @@ void vhpGameCore::drawPatternText(){
 void vhpGameCore::drawRoundWiner(){
     int x = 580;
     int y = 180;
-    int margin = 0;
     ofRectangle box;
+    box = TTFB->getStringBoundingBox("e", 0, 0);
+    int margin = box.width;
     ofSetColor(255, 255, 255);
     TTFB->drawString(lines[5], x, y);
     box = TTFB->getStringBoundingBox(lines[5], x, y);
-    x += box.width + margin;
+    x += box.width + margin/3.0;
     if (winner==0) {
         ofSetColor(240, 27, 86);
         TTFB->drawString(lines[6], x, y);
@@ -447,9 +459,9 @@ void vhpGameCore::drawRoundWiner(){
     TTFB->drawString(lines[8], x, y);
     box = TTFB->getStringBoundingBox(lines[8], x, y);
     x += box.width + margin;
-    TTFB->drawString(ofToString(currentRound), x, y);
-    box = TTFB->getStringBoundingBox(ofToString(currentRound), x, y);
-    x += box.width + margin;
+    TTFB->drawString(ofToString(currentRound + 1), x, y);
+    box = TTFB->getStringBoundingBox(ofToString(currentRound + 1), x, y);
+    x += box.width + margin/3.0;;
     TTFB->drawString(lines[9], x, y);
 }
 void vhpGameCore::drawReadyButton(){
@@ -458,19 +470,40 @@ void vhpGameCore::drawReadyButton(){
     int margin = box.width;
     ofSetRectMode(OF_RECTMODE_CORNER);
     box = TTFM->getStringBoundingBox(lines[10], 0, 0);
-    colorBar[0]->draw(340 - margin, 900, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
-    TTFM->drawString(lines[10], 340, 900 + TTFM->getAscenderHeight());
-    if (!IA) {
-        colorBar[1]->draw(1580 - box.width - margin, 900, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
-        TTFM->drawString(lines[10], 1580 - box.width, 900 + TTFM->getAscenderHeight());
+    
+    if ((!next[0])||(presed[0])) {
+        if (presed[0]) {
+            ofFill();
+            ofSetColor(255, 255, 255);
+            ofDrawRectangle(340 - margin, 900, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
+        }
+        colorBar[0]->draw(340 - margin, 900, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
+        TTFM->drawString(lines[10], 340, 900 + TTFM->getAscenderHeight());
+    }
+    if ((!next[1])||(presed[1])) {
+        if (!IA) {
+            if (presed[1]) {
+                ofFill();
+                ofSetColor(255, 255, 255);
+                ofDrawRectangle(1580 - box.width - margin, 900, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
+            }
+            colorBar[1]->draw(1580 - box.width - margin, 900, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
+            TTFM->drawString(lines[10], 1580 - box.width, 900 + TTFM->getAscenderHeight());
+        }
+
     }
 }
-void vhpGameCore::drawButton(int _x, int _y, string _txt, string _margin, ofImage* _bar){
+void vhpGameCore::drawButton(int _x, int _y, string _txt, string _margin, ofImage* _bar, bool _presed){
     ofRectangle box;
     box = TTFM->getStringBoundingBox(_margin, 0, 0);
     int margin = box.width;
     ofSetRectMode(OF_RECTMODE_CORNER);
     box = TTFM->getStringBoundingBox(_txt, 0, 0);
+    if (_presed) {
+        ofFill();
+        ofSetColor(255, 255, 255);
+        ofDrawRectangle(_x, _y, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
+    }
     _bar->draw(_x, _y, box.width + margin*2 + 12, TTFM->getLineHeight() + 12);
     TTFM->drawString(_txt, _x + margin, _y + TTFM->getAscenderHeight());
 }
@@ -505,6 +538,7 @@ void vhpGameCore::drawTextLine(int _x, int _y, int _alpha){
 
 // Reproducir o detener la escena modificando currentUpdate ----
 void vhpGameCore::play(){
+    initGame();
     setRoundTutorial();
 }
 void vhpGameCore::pause(){
@@ -525,6 +559,7 @@ void vhpGameCore::setRoundTutorial(){
     drawBgFbo(0);
     currentUpdate = &vhpGameCore::showRoundTutorial;
     currentTouchPressed = &vhpGameCore::touchPressedRoundTutorial;
+    currentTouchReleased = &vhpGameCore::touchReleasedRoundTutorial;
 }
 void vhpGameCore::showRoundTutorial(){
     
@@ -577,6 +612,7 @@ void vhpGameCore::setRound(){
     drawBgFbo(1);
     currentUpdate = &vhpGameCore::playReady;
     currentTouchPressed = &vhpGameCore::touchPressedNull;
+    currentTouchReleased = &vhpGameCore::touchReleasedNull;
 }
 void vhpGameCore::playReady(){
     // Draw
@@ -704,6 +740,7 @@ void vhpGameCore::playGo(){
         setTimeReference();
         currentUpdate = &vhpGameCore::showWindow;
         currentTouchPressed = &vhpGameCore::touchPressedGame;
+        currentTouchReleased = &vhpGameCore::touchReleasedNull;
         /*  OSC  */
         /* ----- */
         int clip = targetsShot + 8;
@@ -760,8 +797,10 @@ void vhpGameCore::showWinner(){
     ofSetColor(255, 255, 255);
     drawScore();
     drawRoundWiner();
-    drawButton(220, 730, lines[14], "M", colorBar[0]);
-    if (!IA) drawButton(1105, 730, lines[14], "M", colorBar[1]);
+    if ((!next[0])||(presed[0])) drawButton(220, 730, lines[14], "M", colorBar[0], presed[0]);
+    if (!IA) {
+        if ((!next[1])||(presed[1])) drawButton(1105, 730, lines[14], "M", colorBar[1], presed[1]);
+    }
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
@@ -785,9 +824,14 @@ void vhpGameCore::showTie(){
     bgFbo.draw(0,0);
     ofSetColor(255, 255, 255);
     drawScore();
-    tie.draw(0,0);
-    drawButton(220, 730, lines[14], "M", colorBar[0]);
-    if (!IA) drawButton(1105, 730, lines[14], "M", colorBar[1]);
+    ofSetColor(255,206,0,alpha);
+    ofRectangle box = TTFB->getStringBoundingBox(lines[15], 0, 0);
+    TTFB->drawString(lines[15], (width-box.width)/2, 210);
+    ofSetColor(255, 255, 255);
+    if ((!next[0])||(presed[0])) drawButton(220, 730, lines[14], "M", colorBar[0], presed[0]);
+    if (!IA) {
+        if ((!next[1])||(presed[1])) drawButton(1105, 730, lines[14], "M", colorBar[1], presed[1]);
+    }
     balls.draw(0,0);
     caritas[0]->draw(73, 887);
     caritas[1]->draw(1751, 887);
@@ -816,6 +860,7 @@ void vhpGameCore::setPatternTutorial(){
     drawBgFbo(0);
     currentUpdate = &vhpGameCore::showPatternTutorial;
     currentTouchPressed = &vhpGameCore::touchPressedPatternTutorial;
+    currentTouchReleased = &vhpGameCore::touchReleasedPatternTutorial;
 }
 void vhpGameCore::showPatternTutorial(){
     // Draw
@@ -879,6 +924,7 @@ void vhpGameCore::setWindowPattern(){
     drawBgFbo(1);
     currentUpdate = &vhpGameCore::sendWindowPattern;
     currentTouchPressed = &vhpGameCore::touchPressedPattern;
+    currentTouchReleased = &vhpGameCore::touchReleasedNull;
     /*  OSC  */
     /* ----- */
     mensajeria->send("composition/deck3/select", 1);
@@ -989,6 +1035,7 @@ void vhpGameCore::setFinalWinner(){
     }
     currentUpdate = &vhpGameCore::showFinalWinner;
     currentTouchPressed = &vhpGameCore::touchPressedPatternWinner;
+    currentTouchReleased = &vhpGameCore::touchReleasedPatternWinner;
 }
 void vhpGameCore::showFinalWinner(){
     // Draw
@@ -1001,10 +1048,10 @@ void vhpGameCore::showFinalWinner(){
     petamuti->draw(76, 51);
     if (winner==0) {
         shadowred.draw(0,0);
-        drawButton(85, 915, lines[13], "Mee", colorBar[0]);
+        drawButton(85, 915, lines[13], "Mee", colorBar[0], presed[0]);
     } else {
         shadowblue.draw(0,0);
-        drawButton(1565, 915, lines[13], "Mee", colorBar[1]);
+        drawButton(1565, 915, lines[13], "Mee", colorBar[1], presed[1]);
     }
     ofSetColor(255,255,255);
     glPushMatrix();
@@ -1036,8 +1083,14 @@ void vhpGameCore::showFinalWinner(){
 void vhpGameCore::touchPressed(float & _x, float & _y){
     (*this.*currentTouchPressed)(_x, _y);
 }
+void vhpGameCore::touchReleased(float & _x, float & _y){
+    (*this.*currentTouchReleased)(_x, _y);
+}
 void vhpGameCore::touchPressedNull(float & _x, float & _y){
 
+}
+void vhpGameCore::touchReleasedNull(float & _x, float & _y){
+    
 }
 void vhpGameCore::touchPressedRoundTutorial(float & _x, float & _y){
     
@@ -1049,24 +1102,46 @@ void vhpGameCore::touchPressedRoundTutorial(float & _x, float & _y){
         // Player A
         if ((_x>=240)&(_x<=650)) {
             cout << "Is player A" << endl;
+            presed[0] = true;
             if (!hold[0]) {
                 cout << "Set next[0] true" << endl;
                 next[0] = true;
                 hold[0] = true;
-                if ((next[1]==true)||(IA)) setRound();
             }
             // Player B
         } else if ((_x>=1270)&(_x<=1680)) {
             cout << "Is player B" << endl;
+            presed[1] = true;
             if (!hold[1]) {
                 cout << "Set next[1] true" << endl;
                 next[1] = true;
                 hold[1] = true;
-                if (next[0]==true) setRound();
             }
             
         }
     }
+    
+}
+void vhpGameCore::touchReleasedRoundTutorial(float & _x, float & _y){
+    
+    cout << "Mouse released during round tutorial!" << endl;
+    // min y: 870, max y: 870 + 60 + 88
+    
+    cout << "mouse x: " << _y << " mouse y: " << _x << endl;
+    if ((_y>=840)&&(_y<=1020)) {
+        // Player A
+        if ((_x>=240)&(_x<=650)) {
+            cout << "Is player A" << endl;
+            presed[0] = false;
+            if ((next[1]==true)||(IA)) setRound();
+            // Player B
+        } else if ((_x>=1270)&(_x<=1680)) {
+            cout << "Is player B" << endl;
+            presed[1] = false;
+            if (next[0]==true) setRound();
+        }
+    }
+    
 }
 void vhpGameCore::touchPressedGame(float & _x, float & _y){
     cout << "MousePressed in game!" << endl;
@@ -1170,7 +1245,7 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
 }
 void vhpGameCore::touchPressedWinner(float & _x, float & _y){
     
-    cout << "MousePressed after game!" << endl;
+    cout << "Mouse pressed after game!" << endl;
     
     // min y: 690, max y: 860
     cout << "mouse x: " << _y << " mouse y: " << _x << endl;
@@ -1178,47 +1253,69 @@ void vhpGameCore::touchPressedWinner(float & _x, float & _y){
         // Player A
         if (_x<=960) {
             cout << "Is player A" << endl;
+            presed[0] = true;
             if (!hold[0]) {
                 cout << "Set next[0] true" << endl;
                 next[0] = true;
                 hold[0] = true;
-                if ((next[1]==true)||(IA)) {
-                    cout << "next[1] is true" << endl;
-                    currentRound++;
-                    // cuatro primeras rondas
-                    if (currentRound<nROUNDS) {
-                        cout << "Next Round!" << endl;
-                        initRound();
-                        currentUpdate = &vhpGameCore::playReady;
-                        currentTouchPressed = &vhpGameCore::touchPressedGame;
+            }
+        // Player B
+        } else {
+            cout << "Is player B" << endl;
+            presed[1] = true;
+            if (!hold[1]) {
+                cout << "Set next[1] true" << endl;
+                next[1] = true;
+                hold[1] = true;
+            }
+        }
+    }
+}
+void vhpGameCore::touchReleasedWinner(float & _x, float & _y){
+    
+    cout << "Mouse released after game!" << endl;
+    
+    // min y: 690, max y: 860
+    cout << "mouse x: " << _y << " mouse y: " << _x << endl;
+    if ((_y>=690)&&(_y<=860)) {
+        // Player A
+        if (_x<=960) {
+            cout << "Is player A" << endl;
+            presed[0] = false;
+            if ((next[1]==true)||(IA)) {
+                cout << "next[1] is true" << endl;
+                currentRound++;
+                // cuatro primeras rondas
+                if (currentRound<nROUNDS) {
+                    cout << "Next Round!" << endl;
+                    initRound();
+                    currentUpdate = &vhpGameCore::playReady;
+                    currentTouchPressed = &vhpGameCore::touchPressedGame;
+                    currentTouchReleased = &vhpGameCore::touchReleasedNull;
                     // última ronda
-                    } else {
-                        cout << "Last Round!" << endl;
-                        setPatternTutorial();
-                    }
+                } else {
+                    cout << "Last Round!" << endl;
+                    setPatternTutorial();
                 }
             }
         // Player B
         } else {
             cout << "Is player B" << endl;
-            if (!hold[1]) {
-                cout << "Set next[1] true" << endl;
-                next[1] = true;
-                hold[1] = true;
-                if (next[0]==true) {
-                    cout << "next[0] is true" << endl;
-                    currentRound++;
-                    // cuatro primeras rondas
-                    if (currentRound<nROUNDS) {
-                        cout << "Next Round!" << endl;
-                        initRound();
-                        currentUpdate = &vhpGameCore::playReady;
-                        currentTouchPressed = &vhpGameCore::touchPressedGame;
+            presed[1] = false;
+            if (next[0]==true) {
+                cout << "next[0] is true" << endl;
+                currentRound++;
+                // cuatro primeras rondas
+                if (currentRound<nROUNDS) {
+                    cout << "Next Round!" << endl;
+                    initRound();
+                    currentUpdate = &vhpGameCore::playReady;
+                    currentTouchPressed = &vhpGameCore::touchPressedGame;
+                    currentTouchReleased = &vhpGameCore::touchReleasedNull;
                     // última ronda
-                    } else {
-                        cout << "Last Round!" << endl;
-                        setPatternTutorial();
-                    }
+                } else {
+                    cout << "Last Round!" << endl;
+                    setPatternTutorial();
                 }
             }
         }
@@ -1226,7 +1323,7 @@ void vhpGameCore::touchPressedWinner(float & _x, float & _y){
 }
 void vhpGameCore::touchPressedPatternTutorial(float & _x, float & _y){
     
-    cout << "MousePressed during tutorial!" << endl;
+    cout << "Mouse pressed during tutorial!" << endl;
     // min y: 870, max y: 870 + 60 + 88
     
     cout << "mouse x: " << _y << " mouse y: " << _x << endl;
@@ -1234,26 +1331,42 @@ void vhpGameCore::touchPressedPatternTutorial(float & _x, float & _y){
         // Player A
         if ((_x>=240)&(_x<=650)) {
             cout << "Is player A" << endl;
+            presed[0] = true;
             if (!hold[0]) {
                 cout << "Set next[0] true" << endl;
                 next[0] = true;
                 hold[0] = true;
-                if ((next[1]==true)||(IA)) {
-                    setWindowPattern();
-                }
+                
             }
         // Player B
         } else if ((_x>=1270)&(_x<=1680)) {
             cout << "Is player B" << endl;
+            presed[1] = true;
             if (!hold[1]) {
                 cout << "Set next[1] true" << endl;
                 next[1] = true;
                 hold[1] = true;
-                if (next[0]==true) {
-                    setWindowPattern();
-                }
             }
-
+        }
+    }
+}
+void vhpGameCore::touchReleasedPatternTutorial(float & _x, float & _y){
+    
+    cout << "Mouse released during tutorial!" << endl;
+    // min y: 870, max y: 870 + 60 + 88
+    
+    cout << "mouse x: " << _y << " mouse y: " << _x << endl;
+    if ((_y>=840)&&(_y<=1020)) {
+        // Player A
+        if ((_x>=240)&(_x<=650)) {
+            cout << "Is player A" << endl;
+            presed[0] = false;
+            if ((next[1]==true)||(IA)) setWindowPattern();
+        // Player B
+        } else if ((_x>=1270)&(_x<=1680)) {
+            cout << "Is player B" << endl;
+            presed[1] = false;
+            if (next[0]==true) setWindowPattern();
         }
     }
 }
@@ -1335,32 +1448,32 @@ void vhpGameCore::touchPressedPattern(float & _x, float & _y){
             } if (!hold[1]) {
                 // Window 7
                 if (_x<=1088) {
-                    registeredPattern[1][n[1]] = 6;
-                    cout << "Window 6" << endl;
+                    registeredPattern[1][n[1]] = 0;
+                    cout << "Window 0" << endl;
                 // Window 6
                 } else if (_x<=1210) {
-                    registeredPattern[1][n[1]] = 5;
-                    cout << "Window 5" << endl;
+                    registeredPattern[1][n[1]] = 1;
+                    cout << "Window 1" << endl;
                 // Window 5
                 } else if (_x<=1334) {
-                    registeredPattern[1][n[1]] = 4;
-                    cout << "Window 4" << endl;
+                    registeredPattern[1][n[1]] = 2;
+                    cout << "Window 2" << endl;
                 // Window 4
                 } else if (_x<=1466) {
                     registeredPattern[1][n[1]] = 3;
                     cout << "Window 3" << endl;
                 // Window 3
                 } else if (_x<=1603) {
-                    registeredPattern[1][n[1]] = 2;
-                    cout << "Window 2" << endl;
+                    registeredPattern[1][n[1]] = 4;
+                    cout << "Window 4" << endl;
                 // Window 2
                 } else if (_x<=1748) {
-                    registeredPattern[1][n[1]] = 1;
-                    cout << "Window 1" << endl;
+                    registeredPattern[1][n[1]] = 5;
+                    cout << "Window 5" << endl;
                 // Window 1
                 } else {
-                    registeredPattern[1][n[1]] = 0;
-                    cout << "Window 0" << endl;
+                    registeredPattern[1][n[1]] = 6;
+                    cout << "Window 6" << endl;
                 }
                 if (registeredPattern[1][n[1]]!=7) {
                     /*  OSC  */
@@ -1369,8 +1482,7 @@ void vhpGameCore::touchPressedPattern(float & _x, float & _y){
                     mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
                     /* ----- */
                 }
-                // hay discordancias entre el orden de las ventanas, si es igual o en espejo corregir para arreglar este apaño
-                bWindowClick[n[1]].setOneWindow(n[1], 6-registeredPattern[1][n[1]], 1);
+                bWindowClick[n[1]].setOneWindow(n[1], registeredPattern[1][n[1]], 1);
                 if ((n[1]==3)&&(registeredPattern[1][3]!=7)) {
                     cout << "Lets check" << endl;
                     time[1] = ofGetElapsedTimeMillis();
@@ -1394,6 +1506,22 @@ void vhpGameCore::touchPressedPatternWinner(float & _x, float & _y){
     cout << "mouse x: " << _y << " mouse y: " << _x << endl;
     // Player A
     if ((winner==0)&&(_y>=894)&&(_y<=1036)&&(_x>=10)&&(_x<=410)) {
+        presed[0] = true;
+    // Player B
+    } else if ((winner==1)&&(_y>=894)&&(_y<=1036)&&(_x>=1510)&&(_x<=1910)) {
+        presed[1] = true;
+    }
+}
+void vhpGameCore::touchReleasedPatternWinner(float & _x, float & _y){
+    //
+    cout << "MousePressed after Pattern!" << endl;
+    //
+    
+    // min y: 690, max y: 860
+    cout << "mouse x: " << _y << " mouse y: " << _x << endl;
+    // Player A
+    if ((winner==0)&&(_y>=894)&&(_y<=1036)&&(_x>=10)&&(_x<=410)) {
+        presed[0] = false;
         ofNotifyEvent(onRestart, targetScene);
         /*  OSC  */
         /* ----- */
@@ -1402,6 +1530,7 @@ void vhpGameCore::touchPressedPatternWinner(float & _x, float & _y){
         /* ----- */
     // Player B
     } else if ((winner==1)&&(_y>=894)&&(_y<=1036)&&(_x>=1510)&&(_x<=1910)) {
+        presed[1] = false;
         ofNotifyEvent(onRestart, targetScene);
         /*  OSC  */
         /* ----- */
@@ -1467,6 +1596,7 @@ void vhpGameCore::checkRoundWinner(){
                 currentRound --;
                 currentUpdate = &vhpGameCore::showTie;
                 currentTouchPressed = &vhpGameCore::touchPressedWinner;
+                currentTouchReleased = &vhpGameCore::touchReleasedWinner;
                 if (IA) setDelay();
             } else {
                 hold[0] = false;
@@ -1475,6 +1605,7 @@ void vhpGameCore::checkRoundWinner(){
                 drawBgFbo(1);
                 currentUpdate = &vhpGameCore::showWinner;
                 currentTouchPressed = &vhpGameCore::touchPressedWinner;
+                currentTouchReleased = &vhpGameCore::touchReleasedWinner;
                 switch (winner) {
                     case 0:
                         caritas[0]->setAimationUp();
@@ -1522,42 +1653,46 @@ void vhpGameCore::checkRoundWinner(){
 void vhpGameCore::checkPatternWinner(){
     if (hold[0]&&hold[1]) {
         delay--;
-        if (delay<=0) {
-            alpha = 0.0;
-            bool tie = false;
-            if (ok[0]&&ok[1]) {
-                cout << "Both user have trigered a correct pattern" << endl;
-                cout << "Time A: " << time[0] << endl;
-                cout << "Time B: " << time[1] << endl;
-                // foron igual de rápidos
-                if (time[0]==time[1]) {
-                    cout << "Both players where right!" << endl;
-                    tie = true;
-                } if (time[0]<time[1]) {
-                    cout << "Player 0 was faster!" << endl;
-                    winner = 0;
-                } else {
-                    cout << "Player 1 was faster!" << endl;
-                    winner = 1;
-                }
-            } else {
-                // acertou só 0
-                if (ok[0]) {
-                    cout << "Only 0 was succesful" << endl;
-                    winner = 0;
-                // acertou só 1
-                } else if (ok[1]) {
-                    cout << "Only 1 was succesful" << endl;
-                    winner = 1;
-                // no acertou ninguén
-                } else {
-                    cout << "Both players failed" << endl;
-                    tie = true;
-                }
-            }
-            if (!tie) points[winner] += 2;
-            (points[0]>points[1]) ? winner = 0 : winner = 1;
+        if (delay<=-60) {
             setFinalWinner();
+        } else if (delay<=0) {
+            alpha = 0.0;
+            if (!checked) {
+                bool tie = false;
+                if (ok[0]&&ok[1]) {
+                    cout << "Both user have trigered a correct pattern" << endl;
+                    cout << "Time A: " << time[0] << endl;
+                    cout << "Time B: " << time[1] << endl;
+                    // foron igual de rápidos
+                    if (time[0]==time[1]) {
+                        cout << "Both players where right!" << endl;
+                        tie = true;
+                    } if (time[0]<time[1]) {
+                        cout << "Player 0 was faster!" << endl;
+                        winner = 0;
+                    } else {
+                        cout << "Player 1 was faster!" << endl;
+                        winner = 1;
+                    }
+                } else {
+                    // acertou só 0
+                    if (ok[0]) {
+                        cout << "Only 0 was succesful" << endl;
+                        winner = 0;
+                        // acertou só 1
+                    } else if (ok[1]) {
+                        cout << "Only 1 was succesful" << endl;
+                        winner = 1;
+                        // no acertou ninguén
+                    } else {
+                        cout << "Both players failed" << endl;
+                        tie = true;
+                    }
+                }
+                if (!tie) points[winner] += 2;
+                (points[0]>points[1]) ? winner = 0 : winner = 1;
+                checked = true;
+            }
         }
     }
 }

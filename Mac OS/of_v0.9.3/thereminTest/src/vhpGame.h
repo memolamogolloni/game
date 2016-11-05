@@ -110,8 +110,8 @@ class vhpGame {
     
         // Events
         void keyReleased(int _key);
-        void mousePressed(int _x, int _y, int _button);
-        void mouseReleased(int x, int y, int button);
+        void touchPressed(int _x, int _y, int _button);
+        void touchReleased(int x, int y, int button);
     
         // Variables ou propiedades
         ofTrueTypeFont              TTF;

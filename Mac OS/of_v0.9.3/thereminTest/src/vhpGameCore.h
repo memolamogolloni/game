@@ -63,7 +63,7 @@ class vhpGameCore {
         void drawPatternText();
         void drawRoundWiner();
         void drawReadyButton();
-        void drawButton(int _x, int _y, string _txt, string _margin, ofImage* _bar);
+        void drawButton(int _x, int _y, string _txt, string _margin, ofImage* _bar, bool _presed);
         void drawClickedWindow();
         void drawTextLine(int _x, int _y, int _alpha);
     
@@ -91,14 +91,21 @@ class vhpGameCore {
     
         // Para recoger la pulsación del ratón en la pantalla
         void touchPressed(float & _x, float & _y);
+        void touchReleased(float & _x, float & _y);
         void (vhpGameCore::*currentTouchPressed)(float & _x, float & _y);
+        void (vhpGameCore::*currentTouchReleased)(float & _x, float & _y);
         void touchPressedNull(float & _x, float & _y);
+        void touchReleasedNull(float & _x, float & _y);
         void touchPressedRoundTutorial(float & _x, float & _y);
+        void touchReleasedRoundTutorial(float & _x, float & _y);
         void touchPressedGame(float & _x, float & _y);
         void touchPressedWinner(float & _x, float & _y);
+        void touchReleasedWinner(float & _x, float & _y);
         void touchPressedPatternTutorial(float & _x, float & _y);
+        void touchReleasedPatternTutorial(float & _x, float & _y);
         void touchPressedPattern(float & _x, float & _y);
         void touchPressedPatternWinner(float & _x, float & _y);
+        void touchReleasedPatternWinner(float & _x, float & _y);
     
         void checkIsGo(int _p);
         void checkRoundWinner();
@@ -142,7 +149,6 @@ class vhpGameCore {
         float                       alphaF;
         float                       alphaF_increment;
         float                       alphaWindow[4];
-        ofImage                     tie;
         ofImage                     building;
     
     
@@ -193,9 +199,12 @@ class vhpGameCore {
         int                         targetScene;
         float                       scale;
         bool                        hold[2];
+        bool                        presed[2];
         bool                        isGo;
         int                         clicked[2];
         int                         points[2];
+        float                       scoreWidth[2];
+        bool                        checked;
         int                         time[2];
         bool                        ok[2];
         bool                        soon[2];

@@ -79,10 +79,12 @@ void vhpGame::draw(){
 
 //--------------------------------------------------------------
 void vhpGame::drawFrameRate(){
+    /*
     ofPushStyle();
     ofSetColor(255, 255, 255);
     TTF.drawString("Framerate: "+ ofToString(ofGetFrameRate()), 20, 20);
     ofPopStyle();
+    */
 }
 
 // Event Mangers -----------------------------------------------
@@ -264,6 +266,7 @@ void vhpGame::loadGame(){
         } else {
             xogadores.setupResources(&resources.images[2], &resources.images[3], &resources.images[4], &resources.petamuti);
             xogadores.setupFonts(&resources.TTF, &resources.TTFB, &resources.TTFM);
+            xogadores.setupSounds(&resources.selectSound, &resources.aceptSound);
             niveis.setupResources(&resources.images[2], &resources.petamuti);
             niveis.setupFonts(&resources.TTF, &resources.TTFB);
             xogo.setupResources(&resources.caritas[0], &resources.caritas[1], &resources.images[2], &resources.images[3], &resources.images[4], &resources.petamuti, &resources.flecha);
@@ -351,13 +354,14 @@ void vhpGame::drawScreenSaver(){
     fullScreen.draw(0, 0, width * scale, height * scale/3);
     ofPopStyle();
     drawFrameRate();
+    /*
     if (!xogoLoaded) {
         ofPushStyle();
         ofSetColor(255, 255, 255);
         TTF.drawString("Loading", 20, 40);
         ofPopStyle();
     }
-    
+    */
 }
 
 // PlayerMenu --------------------------------------------------
@@ -913,11 +917,33 @@ void vhpGame::touchPressed(bool _t){
             xogo.touchPressed(x, y);
             break;
     }
-
 }
 
 //--------------------------------------------------------------
 
-void vhpGame::touchReleased(float _x, float _y){
-
+void vhpGame::touchReleased(bool _t){
+    float y = touchP.y*3/scale;
+    float x = touchP.x*3/scale;
+    switch (state) {
+            
+        case SCREENSAVER:
+            //logos.touchReleased();
+            break;
+            
+        case PLAYERMENU:
+            xogadores.touchReleased(x, y);
+            break;
+            
+        case STANDBY:
+            //espera.touchReleased();
+            break;
+            
+        case LEVELMENU:
+            //niveis.touchReleased(x, y);
+            break;
+            
+        case GAME:
+            xogo.touchReleased(x, y);
+            break;
+    }
 }

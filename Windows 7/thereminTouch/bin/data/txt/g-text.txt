@@ -1,15 +1,16 @@
 Ronda 
 ¡Sé más rápido que tu oponente en presionar la ventana indicada!
-Preparados
-Listos
+preparados
+listos
 ya
-¡  
+¡
 Rojo
 Azul
- gana la ronda 
- !
+gana la ronda
+!
 ¡Estoy listo!
 Ronda final
 ¡Repite el patrón en el orden correcto!
 ok
 ¡Listo para la siguiente!
+empate!

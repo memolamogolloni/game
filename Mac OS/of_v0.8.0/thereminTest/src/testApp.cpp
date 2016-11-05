@@ -2,6 +2,7 @@
 
 //--------------------------------------------------------------
 void testApp::setup(){
+    ofSetFullscreen(true);
     thereminTourette.setup();
 }
 
@@ -37,12 +38,12 @@ void testApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-    thereminTourette.mousePressed(x, y, button);
+    thereminTourette.touchPressed(x, y, button);
 }
 
 //--------------------------------------------------------------
 void testApp::mouseReleased(int x, int y, int button){
-    //thereminTourette.mouseReleased(x*3, y*3, button);
+    thereminTourette.touchReleased(x, y, button);
 }
 
 //--------------------------------------------------------------
