@@ -127,7 +127,7 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     initGame();
     
     IAdelay = 3.0;
-    maxIAdelay = 6.0;
+    maxIAdelay = 4.5;
     IA = true;
     
 }
@@ -199,7 +199,7 @@ void vhpGameCore::initRound(){
     next[0] = false;
     next[1] = false;
     winner = 0;
-    delay = 90;
+    delay = 50;
     caritas[0]->setAimationFull();
     caritas[1]->setAimationFull();
     flecha->setAimationFull();
@@ -228,7 +228,7 @@ void vhpGameCore::initPattern(){
     next[0] = false;
     next[1] = false;
     winner = 0;
-    delay = 90;
+    delay = 50;
     for (int i = 0; i<nWINDOWS; i++) {
         windowState[0][i]= whiteW;
         windowState[1][i]= whiteW;
@@ -646,7 +646,8 @@ void vhpGameCore::playReady(){
         currentUpdate = &vhpGameCore::playSteady;
         /*  OSC  */
         /* ----- */
-        int clip = ceil(ofRandom(7));
+        //int clip = ceil(ofRandom(7));
+        int clip = randomWindow(false);
         mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", 1);
         clip = ceil(ofRandom(7));
         mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
@@ -855,6 +856,7 @@ void vhpGameCore::setPatternTutorial(){
     initPattern();
     randomPattern();
     pWindow.setWindows(&purple, targetsPattern[0], &yellow, targetsPattern[1], &blue, targetsPattern[2], &green, targetsPattern[3]);
+    pWindow.order = 0;
     pWindow.setFadeIn();
     setTimeReference();
     drawBgFbo(0);
@@ -920,7 +922,12 @@ void vhpGameCore::setWindowPattern(){
         bWindowClick[i].setHiddenOne();
     }
     pWindow.order = 0;
-    pWindow.setFadeIn();
+    if (!IA) {
+        pWindow.setFadeIn();
+    } else {
+        pWindow.player = 0;
+        pWindow.setFadeInIA();
+    }
     drawBgFbo(1);
     currentUpdate = &vhpGameCore::sendWindowPattern;
     currentTouchPressed = &vhpGameCore::touchPressedPattern;
@@ -985,7 +992,7 @@ void vhpGameCore::showPattern(){
     
     bgFbo.draw(0,0);
     drawPatternText();
-    pWindow.draw();
+    //pWindow.draw();
     for (int i = 0; i < 4; i++) {
         aWindowClick[i].draw();
         bWindowClick[i].draw();

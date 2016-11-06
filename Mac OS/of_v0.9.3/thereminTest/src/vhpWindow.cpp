@@ -118,11 +118,18 @@ void vhpWindow::updateFadeInOne(){
     if (alpha==255) setVisibleOne();
     setAlpha();
 }
+void vhpWindow::updateFadeInIA(){
+    if (alpha==255) setVisibleIA();
+    setAlpha();
+}
 void vhpWindow::updateVisible(){
     if (ofGetElapsedTimeMillis()>=(start + visibleDuration)) setFadeOut();
 }
 void vhpWindow::updateVisibleOne(){
     if (ofGetElapsedTimeMillis()>=(start + visibleDuration)) setFadeOutOne();
+}
+void vhpWindow::updateVisibleIA(){
+    if (ofGetElapsedTimeMillis()>=(start + visibleDuration)) setFadeOutIA();
 }
 void vhpWindow::updateFadeOut(){
     if (alpha==0) setHidden();
@@ -132,11 +139,18 @@ void vhpWindow::updateFadeOutOne(){
     if (alpha==0) setHiddenOneAfter();
     setAlpha();
 }
+void vhpWindow::updateFadeOutIA(){
+    if (alpha==0) setHiddenIA();
+    setAlpha();
+}
 void vhpWindow::updateHidden(){
     if ((order<4)&&(ofGetElapsedTimeMillis()>=(start + hiddenDuration))) setFadeIn();
 }
 void vhpWindow::updateHiddenOne(){
     
+}
+void vhpWindow::updateHiddenIA(){
+    if ((order<4)&&(ofGetElapsedTimeMillis()>=(start + hiddenDuration))) setFadeInIA();
 }
 
 //--------------------------------------------------------------
@@ -167,6 +181,10 @@ void vhpWindow::drawFadeOut(){
     window->drawSubsection(wX[0][n], wY, wWidth[0][n], wHeight, wX[0][n], wY, wWidth[0][n], wHeight);
     window->drawSubsection(wX[1][n], wY, wWidth[1][n], wHeight, wX[1][n], wY, wWidth[1][n], wHeight);
 }
+void vhpWindow::drawFadeOutIA(){
+    ofSetColor(255,255,255,alpha);
+    window->drawSubsection(wX[player][n], wY, wWidth[player][n], wHeight, wX[player][n], wY, wWidth[player][n], wHeight);
+}
 void vhpWindow::drawFadeOutOne(){
     ofSetColor(255,255,255,255);
     aWindow->drawSubsection(wX[player][n], wY, wWidth[player][n], wHeight, wX[player][n], wY, wWidth[player][n], wHeight);
@@ -196,6 +214,14 @@ void vhpWindow::setFadeInOne(){
     setStart();
     state = fadeIn;
 }
+void vhpWindow::setFadeInIA(){
+    order ++;
+    setActualWindow();
+    currentUpdate = &vhpWindow::updateFadeInIA;
+    currentDraw = &vhpWindow::drawFadeInOne;
+    setStart();
+    state = fadeIn;
+}
 void vhpWindow::setVisible(){
     currentUpdate = &vhpWindow::updateVisible;
     currentDraw = &vhpWindow::drawVisible;
@@ -204,6 +230,12 @@ void vhpWindow::setVisible(){
 }
 void vhpWindow::setVisibleOne(){
     currentUpdate = &vhpWindow::updateVisibleOne;
+    currentDraw = &vhpWindow::drawVisibleOne;
+    setStart();
+    state = visible;
+}
+void vhpWindow::setVisibleIA(){
+    currentUpdate = &vhpWindow::updateVisibleIA;
     currentDraw = &vhpWindow::drawVisibleOne;
     setStart();
     state = visible;
@@ -220,6 +252,12 @@ void vhpWindow::setFadeOutOne(){
     setStart();
     state = fadeOut;
 }
+void vhpWindow::setFadeOutIA(){
+    currentUpdate = &vhpWindow::updateFadeOutIA;
+    currentDraw = &vhpWindow::drawFadeOutIA;
+    setStart();
+    state = fadeOut;
+}
 void vhpWindow::setHidden(){
     currentUpdate = &vhpWindow::updateHidden;
     currentDraw = &vhpWindow::drawHidden;
@@ -228,6 +266,12 @@ void vhpWindow::setHidden(){
 }
 void vhpWindow::setHiddenOne(){
     currentUpdate = &vhpWindow::updateHiddenOne;
+    currentDraw = &vhpWindow::drawHidden;
+    setStart();
+    state = hidden;
+}
+void vhpWindow::setHiddenIA(){
+    currentUpdate = &vhpWindow::updateHiddenIA;
     currentDraw = &vhpWindow::drawHidden;
     setStart();
     state = hidden;

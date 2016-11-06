@@ -24,12 +24,16 @@ class vhpWindow {
         void (vhpWindow::*currentUpdate)();
         void updateFadeIn();
         void updateFadeInOne();
+        void updateFadeInIA();
         void updateVisible();
         void updateVisibleOne();
+        void updateVisibleIA();
         void updateFadeOut();
         void updateFadeOutOne();
+        void updateFadeOutIA();
         void updateHidden();
         void updateHiddenOne();
+        void updateHiddenIA();
     
         void draw();
         void (vhpWindow::*currentDraw)();
@@ -39,18 +43,23 @@ class vhpWindow {
         void drawVisible();
         void drawVisibleOne();
         void drawFadeOut();
+        void drawFadeOutIA();
         void drawFadeOutOne();
         void drawHidden();
         void drawHiddenOne();
     
         void setFadeIn();
         void setFadeInOne();
+        void setFadeInIA();
         void setVisible();
         void setVisibleOne();
+        void setVisibleIA();
         void setFadeOut();
         void setFadeOutOne();
+        void setFadeOutIA();
         void setHidden();
         void setHiddenOne();
+        void setHiddenIA();
         void setHiddenOneAfter();
     
         void setStart();
