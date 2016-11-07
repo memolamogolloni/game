@@ -475,10 +475,11 @@ void vhpPlayerMenu::alert(int _e){
 
 // Eventos ------------------------------------------------------
 void vhpPlayerMenu::touchPressed(float _x, float _y){
-    cout << "Menu active!" << endl;
+    cout << "Menu Pressed!" << endl;
     //ofNotifyEvent(onClick, gameTarget);
     // min x: 520, min y: 182 408 538 630 160
     cout << "mouse x: " << _x << " mouse y: " << _y << endl;
+    first = true;
     if (_y>=520) {
         if ((_x>=182)&&(_x<=1760)) {
             if (_x<=592) {
@@ -490,6 +491,7 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                     case ONEPLAYER:
                         if ((_y>=840)&&(_y<=960)) {
                             presed = true;
+                            first = false;
                             drawButtons(1);
                         }
                         break;
@@ -518,7 +520,8 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                     case TWOPLAYERS:
                         if ((_y>=840)&&(_y<=960)) {
                             presed = true;
-                             drawButtons(2);
+                            first = false;
+                            drawButtons(2);
                         }
                         break;
                     case FOURPLAYERS:
@@ -549,6 +552,7 @@ void vhpPlayerMenu::touchPressed(float _x, float _y){
                  case FOURPLAYERS:
                  if ((_y>=840)&&(_y<=960)) {
                  presed = true;
+                 first = false;
                  drawButtons(4);
                  }
                  break;
@@ -578,7 +582,7 @@ void vhpPlayerMenu::touchReleased(float _x, float _y){
         if ((_x>=182)&&(_x<=1760)) {
             if (_x<=592) {
                 cout << "1 xogador" << endl;
-                if ((state==ONEPLAYER)&&(_y>=840)&&(_y<=960)) {
+                if ((state==ONEPLAYER)&&(_y>=840)&&(_y<=960)&&(first==false)) {
                     selected = 1;
                     cout << "ONEPLAYER confirmed! target: " << targetScene[0] << endl;
                     int val = 3; // LEVELMENU & targetScene[0] ?
@@ -587,7 +591,7 @@ void vhpPlayerMenu::touchReleased(float _x, float _y){
                 }
             } else if (_x<=1130) {
                 cout << "2 xogadores" << endl;
-                if ((state==TWOPLAYERS)&&(_y>=840)&&(_y<=960)) {
+                if ((state==TWOPLAYERS)&&(_y>=840)&&(_y<=960)&&(first==false)) {
                     selected = 2;
                     cout << "TWOPLAYERS confirmed! target: " << targetScene[0] << endl;
                     int val = 3; // LEVELMENU & targetScene[0] ?

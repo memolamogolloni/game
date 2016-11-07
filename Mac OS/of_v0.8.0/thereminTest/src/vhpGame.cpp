@@ -60,9 +60,7 @@ void vhpGame::setup(){
     /*  OSC  */
     /* ----- */
     mensajeria.send("composition/disconnectall", 1);
-    mensajeria.send("composition/deck1/select", 1);
-    cout << "sending composition/disconnectall" << 1 << endl;
-    cout << "sending composition/deck1/select" << 1 << endl;
+    // mensajeria.send("composition/deck1/select", 1);
     /* ----- */
     
 }
@@ -180,8 +178,7 @@ void vhpGame::screenSaverOnClick(int &_s){
     
     /*  OSC  */
     /* ----- */
-    mensajeria.send("layer2/clip1/connect", 1);
-    cout << "sending layer2/clip1/connect" << 1 << endl;
+    mensajeria.send("layer4/clip1/connect", 1);
     /* ----- */
     
     
@@ -195,8 +192,7 @@ void vhpGame::playerMenuOnSelect(int &_s){
         
         /*  OSC  */
         /* ----- */
-        mensajeria.send("layer2/clip2/connect", 1);
-        cout << "sending layer2/clip2/connect" << 1 << endl;
+        mensajeria.send("layer4/clip2/connect", 1);
         /* ----- */
         
         fadeInDirectLevelMenu();
@@ -210,8 +206,7 @@ void vhpGame::playerLevelOnSelect(int &_s){
     
     /*  OSC  */
     /* ----- */
-    mensajeria.send("layer2/clip3/connect", 1);
-    cout << "sending layer2/clip3/connect" << 1 << endl;
+    mensajeria.send("layer4/clip3/connect", 1);
     /* ----- */
     xogo.level = _s;
     fadeInGame();
@@ -821,10 +816,8 @@ void vhpGame::drawGameIn(){
         
         /*  OSC  */
         /* ----- */
-        mensajeria.send("composition/deck2/select", 1);
-        mensajeria.send("layer1/clip"+ ofToString(xogo.level) +"/connect", 1);
-        cout << "sending composition/deck2/select" << 1 << endl;
-        cout << "layer1/clip"+ ofToString(xogo.level) +"/connect" << 1 << endl;
+        // mensajeria.send("composition/deck2/select", 1);
+        mensajeria.send("layer1/clip"+ ofToString(xogo.level+1) +"/connect", 1);
         /* ----- */
         
     }

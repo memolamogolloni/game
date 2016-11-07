@@ -127,7 +127,7 @@ void vhpGameCore::setup(vhpOSC* _mensajeria, int _currentScene, int _targetScene
     initGame();
     
     IAdelay = 3.0;
-    maxIAdelay = 4.5;
+    maxIAdelay = 4;
     IA = true;
     
 }
@@ -161,6 +161,9 @@ void vhpGameCore::getText(string _file, bool _string) {
     }
 }
 void vhpGameCore::initGame(){
+    for (int i=0; i < 7; i++){
+        conqueredWindows[i] = 0;
+    }
     getText("txt/g-text.txt", true);
     points[0] = 0;
     points[1] = 0;
@@ -614,6 +617,15 @@ void vhpGameCore::setRound(){
     currentTouchPressed = &vhpGameCore::touchPressedNull;
     currentTouchReleased = &vhpGameCore::touchReleasedNull;
 }
+
+int vhpGameCore::randomNotConquered(){
+    int randIntNotConquered = floor(ofRandom(7));
+    while (conqueredWindows[randIntNotConquered] == 1){
+        randIntNotConquered = floor(ofRandom(7));
+    }
+    return randIntNotConquered+1;
+}
+
 void vhpGameCore::playReady(){
     // Draw
     ofPushStyle();
@@ -647,9 +659,9 @@ void vhpGameCore::playReady(){
         /*  OSC  */
         /* ----- */
         //int clip = ceil(ofRandom(7));
-        int clip = randomWindow(false);
+        int clip = randomNotConquered();
         mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", 1);
-        clip = ceil(ofRandom(7));
+        clip = randomNotConquered();
         mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
         /* ----- */
 
@@ -697,9 +709,9 @@ void vhpGameCore::playSteady(){
         } else {
             /*  OSC  */
             /* ----- */
-            int clip = ceil(ofRandom(7));
+            int clip = randomNotConquered();
             mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", 1);
-            clip = ceil(ofRandom(7));
+            clip = randomNotConquered();
             mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
             /* ----- */
         }
@@ -934,7 +946,7 @@ void vhpGameCore::setWindowPattern(){
     currentTouchReleased = &vhpGameCore::touchReleasedNull;
     /*  OSC  */
     /* ----- */
-    mensajeria->send("composition/deck3/select", 1);
+    //mensajeria->send("composition/deck3/select", 1);
     /* ----- */
 }
 void vhpGameCore::sendWindowPattern(){
@@ -969,9 +981,10 @@ void vhpGameCore::sendWindowPattern(){
         if (currentWindow<4) {
             /*  OSC  */
             /* ----- */
-            int clip = targetsPattern[currentWindow] + 1 + currentWindow*7;
+            int clip = (targetsPattern[currentWindow] + 1) + 14 + (currentWindow)*7;                     //---------------------OK??------------------------
+            cout << "-----------------------------" << clip << endl;
             mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", currentWindow);
-            clip = targetsPattern[currentWindow] + 1;
+            //clip = targetsPattern[currentWindow] + 1;
             mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", currentWindow);
             /* ----- */
             currentWindow++;
@@ -1034,7 +1047,7 @@ void vhpGameCore::setFinalWinner(){
         /*  OSC  */
         /* ----- */
         int clip = clicked[0] + 22;
-        mensajeria->send("layer1/clip4/connect", 1);
+        mensajeria->send("layer1/clip5/connect", 1);
         /* ----- */
     }
     for (int i = 0; i < fLines.size(); i++) {
@@ -1194,8 +1207,10 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                 if (clicked[0]!=7) {
                     /*  OSC  */
                     /* ----- */
-                    int clip = clicked[0] + 22;
-                    mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", 1);
+                    //int clip = clicked[0] + 22;
+                    int clip = clicked[0]+1;
+                    cout << "************" << clip << endl;
+                    mensajeria->send("layer8/clip"+ ofToString(clip) +"/connect", 1);
                     /* ----- */
                 }
                 if (clicked[0]==targetsShot) ok[0] = true;
@@ -1239,8 +1254,9 @@ void vhpGameCore::touchPressedGame(float & _x, float & _y){
                 if (clicked[1]!=7) {
                     /*  OSC  */
                     /* ----- */
-                    int clip = clicked[1] + 22;
-                    mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
+                    //int clip = clicked[1] + 22;
+                    int clip = clicked[1]+1;
+                    mensajeria->send("layer9/clip"+ ofToString(clip) +"/connect", 1);           //-------------------------------------------------------
                     /* ----- */
                 }
                 if (clicked[1]==targetsShot) ok[1] = true;
@@ -1432,8 +1448,8 @@ void vhpGameCore::touchPressedPattern(float & _x, float & _y){
                 if (registeredPattern[0][n[0]]!=7) {
                     /*  OSC  */
                     /* ----- */
-                    int clip = registeredPattern[0][n[0]] + 22;
-                    mensajeria->send("layer2/clip"+ ofToString(clip) +"/connect", 1);
+                    int clip = registeredPattern[0][n[0]] + 1;                     //------------------------------------------------
+                    mensajeria->send("layer8/clip"+ ofToString(clip) +"/connect", 1);
                     /* ----- */
                 }
                 aWindowClick[n[0]].setOneWindow(n[0], registeredPattern[0][n[0]], 0);
@@ -1485,8 +1501,9 @@ void vhpGameCore::touchPressedPattern(float & _x, float & _y){
                 if (registeredPattern[1][n[1]]!=7) {
                     /*  OSC  */
                     /* ----- */
-                    int clip = registeredPattern[1][n[1]] + 22;
-                    mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
+                    int clip = registeredPattern[1][n[1]] +1;                                  //------------------------------------------------
+                    mensajeria->send("layer9/clip"+ ofToString(clip) +"/connect", 1);
+                    cout << "///////////" <<  clip  << endl;
                     /* ----- */
                 }
                 bWindowClick[n[1]].setOneWindow(n[1], registeredPattern[1][n[1]], 1);
@@ -1532,7 +1549,7 @@ void vhpGameCore::touchReleasedPatternWinner(float & _x, float & _y){
         ofNotifyEvent(onRestart, targetScene);
         /*  OSC  */
         /* ----- */
-        mensajeria->send("composition/deck1/select", 1);
+        //mensajeria->send("composition/deck1/select", 1);
         mensajeria->send("layer1/clip1/connect", 1);
         /* ----- */
     // Player B
@@ -1541,7 +1558,7 @@ void vhpGameCore::touchReleasedPatternWinner(float & _x, float & _y){
         ofNotifyEvent(onRestart, targetScene);
         /*  OSC  */
         /* ----- */
-        mensajeria->send("composition/deck1/select", 1);
+        //mensajeria->send("composition/deck1/select", 1);
         mensajeria->send("layer1/clip1/connect", 1);
         /* ----- */
     }
@@ -1644,14 +1661,19 @@ void vhpGameCore::checkRoundWinner(){
                         break;
                 }
                 int clip = targetsShot + 1;
-                if (winner == 1) clip + 7;            // 1-7 ganadas por jugador 1, 8-14 ganadas por Jugador 2
+                conqueredWindows[targetsShot] = 1;
+                
+                if (winner == 1) clip += 7;            // 1-7 ganadas por jugador 1, 8-14 ganadas por Jugador 2
+				// cout << "------" << clip << endl;
                 mensajeria->send(whichLayer+ ofToString(clip) +"/connect", 1);
                 if (IA) setDelay();
+                
+
             }
             
             /*  OSC  */
             /* ----- */
-            int  clip = (6 - (points[0]-points[1]));
+            int  clip = 3 + (6 - (points[0]-points[1]));
             mensajeria->send("layer4/clip"+ ofToString(clip) +"/connect", 1);
             /* ----- */
         }
@@ -1701,6 +1723,8 @@ void vhpGameCore::checkPatternWinner(){
                 checked = true;
             }
         }
+        int  clip = 3 + (6 - (points[0]-points[1]));
+        mensajeria->send("layer4/clip"+ ofToString(clip) +"/connect", 1);
     }
 }
 void vhpGameCore::triggerPressedGame(){
@@ -1711,8 +1735,8 @@ void vhpGameCore::triggerPressedGame(){
         cout << "Window " << targetsShot << " triggered" << endl;
         /*  OSC  */
         /* ----- */
-        int clip = clicked[1] + 22;
-        mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
+        int clip = clicked[1] + 1;
+        mensajeria->send("layer9/clip"+ ofToString(clip) +"/connect", 1);                       //--------------------------------------------
         /* ----- */
     }
 }
@@ -1730,8 +1754,8 @@ void vhpGameCore::triggerPressedPattern(){
             registeredPattern[1][n] = targetsPattern[n];
             /*  OSC  */
             /* ----- */
-            int clip = registeredPattern[1][n] + 22;
-            mensajeria->send("layer3/clip"+ ofToString(clip) +"/connect", 1);
+            int clip = registeredPattern[1][n] + 1;
+            mensajeria->send("layer9/clip"+ ofToString(clip) +"/connect", 1);                   //---------------------------------------------
             /* ----- */
             // Parece que en el trigger pattern no se produce la discordancia que había en el click
             bWindowClick[n].setOneWindow(n, registeredPattern[1][n], 1);

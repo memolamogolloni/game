@@ -123,6 +123,8 @@ class vhpGameCore {
         float getElapsedtime();
         float getIAElapsedtime();
     
+        int randomNotConquered();
+    
     
         /* Variables o propiedades */
     
@@ -240,4 +242,6 @@ class vhpGameCore {
         static ofEvent<int> onClick;
         static ofEvent<int> onRestart;
     
+        int conqueredWindows[7];
+        //vector<int> whichConquereds;
 };

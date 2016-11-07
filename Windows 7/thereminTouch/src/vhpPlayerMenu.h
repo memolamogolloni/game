@@ -127,6 +127,7 @@ class vhpPlayerMenu {
         int                         target;
         int                         selected;
         bool                        presed;
+        bool                        first;
     
         // notificación de eventos
         static ofEvent<int>         playersNumber;
